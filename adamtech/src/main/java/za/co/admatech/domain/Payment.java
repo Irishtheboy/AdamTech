@@ -85,16 +85,16 @@ public class Payment {
             return this;
         }
 
-        public Payment build(Payment payment) {
+        public Builder copy(Payment payment) {
             payment.Id = this.Id;
             payment.orderId = this.orderId;
             payment.paymentDate = this.paymentDate;
             payment.amount = this.amount;
             payment.paymentStatus = this.paymentStatus;
-            return payment;
+            return this;
         }
 
-        public Payment build() {
+        public Payment copy() {
             return new Payment(this);
         }
     }
