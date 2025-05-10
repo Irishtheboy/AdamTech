@@ -8,7 +8,7 @@ public class Payment {
     private String Id;
     private String orderId;
     private LocalDate paymentDate;
-    private double amount; // change to class once its complete
+    private Money amount;
     private PaymentStatus paymentStatus;
 
     public Payment() {
@@ -34,7 +34,7 @@ public class Payment {
         return paymentDate;
     }
 
-    public double getAmount() {
+    public Money getAmount() {
         return amount;
     }
 
@@ -57,7 +57,7 @@ public class Payment {
         private String Id;
         private String orderId;
         private LocalDate paymentDate;
-        private double amount; // change to class once its complete
+        private Money amount;
         private PaymentStatus paymentStatus;
 
         public Builder setPaymentStatus(PaymentStatus paymentStatus) {
@@ -65,7 +65,7 @@ public class Payment {
             return this;
         }
 
-        public Builder setAmount(double amount) {
+        public Builder setAmount(Money amount) {
             this.amount = amount;
             return this;
         }
