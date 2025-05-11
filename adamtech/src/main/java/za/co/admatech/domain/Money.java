@@ -1,5 +1,11 @@
 package za.co.admatech.domain;
+/* Money.java
 
+     Money POJO class
+
+     Author: FN Lukhele (221075127)
+
+     Date: 10 May 2025 */
 public class Money {
     private int amount;
     private String currency;
