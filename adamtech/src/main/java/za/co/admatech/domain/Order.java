@@ -7,8 +7,8 @@ public class Order {
     private String id;
     private String customerId;
     private LocalDate orderDate;
-    private String orderStatus;
-    private String totalAmount;
+    private String orderStatus; //change to class once class is created
+    private Money totalAmount;
 
     public Order() {
     }
@@ -37,7 +37,7 @@ public class Order {
         return orderStatus;
     }
 
-    public String getTotalAmount() {
+    public Money getTotalAmount() {
         return totalAmount;
     }
 
@@ -57,7 +57,7 @@ public class Order {
         private String customerId;
         private LocalDate orderDate;
         private String orderStatus;
-        private String totalAmount;
+        private Money totalAmount;
 
         public Builder setId(String id) {
             this.id = id;
@@ -79,7 +79,7 @@ public class Order {
             return this;
         }
 
-        public Builder setTotalAmount(String totalAmount) {
+        public Builder setTotalAmount(Money totalAmount) {
             this.totalAmount = totalAmount;
             return this;
         }
