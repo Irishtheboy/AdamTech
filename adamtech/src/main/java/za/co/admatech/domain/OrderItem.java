@@ -1,3 +1,7 @@
+/*OrderItem POJO Class
+  Naqeebah Khan 219099073
+  10 May 2025*/
+
 package za.co.admatech.domain;
 
 public class OrderItem {
@@ -50,20 +54,24 @@ public class OrderItem {
         private int quantity;
         private Money unitPrice;
 
-        public void setId(String id) {
+        public Builder setId(String id) {
             this.id = id;
+            return this;
         }
 
-        public void setProductId(String productId) {
+        public Builder setProductId(String productId) {
             this.productId = productId;
+            return this;
         }
 
-        public void setQuantity(int quantity) {
+        public Builder setQuantity(int quantity) {
             this.quantity = quantity;
+            return this;
         }
 
-        public void setUnitPrice(Money unitPrice) {
+        public Builder setUnitPrice(Money unitPrice) {
             this.unitPrice = unitPrice;
+            return this;
         }
 
         public Builder copy(OrderItem orderItem) {
