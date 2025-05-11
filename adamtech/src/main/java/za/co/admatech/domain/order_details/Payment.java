@@ -1,4 +1,4 @@
-package za.co.admatech.domain;
+package za.co.admatech.domain.order_details;
 
 import za.co.admatech.domain.enums.PaymentStatus;
 

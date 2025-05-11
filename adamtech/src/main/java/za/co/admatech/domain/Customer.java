@@ -6,6 +6,8 @@
  */
 package za.co.admatech.domain;
 
+import za.co.admatech.domain.order_details.Cart;
+
 public class Customer{
     private String customerID;
     private String firstName;
