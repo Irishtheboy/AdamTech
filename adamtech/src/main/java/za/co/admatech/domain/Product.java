@@ -1,3 +1,9 @@
+/*
+ * Product.java
+ * Product Class
+ * Author: Seymour Lawrence (230185991)
+ * Date: 11 May 2025
+ */
 package za.co.admatech.domain;
 
 public class Product {
