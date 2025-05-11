@@ -4,6 +4,8 @@
 
 package za.co.admatech.domain;
 
+import za.co.admatech.domain.enums.OrderStatus;
+
 import java.time.LocalDate;
 
 public class Order {
@@ -11,7 +13,7 @@ public class Order {
     private String id;
     private String customerId;
     private LocalDate orderDate;
-    private String orderStatus; //change to class once class is created
+    private OrderStatus orderStatus;
     private Money totalAmount;
 
     public Order() {
@@ -37,7 +39,7 @@ public class Order {
         return orderDate;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -60,7 +62,7 @@ public class Order {
         private String id;
         private String customerId;
         private LocalDate orderDate;
-        private String orderStatus;
+        private OrderStatus orderStatus;
         private Money totalAmount;
 
         public Builder setId(String id) {
@@ -78,7 +80,7 @@ public class Order {
             return this;
         }
 
-        public Builder setOrderStatus(String orderStatus) {
+        public Builder setOrderStatus(OrderStatus orderStatus) {
             this.orderStatus = orderStatus;
             return this;
         }
