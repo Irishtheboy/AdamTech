@@ -1,4 +1,4 @@
-package za.co.admatech.domain;
+package za.co.admatech.domain.order_details;
 
 public class Money {
     private int amount;
