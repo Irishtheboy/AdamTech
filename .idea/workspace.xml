@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="546464a4-ed65-40da-a8eb-253b62326214" name="Changes" comment="">
+
+      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Inventory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/enums/InventoryStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/AdamTech.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AdamTech.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+     <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,23 +34,42 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+
+    "git-widget-placeholder": "230185991",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+
     "git-widget-placeholder": "230237622",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/teyan/OneDrive/Documents/GitHub/AdamTech/adamtech",
+
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JAVA"
+    ]
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
+
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+
         <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
         <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+
       </set>
     </attachedChunks>
   </component>
@@ -59,7 +82,11 @@
       <option name="presentableId" value="Default" />
       <updated>1746857660252</updated>
       <workItem from="1746857663231" duration="64000" />
+
+      <workItem from="1746957695704" duration="540000" />
+
       <workItem from="1746967598240" duration="97000" />
+
     </task>
     <servers />
   </component>
