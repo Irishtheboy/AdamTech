@@ -15,6 +15,8 @@ public class Customer{
     private String email;
     private Cart cartID;
     private Address address;
+    private String phoneNumber;
+
 
     public String getCustomerID() {
         return customerID;
@@ -40,6 +42,10 @@ public class Customer{
         return address;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -49,6 +55,7 @@ public class Customer{
                 ", email='" + email + '\'' +
                 ", cartID=" + cartID +
                 ", address=" + address +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 
@@ -58,6 +65,8 @@ public class Customer{
         this.lastName = builder.lastName;
         this.email = builder.email;
         this.cartID = builder.cartID;
+        this.address = builder.address;
+        this.phoneNumber = builder.phoneNumber;
     }
 
     public static class Builder{
@@ -67,6 +76,8 @@ public class Customer{
         private String email;
         private Cart cartID;
         private Address address;
+        private String phoneNumber;
+
 
         public Builder setCustomerID(String customerID){
             this.customerID = customerID;
@@ -94,6 +105,10 @@ public class Customer{
             this.address = address;
             return this;
         }
+        public Builder setPhoneNumber(String phoneNumber){
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
 
         public Builder copy(Customer customer){
             this.customerID = customer.customerID;
@@ -102,6 +117,7 @@ public class Customer{
             this.email = customer.email;
             this.cartID = customer.cartID;
             this.address = customer.address;
+            this.phoneNumber = customer.phoneNumber;
             return this;
         }
 
