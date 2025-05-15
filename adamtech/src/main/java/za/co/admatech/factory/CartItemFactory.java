@@ -5,19 +5,18 @@ import za.co.admatech.domain.CartItem;
 import za.co.admatech.util.Helper;
 
 public class CartItemFactory {
-    public static CartItem createCartItem(String id, String productID, int quantity, Cart cartID) {
-        id = Helper.generateId();
-        return null;
+    public static CartItem createCartItem(int quantity, Cart cartID) {
+        String id = Helper.generateId();
 
-        productID = Helper.generateId();
-        return null;
+        String productID = Helper.generateId();
 
-        if (Helper.isNullOrEmpty(quantity)) {
+        if (quantity <= 0) {
             return null;
         }
 
-        cartID = Helper.generateId();
-        return null;
+        if (cartID == null) {
+            return null;
+        }
 
         return new CartItem.Builder()
                 .setId(id)
