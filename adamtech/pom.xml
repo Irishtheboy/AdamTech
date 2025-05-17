@@ -21,6 +21,7 @@
     </properties>
 
     <dependencies>
+
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,12 +47,14 @@
         </dependency>
 
         <!-- Your original dependency -->
+
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.9.0</version>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -65,3 +68,6 @@
     </build>
 
 </project>
+
+</project>
+

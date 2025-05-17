@@ -7,11 +7,20 @@ import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
 
+import java.util.UUID;
+
 public class Helper {
     public static boolean isNullOrEmpty(String s) {
         if (s.isEmpty() || s == null)
             return true;
         return false;
+
+
+    }
+
+    public static String generateId() {
+        return UUID.randomUUID().toString();
+
     }
 
     public static boolean isValidEmail(String email) {
@@ -121,6 +130,7 @@ public class Helper {
         return null;
     }
 
+
     //Validation methods to validate the customer fields: the customer address
     //1. Validating whether the customer's cart ID matches the initial card ID issued
     public static Cart isValidCartID(Cart cartID){
@@ -131,3 +141,6 @@ public class Helper {
     }
     //Validating the 
 }
+
+}
+
