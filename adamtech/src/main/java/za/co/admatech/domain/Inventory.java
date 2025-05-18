@@ -1,25 +1,28 @@
-/*OrderItem POJO Class
-  Naqeebah Khan 219099073
-  10 May 2025*/
-
+/*
+ * Inventory.java
+ * Inventory Class
+ * Author: Seymour Lawrence (230185991)
+ * Date: 11 May 2025
+ */
 package za.co.admatech.domain;
 
-public class OrderItem {
+import za.co.admatech.domain.enums.InventoryStatus;
+
+public class Inventory {
 
     private String id;
     private String productId;
     private int quantity;
-    private Money unitPrice;
+    private InventoryStatus inventoryStatus;
 
-    public OrderItem() {
-
+    public Inventory() {
     }
 
-    private OrderItem(Builder builder) {
+    private Inventory(Builder builder) {
         this.id = builder.id;
         this.productId = builder.productId;
         this.quantity = builder.quantity;
-        this.unitPrice = builder.unitPrice;
+        this.inventoryStatus = builder.inventoryStatus;
     }
 
     public String getId() {
@@ -34,17 +37,17 @@ public class OrderItem {
         return quantity;
     }
 
-    public Money getUnitPrice() {
-        return unitPrice;
+    public InventoryStatus getInventoryStatus() {
+        return inventoryStatus;
     }
 
     @Override
     public String toString() {
-        return "OrderItem{" +
+        return "Inventory{" +
                 "id='" + id + '\'' +
                 ", productId='" + productId + '\'' +
                 ", quantity=" + quantity +
-                ", unitPrice=" + unitPrice +
+                ", inventoryStatus=" + inventoryStatus +
                 '}';
     }
 
@@ -52,7 +55,7 @@ public class OrderItem {
         private String id;
         private String productId;
         private int quantity;
-        private Money unitPrice;
+        private InventoryStatus inventoryStatus;
 
         public Builder setId(String id) {
             this.id = id;
@@ -69,21 +72,21 @@ public class OrderItem {
             return this;
         }
 
-        public Builder setUnitPrice(Money unitPrice) {
-            this.unitPrice = unitPrice;
+        public Builder setInventoryStatus(InventoryStatus inventoryStatus) {
+            this.inventoryStatus = inventoryStatus;
             return this;
         }
 
-        public Builder copy(OrderItem orderItem) {
-            this.id = orderItem.id;
-            this.productId = orderItem.productId;
-            this.quantity = orderItem.quantity;
-            this.unitPrice = orderItem.unitPrice;
+        public Builder copy(Inventory inventory) {
+            this.id = inventory.id;
+            this.productId = inventory.productId;
+            this.quantity = inventory.quantity;
+            this.inventoryStatus = inventory.inventoryStatus;
             return this;
         }
 
-        public OrderItem build() {
-            return new OrderItem(this);
+        public Inventory build() {
+            return new Inventory(this);
         }
     }
 }
