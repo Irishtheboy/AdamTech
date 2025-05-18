@@ -1,4 +1,11 @@
 package za.co.admatech.factory;
+/**
+ * AddressFactory.java
+ * AddressFactory Factory class
+ *
+ * Author: Rorisang Makgana(230602363)
+ */
+
 import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
