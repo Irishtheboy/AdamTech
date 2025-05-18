@@ -105,5 +105,9 @@ public class Payment {
         public Payment copy() {
             return new Payment(this);
         }
+
+        public Payment build() {
+            return new Payment(this);
+        }
     }
 }
