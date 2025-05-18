@@ -1,3 +1,9 @@
+/*Cart.java
+  Cart Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 18 May 2025
+ */
+
 package za.co.admatech.factory;
 
 import org.junit.jupiter.api.MethodOrderer;
