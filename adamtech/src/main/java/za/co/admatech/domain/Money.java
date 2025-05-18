@@ -13,7 +13,7 @@ public class Money {
     public Money() {
     }
 
-    private Money(Builder builder) {
+    public Money(Builder builder) {
         this.amount = builder.amount;
         this.currency = builder.currency;
     }
