@@ -22,6 +22,10 @@ public class Helper {
         return UUID.randomUUID().toString();
 
     }
+    public static String generateId() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
 
     public static boolean isValidEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
@@ -64,13 +68,10 @@ public class Helper {
     }
 
     // PaymentStatus
-    public static boolean isValidPaymentStatus(String input) {
-        if (input == null || input.isEmpty()) return false;
-        for (PaymentStatus status : PaymentStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return true;
-        }
-        return false;
+    public static boolean isValidPaymentStatus(PaymentStatus status) {
+        return status != null;
     }
+
 
     public static PaymentStatus getPaymentStatusFromString(String input) {
         if (input == null) return null;
