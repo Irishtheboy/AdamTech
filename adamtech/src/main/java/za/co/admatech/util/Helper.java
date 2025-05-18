@@ -120,14 +120,4 @@ public class Helper {
         }
         return null;
     }
-
-    //Validation methods to validate the customer fields: the customer address
-    //1. Validating whether the customer's cart ID matches the initial card ID issued
-    public static Cart isValidCartID(Cart cartID){
-        if(cartID == null){
-            return null;
-        }
-        
-    }
-    //Validating the 
 }
