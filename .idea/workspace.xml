@@ -6,12 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="546464a4-ed65-40da-a8eb-253b62326214" name="Changes" comment="">
 
+      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Address.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+
+
       <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Inventory.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/Product.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/domain/enums/InventoryStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/AdamTech.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AdamTech.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,10 +27,27 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "LeGoober"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Irishtheboy/AdamTech.git",
+    "accountId": "d3bc8678-a49f-4be4-8d84-79b0dc30fec6"
+  }
+}]]></component>
+
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2wtOyWbQfroK8MKHhAobOGRgDWk" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -34,6 +57,14 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "show.migrate.to.gradle.popup": "false",
+
 
     "git-widget-placeholder": "230185991",
     "ignore.virus.scanning.warn.message": "true",
@@ -52,6 +83,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -64,11 +96,16 @@
     <attachedChunks>
       <set>
 
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+
+
         <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
         <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
 
         <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
         <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+
 
       </set>
     </attachedChunks>
@@ -82,6 +119,9 @@
       <option name="presentableId" value="Default" />
       <updated>1746857660252</updated>
       <workItem from="1746857663231" duration="64000" />
+
+      <workItem from="1746970802936" duration="137000" />
+
 
       <workItem from="1746957695704" duration="540000" />
 

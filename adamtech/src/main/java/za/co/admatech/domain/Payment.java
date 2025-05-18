@@ -4,6 +4,14 @@ import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
 
+/* Payment.java
+
+     Payment POJO class
+
+     Author: FN Lukhele (221075127)
+
+     Date: 10 May 2025 */
+
 public class Payment {
     private String Id;
     private String orderId;
@@ -95,6 +103,10 @@ public class Payment {
         }
 
         public Payment copy() {
+            return new Payment(this);
+        }
+
+        public Payment build() {
             return new Payment(this);
         }
     }

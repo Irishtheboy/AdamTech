@@ -1,8 +1,15 @@
+/*Cart.java
+  Cart Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 11 May 2025
+ */
+
 package za.co.admatech.domain;
 
 public class Cart {
     private String cartID;
-    private String custmerID;
+    private Customer customerID;
+    private CartItem cartItemID;
 
 
     public Cart() {
@@ -11,7 +18,8 @@ public class Cart {
 
     public Cart(Builder builder) {
         this.cartID = builder.cartID;
-        this.custmerID = builder.custmerID;
+        this.customerID = builder.customerID;
+        this.cartItemID = builder.cartItemID;
     }
 
 
@@ -19,21 +27,27 @@ public class Cart {
         return cartID;
     }
 
-    public String getCustmerID() {
-        return custmerID;
+    public Customer getCustomerID() {
+        return customerID;
+    }
+
+    public CartItem getCartItemID() {
+        return cartItemID;
     }
 
     @Override
     public String toString() {
         return "Cart{" +
                 "cartID='" + cartID + '\'' +
-                ", custmerID='" + custmerID + '\'' +
+                ", customerID='" + customerID + '\'' +
+                ", cartItemID='" + cartItemID + '\'' +
                 '}';
     }
 
     public static class Builder {
         private String cartID;
-        private String custmerID;
+        private Customer customerID;
+        private CartItem cartItemID;
 
         public Builder setCartID(String cartID) {
             this.cartID = cartID;
@@ -41,14 +55,20 @@ public class Cart {
 
         }
 
-        public Builder setCustmerID(String custmerID) {
-            this.custmerID = custmerID;
+        public Builder setCustomerID(Customer customerID) {
+            this.customerID = customerID;
+            return this;
+        }
+
+        public Builder setCartItemID(CartItem cartItemID) {
+            this.cartItemID = cartItemID;
             return this;
         }
 
         public Builder copy(Cart cart) {
             this.cartID = cartID;
-            this.custmerID = custmerID;
+            this.customerID = customerID;
+            this.cartItemID = cartItemID;
             return this;
 
         }

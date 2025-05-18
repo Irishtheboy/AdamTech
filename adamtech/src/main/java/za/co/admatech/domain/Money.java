@@ -1,5 +1,11 @@
 package za.co.admatech.domain;
+/* Money.java
 
+     Money POJO class
+
+     Author: FN Lukhele (221075127)
+
+     Date: 10 May 2025 */
 public class Money {
     private int amount;
     private String currency;
@@ -7,7 +13,7 @@ public class Money {
     public Money() {
     }
 
-    private Money(Builder builder) {
+    public Money(Builder builder) {
         this.amount = builder.amount;
         this.currency = builder.currency;
     }
