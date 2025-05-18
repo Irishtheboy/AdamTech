@@ -1,3 +1,9 @@
+/*Cart.java
+  Cart Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 14 May 2025
+ */
+
 package za.co.admatech.factory;
 
 import za.co.admatech.domain.Cart;
