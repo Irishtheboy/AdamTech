@@ -1,6 +1,7 @@
 package za.co.admatech.util;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.enums.InventoryStatus;
 import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.domain.enums.PaymentStatus;
@@ -22,9 +23,9 @@ public class Helper {
         return UUID.randomUUID().toString();
 
     }
-    public static String generateId() {
-        return java.util.UUID.randomUUID().toString();
-    }
+//    public static String generateId() {
+//        return java.util.UUID.randomUUID().toString();
+//    }
 
 
     public static boolean isValidEmail(String email) {
@@ -138,10 +139,11 @@ public class Helper {
         if(cartID == null){
             return null;
         }
-        
+
+        return cartID;
     }
     //Validating the 
 }
 
-}
+
 
