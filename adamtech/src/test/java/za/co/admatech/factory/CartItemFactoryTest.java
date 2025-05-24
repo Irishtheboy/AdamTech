@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CartItemFactoryTest {
 
-    private static CartItem ci = CartItemFactory.createCartItem("", "", 5, null);
+    private static CartItem ci = CartItemFactory.createCartItem(null, 5, null);
 
     @Test
     @Order(1)

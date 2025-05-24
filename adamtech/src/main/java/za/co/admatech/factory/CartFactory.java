@@ -12,9 +12,12 @@ import za.co.admatech.domain.Customer;
 import za.co.admatech.util.Helper;
 
 public class CartFactory {
-    public static Cart createCart(String cartID, Customer customerID, CartItem cartItemID) {
-      cartID =  Helper.generateId();
+    public static Cart createCart(Customer customerID, CartItem cartItemID) {
+      String cartID =  Helper.generateId();
 
+        if (customerID == null || cartItemID == null) {
+            return null;
+        }
 
             return new Cart.Builder()
                     .setCartID(cartID)
