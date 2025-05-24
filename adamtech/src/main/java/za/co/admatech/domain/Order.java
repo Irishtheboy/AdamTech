@@ -1,16 +1,22 @@
-/*Order POJO Class
-  Naqeebah Khan 219099073
-  10 May 2025*/
+/*Order.java
+  Order Class
+  Author: Naqeebah Khan (219099073)
+  Date: 10 May 2025
+ */
 
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import za.co.admatech.domain.enums.OrderStatus;
 
 import java.time.LocalDate;
 
 public class Order {
 
+
     private String id;
+
     private String customerId;
     private LocalDate orderDate;
     private OrderStatus orderStatus;

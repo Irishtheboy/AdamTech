@@ -1,6 +1,8 @@
-/*OrderItem POJO Class
-  Naqeebah Khan 219099073
-  10 May 2025*/
+/*OrderItem.java
+  OrderItem Class
+  Author: Naqeebah Khan (219099073)
+  Date: 10 May 2025
+ */
 
 package za.co.admatech.domain;
 
