@@ -1,6 +1,8 @@
-/*OrderFactory Class
-  Naqeebah Khan 219099073
-  17 May 2025*/
+/*OrderFactory.java
+  OrderFactory Class
+  Author: Naqeebah Khan (219099073)
+  Date: 17 May 2025
+ */
 package za.co.admatech.factory;
 
 import za.co.admatech.domain.Money;
