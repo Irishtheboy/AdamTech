@@ -1,3 +1,9 @@
+/*Cart.java
+  Cart Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 18 May 2025
+ */
+
 package za.co.admatech.factory;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -12,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CartItemFactoryTest {
 
-    private static CartItem ci = CartItemFactory.createCartItem("", "", 5, null);
+    private static CartItem ci = CartItemFactory.createCartItem(null, 5, null);
 
     @Test
     @Order(1)

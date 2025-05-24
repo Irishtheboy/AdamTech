@@ -1,6 +1,8 @@
-/*OrderItemFactory Class
-  Naqeebah Khan 219099073
-  17 May 2025*/
+/*OrderItemFactory.java
+  OrderItemFactory Class
+  Author: Naqeebah Khan (219099073)
+  Date: 17 May 2025
+ */
 
 package za.co.admatech.factory;
 
