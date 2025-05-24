@@ -18,7 +18,7 @@ public class Product {
     public Product() {
     }
 
-    private Product(Builder builder) {
+    protected Product(Builder builder) {
         this.productId = builder.productId;
         this.name = builder.name;
         this.description = builder.description;

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import za.co.admatech.domain.CartItem;
+import za.co.admatech.domain.Product;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CartItemFactoryTest {
 
-    private static CartItem ci = CartItemFactory.createCartItem(null, 5, null);
+    private static CartItem ci = CartItemFactory.createCartItem(null, 2, null);
 
     @Test
     @Order(1)

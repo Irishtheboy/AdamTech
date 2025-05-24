@@ -1,3 +1,9 @@
+/*CartItem.java
+  CartItem Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 11 May 2025
+ */
+
 package za.co.admatech.domain;
 
 public class Cart {

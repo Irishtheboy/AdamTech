@@ -22,8 +22,8 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Cart read(String s) {
-        return this.repository.findById(s).orElse(null);
+    public Cart read(String id) {
+        return this.repository.findById(id).orElse(null);
     }
 
     @Override
@@ -32,13 +32,13 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public boolean delete(String s) {
-        this.repository.deleteById(s);
+    public boolean delete(String id) {
+        this.repository.deleteById(id);
         return true;
     }
 
     @Override
-    public List<Cart> getCarts() {
+    public List<Cart> getAll() {
         return this.repository.findAll();
     }
 }
