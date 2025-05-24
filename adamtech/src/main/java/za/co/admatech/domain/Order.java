@@ -6,21 +6,31 @@
 
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import za.co.admatech.domain.enums.OrderStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
+@Entity
+@Table (name = "orders")
 public class Order {
 
-
+    @Id
     private String id;
 
     private String customerId;
+
     private LocalDate orderDate;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @Embedded
     private Money totalAmount;
+
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems;
 
     public Order() {
     }
@@ -31,6 +41,7 @@ public class Order {
         this.orderDate = builder.orderDate;
         this.orderStatus = builder.orderStatus;
         this.totalAmount = builder.totalAmount;
+        this.orderItems = builder.orderItems;
     }
 
     public String getId() {
@@ -53,6 +64,10 @@ public class Order {
         return totalAmount;
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -70,6 +85,7 @@ public class Order {
         private LocalDate orderDate;
         private OrderStatus orderStatus;
         private Money totalAmount;
+        private List<OrderItem> orderItems;
 
         public Builder setId(String id) {
             this.id = id;
@@ -96,12 +112,18 @@ public class Order {
             return this;
         }
 
+        public Builder setOrderItems(List<OrderItem> orderItems) {
+            this.orderItems = orderItems;
+            return this;
+        }
+
         public Builder copy(Order order) {
             this.id = order.id;
             this.customerId = order.customerId;
             this.orderDate = order.orderDate;
             this.orderStatus = order.orderStatus;
             this.totalAmount = order.totalAmount;
+            this.orderItems = order.orderItems;
             return this;
         }
         public Order build() {
