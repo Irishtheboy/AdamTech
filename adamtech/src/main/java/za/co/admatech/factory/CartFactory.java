@@ -15,13 +15,9 @@ public class CartFactory {
     public static Cart createCart(Customer customerID, CartItem cartItemID) {
       String cartID =  Helper.generateId();
 
-       if (customerID == null) {
-              return null;
-       }
-
-         if (cartItemID == null) {
-             return null;
-         }
+        if (customerID == null || cartItemID == null) {
+            return null;
+        }
 
             return new Cart.Builder()
                     .setCartID(cartID)

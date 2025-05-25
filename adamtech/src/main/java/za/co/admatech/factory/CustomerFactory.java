@@ -1,5 +1,10 @@
 package za.co.admatech.factory;
-
+/**
+ * CustomerFactory.java
+ * CustomerFactory Factory class
+ *
+ * Author: Rorisang Makgana(230602363)
+ */
 import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
@@ -31,9 +36,6 @@ public class CustomerFactory {
             return null;
         }
 
-        if(Helper.isValidCartID(cartID)){
-            return null;
-        }
         return new Customer.Builder()
         .setCartID(cartID)
         .setCustomerID(customerID)

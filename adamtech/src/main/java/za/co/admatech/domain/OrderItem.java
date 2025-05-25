@@ -1,15 +1,31 @@
-/*OrderItem POJO Class
-  Naqeebah Khan 219099073
-  10 May 2025*/
+/*OrderItem.java
+  OrderItem Class
+  Author: Naqeebah Khan (219099073)
+  Date: 10 May 2025
+ */
 
 package za.co.admatech.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "order_items")
 public class OrderItem {
 
+    @Id
     private String id;
+
     private String productId;
+
     private int quantity;
+
+    @Embedded
     private Money unitPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
 
     public OrderItem() {
 
@@ -20,6 +36,8 @@ public class OrderItem {
         this.productId = builder.productId;
         this.quantity = builder.quantity;
         this.unitPrice = builder.unitPrice;
+        this.order = builder.order;
+
     }
 
     public String getId() {
@@ -38,6 +56,10 @@ public class OrderItem {
         return unitPrice;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     @Override
     public String toString() {
         return "OrderItem{" +
@@ -53,6 +75,7 @@ public class OrderItem {
         private String productId;
         private int quantity;
         private Money unitPrice;
+        private Order order;
 
         public Builder setId(String id) {
             this.id = id;
@@ -74,11 +97,17 @@ public class OrderItem {
             return this;
         }
 
+        public Builder setOrder(Order order) {
+            this.order = order;
+            return this;
+        }
+
         public Builder copy(OrderItem orderItem) {
             this.id = orderItem.id;
             this.productId = orderItem.productId;
             this.quantity = orderItem.quantity;
             this.unitPrice = orderItem.unitPrice;
+            this.order = orderItem.order;
             return this;
         }
 
