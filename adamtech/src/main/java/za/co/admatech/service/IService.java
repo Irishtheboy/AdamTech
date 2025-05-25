@@ -1,7 +1,7 @@
 package za.co.admatech.service;
+
+
     
-
-
 public interface IService <T, ID>{
     T create( T t);
     T create (T t);
@@ -10,3 +10,4 @@ public interface IService <T, ID>{
     T update(T t);
     boolean delete(ID id);
 }
+
