@@ -1,4 +1,7 @@
 package za.co.admatech.domain;
+
+import jakarta.persistence.Entity;
+
 /* Money.java
 
      Money POJO class

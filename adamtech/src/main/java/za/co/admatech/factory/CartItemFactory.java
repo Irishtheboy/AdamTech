@@ -12,10 +12,10 @@ import za.co.admatech.domain.Product;
 import za.co.admatech.util.Helper;
 
 public class CartItemFactory {
-    public static CartItem createCartItem(Product productID, int quantity, Cart cartID) {
+    public static CartItem createCartItem(String productID, int quantity, String cartID) {
         String cartItemID = Helper.generateId();
 
-        if (productID == null || quantity <= 0 || cartID == null) {
+        if (Helper.isNullOrEmpty(productID) || quantity <= 0 || Helper.isNullOrEmpty(cartID)) {
             return null;
         }
 

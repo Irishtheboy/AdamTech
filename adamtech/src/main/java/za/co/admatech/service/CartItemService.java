@@ -1,3 +1,8 @@
+/*CartItemService.java
+  Author: Teyana Raubenheimer (230237622)
+  Date: 23 May 2025
+ */
+
 package za.co.admatech.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +15,11 @@ import java.util.List;
 @Service
 public class CartItemService implements ICartItemService{
 
-    private static ICartItemService service;
-
-    @Autowired
     private CartItemRepository repository;
+
+    @Autowired CartItemService(CartItemRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public CartItem create(CartItem cartItem) {

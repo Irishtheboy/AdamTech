@@ -6,10 +6,15 @@
 
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Cart {
+    @Id
     private String cartID;
-    private Customer customerID;
-    private CartItem cartItemID;
+    private String customerID;
+    private String cartItemID;
 
 
     public Cart() {
@@ -27,11 +32,11 @@ public class Cart {
         return cartID;
     }
 
-    public Customer getCustomerID() {
+    public String  getCustomerID() {
         return customerID;
     }
 
-    public CartItem getCartItemID() {
+    public String  getCartItemID() {
         return cartItemID;
     }
 
@@ -46,8 +51,8 @@ public class Cart {
 
     public static class Builder {
         private String cartID;
-        private Customer customerID;
-        private CartItem cartItemID;
+        private String  customerID;
+        private String  cartItemID;
 
         public Builder setCartID(String cartID) {
             this.cartID = cartID;
@@ -55,12 +60,12 @@ public class Cart {
 
         }
 
-        public Builder setCustomerID(Customer customerID) {
+        public Builder setCustomerID(String  customerID) {
             this.customerID = customerID;
             return this;
         }
 
-        public Builder setCartItemID(CartItem cartItemID) {
+        public Builder setCartItemID(String  cartItemID) {
             this.cartItemID = cartItemID;
             return this;
         }
