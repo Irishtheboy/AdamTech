@@ -10,10 +10,11 @@ import java.util.List;
 @Service
 public class CartService implements ICartService {
 
-    private static ICartService service;
-
-    @Autowired
     private CartRepository repository;
+
+    @Autowired CartService(CartRepository repository) {
+        this.repository = repository;
+    }
 
 
     @Override

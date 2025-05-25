@@ -3,20 +3,24 @@ package za.co.admatech.service;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.factory.CartItemFactory;
 
 import java.sql.SQLOutput;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class CartItemServiceTest {
-
+    @Autowired
     private ICartItemService service;
-    private CartItem cartItem = CartItemFactory.createCartItem(null, 2, null);
+    private CartItem cartItem = CartItemFactory.createCartItem("123", 10, "1");
 
     @Test
-    void a_creat() {
+    void a_create() {
         CartItem createdItem = service.create(cartItem);
         assertNotNull(createdItem);
         System.out.println(createdItem);

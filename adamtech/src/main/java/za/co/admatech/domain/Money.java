@@ -1,4 +1,7 @@
 package za.co.admatech.domain;
+
+import jakarta.persistence.Entity;
+
 /* Money.java
 
      Money POJO class
@@ -6,6 +9,7 @@ package za.co.admatech.domain;
      Author: FN Lukhele (221075127)
 
      Date: 10 May 2025 */
+
 public class Money {
     private int amount;
     private String currency;

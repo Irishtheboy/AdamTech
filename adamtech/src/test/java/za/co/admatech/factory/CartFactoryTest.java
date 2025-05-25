@@ -21,21 +21,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class CartFactoryTest {
-    private static CartItem validCartItem = new CartItem.Builder()
-            .setCartItemID("1")
-           // .setProductID()
-            .setQuantity(2)
-            .setCartID(null) // Assuming cartID is optional
-            .build();
+//    private static CartItem validCartItem = new CartItem.Builder()
+//            .setCartItemID("1")
+//           // .setProductID()
+//            .setQuantity(2)
+//            .setCartID(null) // Assuming cartID is optional
+//            .build();
+//
+//    private static Customer validCustomer = new Customer.Builder()
+//            .setCustomerID("101")
+//            .setFirstName("Teyana")
+//            .setLastName("Raubenheimer")
+//            .build();
 
-    private static Customer validCustomer = new Customer.Builder()
-            .setCustomerID("101")
-            .setFirstName("Teyana")
-            .setLastName("Raubenheimer")
-            .build();
 
-
-    private static Cart c = CartFactory.createCart(validCustomer, validCartItem);
+    private static Cart c = CartFactory.createCart("101", "1");
 
     @Test
     @Order(1)
