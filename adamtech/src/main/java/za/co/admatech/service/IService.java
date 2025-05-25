@@ -1,10 +1,6 @@
 package za.co.admatech.service;
 
 
-public interface IService <T, ID>{
-
-    T create( T t);
-
 public interface IService <T, ID>  {
     T create (T t);
 

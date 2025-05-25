@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.domain.Customer;
+import za.co.admatech.domain.Product;
 import za.co.admatech.util.Helper;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CartFactoryTest {
     private static CartItem validCartItem = new CartItem.Builder()
             .setCartItemID("1")
-            //.setProductID("product1")
+           // .setProductID()
             .setQuantity(2)
             .setCartID(null) // Assuming cartID is optional
             .build();
