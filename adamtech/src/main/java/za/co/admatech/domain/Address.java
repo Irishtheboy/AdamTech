@@ -6,7 +6,12 @@
  */
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Address {
+    @Id
     private Long addressID;
     private short streetNumber;
     private String streetName;
@@ -14,6 +19,10 @@ public class Address {
     private String city;
     private String province;
     private short postalCode;
+
+    protected Address() {
+
+    }
 
     public Long getAddressID() {
         return addressID;
