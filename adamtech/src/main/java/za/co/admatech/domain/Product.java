@@ -6,13 +6,19 @@
  */
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Product {
 
+    @Id
     private String productId;
     private String name;
     private String description;
     private String sku;
-    private Money price;
+    private int priceAmount;
+    private String priceCurrency;
     private String categoryId;
 
     public Product() {
@@ -23,7 +29,8 @@ public class Product {
         this.name = builder.name;
         this.description = builder.description;
         this.sku = builder.sku;
-        this.price = builder.price;
+        this.priceAmount = builder.price != null ? builder.price.getAmount() : 0;
+        this.priceCurrency = builder.price != null ? builder.price.getCurrency() : null;
         this.categoryId = builder.categoryId;
     }
 
@@ -44,7 +51,10 @@ public class Product {
     }
 
     public Money getPrice() {
-        return price;
+        return new Money.Builder()
+                .setAmount(priceAmount)
+                .setCurrency(priceCurrency)
+                .build();
     }
 
     public String getCategoryId() {
@@ -58,7 +68,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", sku='" + sku + '\'' +
-                ", price=" + price +
+                ", price=" + getPrice() +
                 ", categoryId='" + categoryId + '\'' +
                 '}';
     }
@@ -106,7 +116,7 @@ public class Product {
             this.name = product.name;
             this.description = product.description;
             this.sku = product.sku;
-            this.price = product.price;
+            this.price = product.getPrice();
             this.categoryId = product.categoryId;
             return this;
         }

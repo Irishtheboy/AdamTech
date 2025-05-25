@@ -16,12 +16,12 @@
     &quot;assignee&quot;: &quot;LeGoober&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Irishtheboy/AdamTech.git&quot;,
-    &quot;accountId&quot;: &quot;d3bc8678-a49f-4be4-8d84-79b0dc30fec6&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Irishtheboy/AdamTech.git",
+    "accountId": "be65c8dc-6a4c-4035-84fb-7edb74213a6a"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -39,7 +39,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "230602363",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/roris/Documents/NetBeansProjects/AdamTech_2/adamtech",
@@ -51,8 +51,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
       </set>
     </attachedChunks>
   </component>
@@ -67,6 +67,7 @@
       <workItem from="1746857663231" duration="64000" />
       <workItem from="1746970802936" duration="137000" />
       <workItem from="1747590927420" duration="86000" />
+      <workItem from="1747916626944" duration="28000" />
     </task>
     <servers />
   </component>

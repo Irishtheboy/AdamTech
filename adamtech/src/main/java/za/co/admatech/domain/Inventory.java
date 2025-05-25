@@ -6,13 +6,23 @@
  */
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import za.co.admatech.domain.enums.InventoryStatus;
 
+@Entity
+@Table(name = "inventory")
 public class Inventory {
 
+    @Id
     private String id;
     private String productId;
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
     private InventoryStatus inventoryStatus;
 
     public Inventory() {
