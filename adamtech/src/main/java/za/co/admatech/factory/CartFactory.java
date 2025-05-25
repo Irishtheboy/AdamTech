@@ -12,16 +12,12 @@ import za.co.admatech.domain.Customer;
 import za.co.admatech.util.Helper;
 
 public class CartFactory {
-    public static Cart createCart(Customer customerID, CartItem cartItemID) {
+    public static Cart createCart(String customerID, String cartItemID) {
       String cartID =  Helper.generateId();
 
-       if (customerID == null) {
-              return null;
-       }
-
-         if (cartItemID == null) {
-             return null;
-         }
+      if (Helper.isNullOrEmpty(customerID) || Helper.isNullOrEmpty(cartItemID)) {
+          return null;
+      }
 
             return new Cart.Builder()
                     .setCartID(cartID)

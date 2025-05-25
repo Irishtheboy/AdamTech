@@ -10,7 +10,9 @@ import java.time.LocalDate;
 
      Author: FN Lukhele (221075127)
 
-     Date: 10 May 2025 */
+     Date: 10 May 2025
+
+*/
 
 public class Payment {
     private String Id;
@@ -103,6 +105,10 @@ public class Payment {
         }
 
         public Payment copy() {
+            return new Payment(this);
+        }
+
+        public Payment build() {
             return new Payment(this);
         }
     }

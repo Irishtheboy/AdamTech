@@ -6,26 +6,30 @@
 
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+@Entity
 public class CartItem {
-    private String id;
-    private String productID;
+    @Id
+    private String cartItemID;
+    private String  productID;
     private int quantity;
-    private Cart cartID;
+    private String cartID;
 
     public CartItem() {
 
     }
 
     public CartItem (Builder builder) {
-        this.id = builder.id;
+        this.cartItemID = builder.cartItemID;
         this.productID = builder.productID;
         this.quantity = builder.quantity;
         this.cartID = builder.cartID;
     }
 
 
-    public String getId() {
-        return id;
+    public String getCartItemID() {
+        return cartItemID;
     }
 
     public String getProductID() {
@@ -36,14 +40,14 @@ public class CartItem {
         return quantity;
     }
 
-    public Cart getCartID() {
+    public String getCartID() {
         return cartID;
     }
 
     @Override
     public String toString() {
         return "CartItem{" +
-                "id='" + id + '\'' +
+                "cartItemID='" + cartItemID + '\'' +
                 ", productID='" + productID + '\'' +
                 ", quantity=" + quantity +
                 ", cartID=" + cartID +
@@ -51,13 +55,13 @@ public class CartItem {
     }
 
     public static class Builder {
-        private String id;
+        private String cartItemID;
         private String productID;
         private int quantity;
-        private Cart cartID;
+        private String cartID;
 
-        public Builder setId(String id) {
-            this.id = id;
+        public Builder setCartItemID(String cartItemID) {
+            this.cartItemID = cartItemID;
             return this;
         }
 
@@ -71,13 +75,13 @@ public class CartItem {
             return this;
         }
 
-        public Builder setCartID(Cart cartID) {
+        public Builder setCartID(String cartID) {
             this.cartID = cartID;
             return this;
         }
 
         public Builder copy (CartItem cartItem) {
-            this.id = cartItem.getId();
+            this.cartItemID = cartItem.getCartItemID();
             this.productID = cartItem.getProductID();
             this.quantity = cartItem.getQuantity();
             this.cartID = cartItem.getCartID();
