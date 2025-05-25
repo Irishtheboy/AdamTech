@@ -6,16 +6,30 @@
  */
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import za.co.admatech.domain.Cart;
-
+@Entity
 public class Customer{
+    @Id
     private String customerID;
     private String firstName;
     private String lastName;
     private String email;
-    private Cart cartID;
+    /*@ManyToOne
+    @JoinColumn(name = "cart_cart_id")
+    private Cart cart;
+     */
+    @ManyToOne
+    @JoinColumn(name = "address_address_id")
     private Address address;
     private String phoneNumber;
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
 
     public String getCustomerID() {
@@ -33,11 +47,11 @@ public class Customer{
     public String getEmail() {
         return email;
     }
-
-    public Cart getCartID() {
-        return cartID;
+/*
+    public Cart getCart() {
+        return cart;
     }
-
+ */
     public Address getAddress() {
         return address;
     }
@@ -53,7 +67,7 @@ public class Customer{
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", cartID=" + cartID +
+                //", cartID=" + cartID +
                 ", address=" + address +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
@@ -64,17 +78,18 @@ public class Customer{
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.email = builder.email;
-        this.cartID = builder.cartID;
+        //this.cart = builder.cartID;
         this.address = builder.address;
         this.phoneNumber = builder.phoneNumber;
     }
+    protected Customer(){}
 
     public static class Builder{
         private String customerID;
         private String firstName;
         private String lastName;
         private String email;
-        private Cart cartID;
+        //private Cart cart;
         private Address address;
         private String phoneNumber;
 
@@ -95,11 +110,13 @@ public class Customer{
             this.email = email;
             return this;
         }
-
-        public Builder setCartID(Cart cartID){
-            this.cartID = cartID;
+/*
+        public Builder setCart(Cart cart){
+            this.cart = cart;
             return this;
         }
+
+ */
 
         public Builder setAddress(Address address){
             this.address = address;
@@ -115,7 +132,7 @@ public class Customer{
             this.firstName = customer.firstName;
             this.lastName = customer.lastName;
             this.email = customer.email;
-            this.cartID = customer.cartID;
+            //this.cartID = customer.cartID;
             this.address = customer.address;
             this.phoneNumber = customer.phoneNumber;
             return this;

@@ -14,7 +14,7 @@ public class CustomerFactory {
             String firstName,
             String lastName,
             String email,
-            Cart cartID,
+            //Cart cartID,
             Address address) {
 
         //Validating the fields inside the Customer domain
@@ -37,7 +37,7 @@ public class CustomerFactory {
         }
 
         return new Customer.Builder()
-        .setCartID(cartID)
+        //.setCartID(cartID)
         .setCustomerID(customerID)
         .setFirstName(firstName)
         .setLastName(lastName)

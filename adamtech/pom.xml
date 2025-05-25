@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version> <!-- Use the latest stable version -->
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -21,7 +21,6 @@
     </properties>
 
     <dependencies>
-
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,7 +51,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Your original dependency -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.2.0</version>
+        </dependency>
 
         <dependency>
             <groupId>commons-validator</groupId>
@@ -68,7 +71,6 @@
 
     </dependencies>
 
-
     <build>
         <plugins>
             <!-- Spring Boot Maven Plugin -->
@@ -80,7 +82,11 @@
         </plugins>
     </build>
 
+
 </project>
+
+</project>
+
 
 
 

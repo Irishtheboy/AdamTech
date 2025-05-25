@@ -6,10 +6,25 @@
 
 package za.co.admatech.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Cart {
+
     private String cartID;
+
     private Customer customerID;
-    private CartItem cartItemID;
+
+    public Customer getCustomerID() {
+        return customerID;
+    }
+
+
+    @Id
+    private String cartID;
+    private String customerID;
+    private String cartItemID;
 
 
     public Cart() {
@@ -23,31 +38,57 @@ public class Cart {
     }
 
 
+
     public String getCartID() {
         return cartID;
     }
 
-    public Customer getCustomerID() {
+
+
+    public String  getCustomerID() {
         return customerID;
     }
 
-    public CartItem getCartItemID() {
+    public String  getCartItemID() {
         return cartItemID;
     }
+
 
     @Override
     public String toString() {
         return "Cart{" +
                 "cartID='" + cartID + '\'' +
                 ", customerID='" + customerID + '\'' +
+
+                '}';
+    }
+
+    protected Cart(Builder builder){
+        this.cartID = builder.cartID;
+        this.customerID = builder.customerID;
+    }
+
+    protected Cart(){}
+
+    public static class Builder{
+        private String cartID;
+        private Customer customerID;
+
+        public Builder setCartID(String cartID){
+            this.cartID = cartID;
+            return this;
+        }
+
+        public Builder setCustomerID(Customer customerID){
+
                 ", cartItemID=" + cartItemID +
                 '}';
     }
 
     public static class Builder {
         private String cartID;
-        private Customer customerID;
-        private CartItem cartItemID;
+        private String  customerID;
+        private String  cartItemID;
 
         public Builder setCartID(String cartID) {
             this.cartID = cartID;
@@ -55,12 +96,23 @@ public class Cart {
 
         }
 
-        public Builder setCustomerID(Customer customerID) {
+        public Builder setCustomerID(String  customerID) {
+
             this.customerID = customerID;
             return this;
         }
 
-        public Builder setCartItemID(CartItem cartItemID) {
+        public Builder copy(Cart cart){
+            this.cartID = cartID;
+            this.customerID = customerID;
+            return this;
+        }
+
+        public Cart build(){
+            return new Cart(this);
+        }
+
+        public Builder setCartItemID(String  cartItemID) {
             this.cartItemID = cartItemID;
             return this;
         }
@@ -76,6 +128,7 @@ public class Cart {
         public Cart build() {
             return new Cart(this);
         }
+
 
 
     }

@@ -1,4 +1,7 @@
 package za.co.admatech.domain;
+
+import jakarta.persistence.Entity;
+
 /* Money.java
 
      Money POJO class
@@ -6,6 +9,7 @@ package za.co.admatech.domain;
      Author: FN Lukhele (221075127)
 
      Date: 10 May 2025 */
+
 public class Money {
     private int amount;
     private String currency;
@@ -18,12 +22,25 @@ public class Money {
         this.currency = builder.currency;
     }
 
+    public Money(double amount, String currency) {
+        this.amount = (int) amount; // Convert double to int
+        this.currency = currency;
+    }
+
     public int getAmount() {
         return amount;
     }
 
     public String getCurrency() {
         return currency;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "amount=" + amount +
+                ", currency='" + currency + '\'' +
+                '}';
     }
 
     public static class Builder {
@@ -41,7 +58,7 @@ public class Money {
         }
 
         public Money build() {
-           return new Money(this);
+            return new Money(this);
         }
 
         public Builder copy(Money money) {
@@ -49,7 +66,5 @@ public class Money {
             this.currency = money.currency;
             return this;
         }
-
     }
-
 }
