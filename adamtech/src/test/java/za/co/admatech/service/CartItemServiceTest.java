@@ -13,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.factory.CartItemFactory;
 
-import java.sql.SQLOutput;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
