@@ -6,15 +6,21 @@
 
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Cart {
     @Id
+    @GeneratedValue
     private String cartID;
     private String customerID;
     private String cartItemID;
+
+    @OneToMany
+    @JoinColumn(name = "cart_id")
+    private List<CartItem> cartItems;
 
 
     public Cart() {
