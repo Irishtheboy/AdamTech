@@ -6,25 +6,21 @@
 
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Cart {
-
-    private String cartID;
-
-    private Customer customerID;
-
-    public Customer getCustomerID() {
-        return customerID;
-    }
-
-
     @Id
+    @GeneratedValue
     private String cartID;
     private String customerID;
     private String cartItemID;
+
+    @OneToMany
+    @JoinColumn(name = "cart_id")
+    private List<CartItem> cartItems;
 
 
     public Cart() {
@@ -37,13 +33,9 @@ public class Cart {
         this.cartItemID = builder.cartItemID;
     }
 
-
-
     public String getCartID() {
         return cartID;
     }
-
-
 
     public String  getCustomerID() {
         return customerID;
@@ -59,29 +51,7 @@ public class Cart {
         return "Cart{" +
                 "cartID='" + cartID + '\'' +
                 ", customerID='" + customerID + '\'' +
-
-                '}';
-    }
-
-    protected Cart(Builder builder){
-        this.cartID = builder.cartID;
-        this.customerID = builder.customerID;
-    }
-
-    protected Cart(){}
-
-    public static class Builder{
-        private String cartID;
-        private Customer customerID;
-
-        public Builder setCartID(String cartID){
-            this.cartID = cartID;
-            return this;
-        }
-
-        public Builder setCustomerID(Customer customerID){
-
-                ", cartItemID=" + cartItemID +
+                ", cartItemID='" + cartItemID + '\'' +
                 '}';
     }
 
@@ -102,17 +72,7 @@ public class Cart {
             return this;
         }
 
-        public Builder copy(Cart cart){
-            this.cartID = cartID;
-            this.customerID = customerID;
-            return this;
-        }
-
-        public Cart build(){
-            return new Cart(this);
-        }
-
-        public Builder setCartItemID(String  cartItemID) {
+        public Builder setCartItemID(String cartItemID) {
             this.cartItemID = cartItemID;
             return this;
         }

@@ -7,6 +7,7 @@ import za.co.admatech.service.AddressService;
 
 @RestController
 @RequestMapping("/address")
+
 public class AddressController {
     private final AddressService addressService;
     @Autowired
@@ -30,7 +31,7 @@ public class AddressController {
     }
 
     @RequestMapping("/delete/{addressID}")
-    public Address delete(@PathVariable Long addressID){
+    public boolean delete(@PathVariable Long addressID){
         return addressService.delete(addressID);
     }
 }

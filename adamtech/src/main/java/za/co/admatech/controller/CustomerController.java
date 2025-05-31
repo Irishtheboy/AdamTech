@@ -32,7 +32,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/delete/{customerID}", method = RequestMethod.DELETE)
-    public Customer delete(@PathVariable String customerID){
+    public boolean delete(@PathVariable String customerID){
         return customerService.delete(customerID);
     }
 }
