@@ -13,8 +13,8 @@ import jakarta.persistence.*;
 public class OrderItem {
 
     @Id
+    @GeneratedValue
     private String id;
-
     private String productId;
 
     private int quantity;
@@ -23,7 +23,7 @@ public class OrderItem {
     private Money unitPrice;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
 
 
@@ -38,6 +38,9 @@ public class OrderItem {
         this.unitPrice = builder.unitPrice;
         this.order = builder.order;
 
+    }
+    public String getOrderItemId() {
+        return id;
     }
 
     public String getId() {
