@@ -10,6 +10,7 @@ public enum OrderStatus {
     CONFIRMED("Confirmed"),
     SHIPPED("Shipped"),
     DELIVERED("Delivered"),
+    COMPLETED("Completed"),
     CANCELLED("Cancelled"),
     RETURNED("Returned");
 

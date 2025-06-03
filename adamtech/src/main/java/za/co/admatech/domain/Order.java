@@ -17,8 +17,8 @@ import java.util.List;
 public class Order {
 
     @Id
+    @GeneratedValue
     private String id;
-
     private String customerId;
 
     private LocalDate orderDate;
@@ -29,7 +29,8 @@ public class Order {
     @Embedded
     private Money totalAmount;
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    @OneToMany
+    @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
     public Order() {

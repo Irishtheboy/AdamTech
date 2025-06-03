@@ -42,11 +42,8 @@ public class OrderService implements IService <Order, String> {
     }
 
 
-    public List<Order> getOrders(){
+    public List<Order> getAll(){
         return this.repository.findAll();
     }
-
-
-
 
 }

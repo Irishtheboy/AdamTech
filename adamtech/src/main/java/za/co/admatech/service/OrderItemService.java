@@ -40,7 +40,7 @@ public class OrderItemService implements IService <OrderItem, String>{
         return true;
     }
 
-    public List<OrderItem> getOrderItems(){
+    public List<OrderItem> getAll(){
         return this.repository.findAll();
     }
 }

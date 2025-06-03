@@ -6,29 +6,62 @@
 
 package za.co.admatech.service;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.Money;
+import za.co.admatech.domain.OrderItem;
+import za.co.admatech.factory.OrderItemFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
 class OrderItemServiceTest {
 
+    @Autowired
+    private OrderItemService service;
+    private OrderItem orderItem =OrderItemFactory.createOrderItem(
+            "987",
+            1,
+            new Money(100.00, "ZAR")
+            );
+
     @Test
-    void create() {
+    void a_create() {
+        OrderItem createdItem = service.create(orderItem);
+        assertNotNull(createdItem);
+        System.out.println(createdItem);
     }
 
     @Test
-    void read() {
+    void b_read() {
+        OrderItem readItem = service.read(orderItem.getId());
+        assertNotNull(readItem);
+        System.out.println(readItem);
     }
 
     @Test
-    void update() {
+    void c_update() {
+        OrderItem updatedItem = new OrderItem.Builder()
+                .copy(orderItem)
+                .setQuantity(2)
+                .build();
+        OrderItem updated = service.update(updatedItem);
+        assertNotNull(updated);
+        System.out.println(updated);
     }
 
     @Test
-    void delete() {
+    void d_delete() {
+        boolean deleted = service.delete(orderItem.getOrderItemId());
+        assertTrue(deleted);
+        System.out.println(deleted);
     }
 
     @Test
-    void getOrderItems() {
+    void e_getOrderItems() {
+        System.out.println(service.getAll());
     }
 }
