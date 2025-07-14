@@ -11,9 +11,7 @@ import za.co.admatech.service.IService;
 
 import java.util.List;
 
-public interface IOrderService extends IService<Order, String> {
-    List<Order> getOrders();
-
+public interface IOrderService extends IService<Order, Long> {
     List<Order> getAll();
 }
 

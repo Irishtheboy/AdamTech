@@ -20,8 +20,8 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Customer read(String customerId) {
-        return customerRepository.findCustomerById(customerId).orElse(null);
+    public Customer read(Long id) {
+        return customerRepository.findCustomerById(id).orElse(null);
     }
 
     @Override
@@ -30,8 +30,9 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public boolean delete(String customerId) {
-        customerRepository.deleteById(customerId);
-        return true;
+    public boolean delete(Long id) {
+        customerRepository.deleteById(id);
+        return false;
     }
+
 }

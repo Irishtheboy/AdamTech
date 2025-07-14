@@ -19,31 +19,31 @@ public class InventoryService implements IInventoryService {
     private static IInventoryService service;
 
     @Autowired
-    private InventoryRepository repository;
+    private InventoryRepository inventoryRepository;
 
     @Override
     public Inventory create(Inventory inventory) {
-        return this.repository.save(inventory);
+        return this.inventoryRepository.save(inventory);
     }
 
     @Override
-    public Inventory read(String id) {
-        return this.repository.findById(id).orElse(null);
+    public Inventory read(Long id) {
+        return this.inventoryRepository.findById(id).orElse(null);
     }
 
     @Override
     public Inventory update(Inventory inventory) {
-        return this.repository.save(inventory);
+        return this.inventoryRepository.save(inventory);
     }
 
     @Override
-    public boolean delete(String id) {
-        this.repository.deleteById(id);
+    public boolean delete(Long id) {
+        this.inventoryRepository.deleteById(id);
         return true;
     }
 
     @Override
     public List<Inventory> getAll() {
-        return this.repository.findAll();
+        return this.inventoryRepository.findAll();
     }
 }

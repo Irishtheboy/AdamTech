@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.factory.CartItemFactory;
 import za.co.admatech.service.cart_item_domain_service.ICartItemService;
@@ -21,7 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class CartItemServiceTest {
     @Autowired
     private ICartItemService service;
-    private CartItem cartItem = CartItemFactory.createCartItem("123", 10, "1");
+    private Cart cart;
+    private CartItem cartItem = CartItemFactory.createCartItem(
+            (long)124,
+            "EE5EE",
+            26,
+            "alyssis",
+            null
+    );
 
     @Test
     void a_create() {

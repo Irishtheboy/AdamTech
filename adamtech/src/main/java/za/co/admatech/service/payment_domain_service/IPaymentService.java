@@ -5,6 +5,6 @@ import za.co.admatech.service.IService;
 
 import java.util.List;
 
-public interface IPaymentService extends IService<Payment, String> {
+public interface IPaymentService extends IService<Payment, Long> {
    List<Payment> getPayments();
 }

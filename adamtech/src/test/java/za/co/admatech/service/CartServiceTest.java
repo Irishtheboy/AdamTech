@@ -11,8 +11,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Cart;
+import za.co.admatech.domain.CartItem;
+import za.co.admatech.domain.Customer;
 import za.co.admatech.factory.CartFactory;
 import za.co.admatech.service.cart_domain_service.ICartService;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -20,7 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class CartServiceTest {
     @Autowired
     private ICartService service;
-    private Cart cart = CartFactory.createCart("123", "1");
+
+    Customer customer;
+    List<CartItem> cartItemsList;
+    private Cart cart = CartFactory.createCart(
+            (long) 123,
+            customer,
+            cartItemsList
+    );
 
     @Test
     void a_create() {
@@ -38,7 +49,7 @@ class CartServiceTest {
 
     @Test
     void c_update() {
-        Cart updatedCart = new Cart.Builder().copy(cart).setCartID("2").build();
+        Cart updatedCart = new Cart.Builder().copy(cart).setCartID(2l).build();
         Cart updated = service.update(updatedCart);
         assertNotNull(updated);
         System.out.println(updated);

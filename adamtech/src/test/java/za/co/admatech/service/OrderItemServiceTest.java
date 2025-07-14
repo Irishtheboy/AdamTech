@@ -23,11 +23,7 @@ class OrderItemServiceTest {
 
     @Autowired
     private OrderItemService service;
-    private OrderItem orderItem =OrderItemFactory.createOrderItem(
-            "987",
-            1,
-            new Money(100.00, "ZAR")
-            );
+    private OrderItem orderItem = OrderItemFactory.createOrderItem();
 
     @Test
     void a_create() {

@@ -82,6 +82,7 @@ public class Customer{
         this.email = builder.email;
         this.cart = builder.cart;
         this.address = (List<Address>) builder.address;
+        this.orders = builder.orders;
         this.phoneNumber = builder.phoneNumber;
     }
     protected Customer(){}
@@ -93,6 +94,7 @@ public class Customer{
         private String email;
         private Cart cart;
         private List<Address> address;
+        private List<Order> orders;
         private String phoneNumber;
 
 
@@ -124,6 +126,11 @@ public class Customer{
             this.address = address;
             return this;
         }
+
+        public Builder setOrders(List<Order> orders){
+            this.orders = orders;
+            return this;
+        }
         public Builder setPhoneNumber(String phoneNumber){
             this.phoneNumber = phoneNumber;
             return this;
@@ -136,6 +143,7 @@ public class Customer{
             this.email = customer.email;
             this.cart = customer.cart;
             this.address = customer.address;
+            this.orders = customer.orders;
             this.phoneNumber = customer.phoneNumber;
             return this;
         }

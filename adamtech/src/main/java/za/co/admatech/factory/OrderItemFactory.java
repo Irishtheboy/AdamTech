@@ -9,15 +9,15 @@ package za.co.admatech.factory;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.OrderItem;
+import za.co.admatech.domain.Product;
 import za.co.admatech.util.Helper;
 
 public class OrderItemFactory {
-
-    public static OrderItem createOrderItem(String productId, int quantity, Money unitPrice) {
-
-        if (Helper.isNullOrEmpty(productId)){
-            return null;
-        }
+    public static OrderItem createOrderItem(Long id,
+                                            int quantity,
+                                            Money unitPrice,
+                                            Order order,
+                                            Product product) {
 
         if (quantity <= 0){
             return null;
@@ -28,10 +28,11 @@ public class OrderItemFactory {
         }
 
         return new OrderItem.Builder()
-                .setId(Helper.generateId())
-                .setProductId(productId)
+                .setId(id)
                 .setQuantity(quantity)
                 .setUnitPrice(unitPrice)
+                .setOrder(order)
+                .setProduct(product)
                 .build();
     }
 }

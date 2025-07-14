@@ -77,23 +77,23 @@ public class Payment {
         private Money amount;
         private PaymentStatus paymentStatus;
 
-        public Builder id(Long id){
+        public Builder setId(Long id){
             this.id = id;
             return this;
         }
-        public Builder orderId(Order orderId){
+        public Builder setOrderId(Order orderId){
             this.orderId = orderId;
             return this;
         }
-        public Builder paymentDate(LocalDate paymentDate){
+        public Builder setPaymentDate(LocalDate paymentDate){
             this.paymentDate = paymentDate;
             return this;
         }
-        public Builder amount(Money amount){
+        public Builder setAmount(Money amount){
             this.amount = amount;
             return this;
         }
-        public Builder paymentStatus(PaymentStatus paymentStatus){
+        public Builder setPaymentStatus(PaymentStatus paymentStatus){
             this.paymentStatus = paymentStatus;
             return this;
         }

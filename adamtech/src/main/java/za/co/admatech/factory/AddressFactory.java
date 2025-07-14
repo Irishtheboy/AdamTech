@@ -22,6 +22,21 @@ public class AddressFactory {
         if(Helper.isNullOrEmpty(suburb)){
             return null;
         }
+        if(Helper.isNullOrEmpty(city)){
+            return null;
+        }
+        if(Helper.isNullOrEmpty(province)){
+            return null;
+        }
+        if(Helper.isNullOrEmpty(streetName)){
+            return null;
+        }
+        if(Helper.isValidPostalCode(postalCode)){
+            return null;
+        }
+        if(Helper.isValidStreetNumber(streetNumber)){
+            return null;
+        }
 
         return new Address.Builder()
         .setAddressID(addressID)

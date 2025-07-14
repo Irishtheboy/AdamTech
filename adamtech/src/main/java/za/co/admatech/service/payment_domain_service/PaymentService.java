@@ -9,17 +9,20 @@ import za.co.admatech.service.IService;
 import java.util.List;
 
 @Service
-public class PaymentService implements IService<Payment, String> {
+public class PaymentService implements IPaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    public PaymentService(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
 
     @Override
     public Payment create(Payment payment) {
         return paymentRepository.save(payment);
     }
     @Override
-    public Payment read(String id) {
+    public Payment read(Long id) {
         return paymentRepository.findById(id).orElse(null);
     }
     @Override
@@ -27,11 +30,10 @@ public class PaymentService implements IService<Payment, String> {
         return paymentRepository.save(payment);
     }
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         paymentRepository.deleteById(id);
         return true;
     }
-
     public List<Payment> getPayments() {
         return paymentRepository.findAll();
     }

@@ -15,36 +15,37 @@ import java.util.List;
 @Service
 public class CartService implements ICartService {
 
-    private CartRepository repository;
+    private CartRepository cartRepository;
 
-    @Autowired CartService(CartRepository repository) {
-        this.repository = repository;
+    @Autowired
+    CartService(CartRepository repository) {
+        this.cartRepository = repository;
     }
 
 
     @Override
-    public Cart create(Cart cart) {
-        return this.repository.save(cart);
+    public Cart create(Cart cart){
+        return cartRepository.save(cart);
     }
 
     @Override
-    public Cart read(String id) {
-        return this.repository.findById(id).orElse(null);
+    public Cart read(Long cartId) {
+        return cartRepository.findById(cartId).orElse(null);
     }
 
     @Override
     public Cart update(Cart cart) {
-        return this.repository.save(cart);
+        return cartRepository.save(cart);
     }
 
     @Override
-    public boolean delete(String id) {
-        this.repository.deleteById(id);
+    public boolean delete(Long cartId) {
+        cartRepository.deleteById(cartId);
         return true;
     }
 
     @Override
     public List<Cart> getAll() {
-        return this.repository.findAll();
+        return cartRepository.findAll();
     }
 }

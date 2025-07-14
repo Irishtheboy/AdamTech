@@ -11,6 +11,6 @@ import za.co.admatech.service.IService;
 
 import java.util.List;
 
-public interface IProductService extends IService<Product, String> {
+public interface IProductService extends IService<Product, Long> {
     List<Product> getAll();
 }

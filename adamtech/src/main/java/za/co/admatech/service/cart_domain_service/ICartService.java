@@ -10,6 +10,6 @@ import za.co.admatech.service.IService;
 
 import java.util.List;
 
-public interface ICartService extends IService<Cart, String> {
+public interface ICartService extends IService<Cart, Long> {
     List<Cart> getAll();
 }

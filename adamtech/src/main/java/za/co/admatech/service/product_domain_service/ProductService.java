@@ -15,9 +15,6 @@ import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
-
-    private static IProductService service;
-
     @Autowired
     private ProductRepository repository;
 
@@ -27,7 +24,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product read(String id) {
+    public Product read(Long id) {
         return this.repository.findById(id).orElse(null);
     }
 
@@ -37,7 +34,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         this.repository.deleteById(id);
         return true;
     }

@@ -8,41 +8,61 @@ package za.co.admatech.factory;
 import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
+import java.util.List;
+
 public class CustomerFactory {
     public static Customer createCustomer(
-            String customerID,
+            Long customerID,
             String firstName,
             String lastName,
             String email,
-            //Cart cartID,
-            Address address) {
+            String phoneNumber,
+            Cart cart,
+            List<Address> address,
+            List<Order> orders) {
 
-        //Validating the fields inside the Customer domain
-        //Validating the customerID
-        if (Helper.isNullOrEmpty(lastName)) {
-
-        }
-
-        //Validating the customers first name
-        if (Helper.isNullOrEmpty(firstName)) {
-
-        }
-        //Validating the customer last name
-        if (Helper.isNullOrEmpty(lastName)) {
-
-        }
-        //Validating the customers email address using regex
-        if(Helper.isValidEmail(email)){
+        if (Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName) ||
+                Helper.isNullOrEmpty(email) || Helper.isNullOrEmpty(phoneNumber)) {
             return null;
         }
 
-        return new Customer.Builder()
-        //.setCartID(cartID)
-        .setCustomerID(customerID)
-        .setFirstName(firstName)
-        .setLastName(lastName)
-        .setAddress(address)
-        .build();
+        if (!Helper.isValidEmail(email) || !Helper.isValidPhoneNumber(phoneNumber)) {
+            return null;
+        }
 
+        if (cart == null) {
+            return null;
+        }
+
+        if (address == null || address.isEmpty()) {
+            return null;
+        }
+
+        for (Address addr : address) {
+            if (!Helper.isValidAddress(addr)) {
+                return null;
+            }
+        }
+
+        // Optional: validate orders
+        if (orders != null) {
+            for (Order order : orders) {
+                if (!Helper.isValidOrder(order)) {
+                    return null;
+                }
+            }
+        }
+
+        return new Customer.Builder()
+                .setCustomerID(customerID)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)
+                .setPhoneNumber(phoneNumber)
+                .setCart(cart)
+                .setAddress(address)
+                .setOrders(orders)
+                .build();
     }
+
 }
