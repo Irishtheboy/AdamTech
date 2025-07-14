@@ -6,11 +6,7 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import za.co.admatech.domain.enums.InventoryStatus;
 
 @Entity
@@ -18,8 +14,11 @@ import za.co.admatech.domain.enums.InventoryStatus;
 public class Inventory {
 
     @Id
-    private String id;
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product productId;
     private int quantity;
 
     @Enumerated(EnumType.STRING)
@@ -35,11 +34,11 @@ public class Inventory {
         this.inventoryStatus = builder.inventoryStatus;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getProductId() {
+    public Product getProductId() {
         return productId;
     }
 
@@ -62,17 +61,17 @@ public class Inventory {
     }
 
     public static class Builder {
-        private String id;
-        private String productId;
+        private Long id;
+        private Product productId;
         private int quantity;
         private InventoryStatus inventoryStatus;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setProductId(String productId) {
+        public Builder setProductId(Product productId) {
             this.productId = productId;
             return this;
         }

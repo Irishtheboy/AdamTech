@@ -9,7 +9,7 @@ package za.co.admatech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.OrderItem;
-import za.co.admatech.service.OrderItemService;
+import za.co.admatech.service.order_item_domain_service.OrderItemService;
 
 import java.util.List;
 

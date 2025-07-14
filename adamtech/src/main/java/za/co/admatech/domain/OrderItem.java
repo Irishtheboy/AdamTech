@@ -13,9 +13,8 @@ import jakarta.persistence.*;
 public class OrderItem {
 
     @Id
-    @GeneratedValue
-    private String id;
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private int quantity;
 
@@ -26,6 +25,9 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "product")
+    private Product product;
 
     public OrderItem() {
 
@@ -33,22 +35,19 @@ public class OrderItem {
 
     private OrderItem(Builder builder) {
         this.id = builder.id;
-        this.productId = builder.productId;
+        this.product = builder.product;
         this.quantity = builder.quantity;
         this.unitPrice = builder.unitPrice;
         this.order = builder.order;
 
     }
-    public String getOrderItemId() {
+
+    public Long getId() {
         return id;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
@@ -67,26 +66,26 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "id='" + id + '\'' +
-                ", productId='" + productId + '\'' +
+                ", productId='" + product + '\'' +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +
                 '}';
     }
 
     public static class Builder {
-        private String id;
-        private String productId;
+        private Long id;
+        private Product product;
         private int quantity;
         private Money unitPrice;
         private Order order;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -107,7 +106,7 @@ public class OrderItem {
 
         public Builder copy(OrderItem orderItem) {
             this.id = orderItem.id;
-            this.productId = orderItem.productId;
+            this.product = orderItem.product;
             this.quantity = orderItem.quantity;
             this.unitPrice = orderItem.unitPrice;
             this.order = orderItem.order;

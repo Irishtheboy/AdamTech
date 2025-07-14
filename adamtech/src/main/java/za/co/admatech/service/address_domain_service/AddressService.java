@@ -1,12 +1,13 @@
-package za.co.admatech.service;
+package za.co.admatech.service.address_domain_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Address;
 import za.co.admatech.repository.AddressRepository;
+
 @Service
 
-public class AddressService implements IAddressService{
+public class AddressService implements IAddressService {
     private final AddressRepository addressRepository;
 
     @Autowired

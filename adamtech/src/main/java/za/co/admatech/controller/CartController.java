@@ -8,7 +8,7 @@ package za.co.admatech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Cart;
-import za.co.admatech.service.CartService;
+import za.co.admatech.service.cart_domain_service.CartService;
 
 import java.util.List;
 

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.factory.CartFactory;
+import za.co.admatech.service.cart_domain_service.ICartService;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest

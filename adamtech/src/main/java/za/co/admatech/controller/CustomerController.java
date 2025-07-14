@@ -1,10 +1,9 @@
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Customer;
-import za.co.admatech.service.CustomerService;
+import za.co.admatech.service.customer_domain_service.CustomerService;
 
 @RestController
 @RequestMapping("/customer")

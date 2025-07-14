@@ -5,6 +5,7 @@
  */
 package za.co.admatech.factory;
 
+import za.co.admatech.domain.Customer;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
@@ -14,13 +15,14 @@ import java.time.LocalDate;
 
 public class OrderFactory {
 
-    public static Order createOrder(String customerId, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
+    public static Order createOrder(Customer customer, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
+        /*
         String id = customerId;
 
         if(Helper.isNullOrEmpty(customerId)){
             return null;
         }
-
+         */
         if (orderDate == null || !Helper.isValidLocalDate(orderDate)) {
             return null;
         }
@@ -36,7 +38,7 @@ public class OrderFactory {
 
         return new Order.Builder()
                 .setId(Helper.generateId())
-                .setCustomerId(customerId)
+                .setCustomer(customer)
                 .setOrderDate(orderDate)
                 .setOrderStatus(orderStatus)
                 .setTotalAmount(totalAmount)

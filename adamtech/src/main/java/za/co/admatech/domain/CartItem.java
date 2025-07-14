@@ -11,8 +11,8 @@ import jakarta.persistence.*;
 @Entity
 public class CartItem {
     @Id
-    @GeneratedValue
-    private String cartItemID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cartItemID;
     private String  productID;
     private int quantity;
     private String cartID;
@@ -21,11 +21,11 @@ public class CartItem {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    public CartItem() {
 
+    protected CartItem() {
     }
 
-    public CartItem (Builder builder) {
+    protected CartItem (Builder builder) {
         this.cartItemID = builder.cartItemID;
         this.productID = builder.productID;
         this.quantity = builder.quantity;
@@ -33,7 +33,7 @@ public class CartItem {
     }
 
 
-    public String getCartItemID() {
+    public Long getCartItemID() {
         return cartItemID;
     }
 
@@ -60,12 +60,12 @@ public class CartItem {
     }
 
     public static class Builder {
-        private String cartItemID;
+        private Long cartItemID;
         private String productID;
         private int quantity;
         private String cartID;
 
-        public Builder setCartItemID(String cartItemID) {
+        public Builder setCartItemID(Long cartItemID) {
             this.cartItemID = cartItemID;
             return this;
         }

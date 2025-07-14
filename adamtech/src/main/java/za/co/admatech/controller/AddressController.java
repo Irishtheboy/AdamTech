@@ -3,7 +3,7 @@ package za.co.admatech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Address;
-import za.co.admatech.service.AddressService;
+import za.co.admatech.service.address_domain_service.AddressService;
 
 @RestController
 @RequestMapping("/address")

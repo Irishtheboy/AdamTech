@@ -3,7 +3,7 @@
   Date: 24 May 2025
  */
 
-package za.co.admatech.service;
+package za.co.admatech.service.cart_domain_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

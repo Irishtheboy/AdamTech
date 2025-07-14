@@ -4,13 +4,14 @@
   Date: 24 May 2025
  */
 
-package za.co.admatech.service;
+package za.co.admatech.service.order_domain_service;
 
 import za.co.admatech.domain.Order;
+import za.co.admatech.service.IService;
 
 import java.util.List;
 
-public interface IOrderService extends IService <Order, String>{
+public interface IOrderService extends IService<Order, String> {
     List<Order> getOrders();
 
     List<Order> getAll();

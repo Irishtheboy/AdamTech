@@ -1,4 +1,4 @@
-package za.co.admatech.service;
+package za.co.admatech.service.customer_domain_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

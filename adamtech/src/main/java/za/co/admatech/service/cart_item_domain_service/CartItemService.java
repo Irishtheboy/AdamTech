@@ -3,7 +3,7 @@
   Date: 23 May 2025
  */
 
-package za.co.admatech.service;
+package za.co.admatech.service.cart_item_domain_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import za.co.admatech.repository.CartItemRepository;
 import java.util.List;
 
 @Service
-public class CartItemService implements ICartItemService{
+public class CartItemService implements ICartItemService {
 
     private CartItemRepository repository;
 

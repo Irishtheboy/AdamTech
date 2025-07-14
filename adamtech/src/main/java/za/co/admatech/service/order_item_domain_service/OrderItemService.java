@@ -4,17 +4,18 @@
   Date: 24 May 2025
  */
 
-package za.co.admatech.service;
+package za.co.admatech.service.order_item_domain_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.co.admatech.domain.OrderItem;
 import za.co.admatech.repository.OrderItemRepository;
+import za.co.admatech.service.IService;
 
 import java.util.List;
 
 @Service
-public class OrderItemService implements IService <OrderItem, String>{
+public class OrderItemService implements IService<OrderItem, String> {
 
     @Autowired
     private OrderItemRepository repository;

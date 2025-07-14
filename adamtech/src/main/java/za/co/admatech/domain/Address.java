@@ -6,12 +6,13 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "address")
 public class Address {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressID;
     private short streetNumber;
     private String streetName;
@@ -19,6 +20,9 @@ public class Address {
     private String city;
     private String province;
     private short postalCode;
+
+    @ManyToOne
+    private Customer customer;
 
     protected Address() {
 
@@ -83,6 +87,7 @@ public class Address {
         private String city;
         private String province;
         private short postalCode;
+        private Customer customer;
 
         public Builder setAddressID(Long addressID) {
             this.addressID = addressID;
@@ -114,21 +119,28 @@ public class Address {
             return this;
         }
 
+        public Builder setCustomer(Customer customer){
+            this.customer = customer;
+            return this;
+        }
+
         public Builder setPostalCode(short postalCode) {
             this.postalCode = postalCode;
             return this;
         }
 
         public Builder copy(Address address) {
-            this.addressID = addressID;
-            this.streetNumber = streetNumber;
-            this.streetName = streetName;
-            this.suburb = suburb;
-            this.city = city;
-            this.province = province;
-            this.postalCode = postalCode;
+            this.addressID = address.addressID;
+            this.streetNumber = address.streetNumber;
+            this.streetName = address.streetName;
+            this.suburb = address.suburb;
+            this.city = address.city;
+            this.province = address.province;
+            this.postalCode = address.postalCode;
+            this.customer = address.customer;
             return this;
         }
+
 
         public Address build(){
             return new Address(this);

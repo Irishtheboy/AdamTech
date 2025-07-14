@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.OrderItem;
 import za.co.admatech.factory.OrderItemFactory;
+import za.co.admatech.service.order_item_domain_service.OrderItemService;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest

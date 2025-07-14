@@ -6,121 +6,121 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import za.co.admatech.domain.enums.ProductType;
 
 @Entity
+@Table(name = "product")
 public class Product {
-
     @Id
-    private String productId;
-    private String name;
-    private String description;
-    private String sku;
-    private int priceAmount;
-    private String priceCurrency;
-    private String categoryId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
 
-    public Product() {
-    }
+    private String productName;
+    private String productDescription;
+    @Embedded
+    private Money productPriceAmount;
+    private String productCategory;
+    @Enumerated(EnumType.STRING)
+    private ProductType productType;
 
-    protected Product(Builder builder) {
-        this.productId = builder.productId;
-        this.name = builder.name;
-        this.description = builder.description;
-        this.sku = builder.sku;
-        this.priceAmount = builder.price != null ? builder.price.getAmount() : 0;
-        this.priceCurrency = builder.price != null ? builder.price.getCurrency() : null;
-        this.categoryId = builder.categoryId;
-    }
 
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return productName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getProductDescription() {
+        return productDescription;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
+/*
     public Money getPrice() {
         return new Money.Builder()
                 .setAmount(priceAmount)
                 .setCurrency(priceCurrency)
                 .build();
     }
+ */
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public Money getProductPriceAmount() {
+        return productPriceAmount;
+    }
+    public ProductType getProductType() {
+        return productType;
     }
 
     @Override
     public String toString() {
         return "Product{" +
                 "productId='" + productId + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", sku='" + sku + '\'' +
-                ", price=" + getPrice() +
-                ", categoryId='" + categoryId + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", productPriceAmount=" + productPriceAmount +
+                ", productCategory='" + productCategory + '\'' +
+                ", productType=" + productType +
                 '}';
     }
 
-    public static class Builder {
-        private String productId;
-        private String name;
-        private String description;
-        private String sku;
-        private Money price;
-        private String categoryId;
+    protected Product(){}
 
-        public Builder setProductId(String productId) {
+    protected Product(Builder builder) {
+        this.productId = builder.productId;
+        this.productName = builder.productName;
+        this.productDescription = builder.productDescription;
+        this.productPriceAmount = builder.productPriceAmount;
+        this.productCategory = builder.productCategory;
+        this.productType = builder.productType;
+    }
+    public static class Builder {
+        private Long productId;
+        private String productName;
+        private String productDescription;
+        private Money productPriceAmount;
+        private String productCategory;
+        private ProductType productType;
+
+        public Builder setProductId(Long productId) {
             this.productId = productId;
             return this;
         }
-
-        public Builder setName(String name) {
-            this.name = name;
+        public Builder setProductName(String productName) {
+            this.productName = productName;
             return this;
         }
-
-        public Builder setDescription(String description) {
-            this.description = description;
+        public Builder setProductDescription(String productDescription) {
+            this.productDescription = productDescription;
             return this;
         }
-
-        public Builder setSku(String sku) {
-            this.sku = sku;
+        public Builder setProductPriceAmount(Money productPriceAmount) {
+            this.productPriceAmount = productPriceAmount;
             return this;
         }
-
-        public Builder setPrice(Money price) {
-            this.price = price;
+        public Builder setProductCategory(String productCategory) {
+            this.productCategory = productCategory;
             return this;
         }
-
-        public Builder setCategoryId(String categoryId) {
-            this.categoryId = categoryId;
+        public Builder setProductType(ProductType productType) {
+            this.productType = productType;
             return this;
         }
 
         public Builder copy(Product product) {
             this.productId = product.productId;
-            this.name = product.name;
-            this.description = product.description;
-            this.sku = product.sku;
-            this.price = product.getPrice();
-            this.categoryId = product.categoryId;
+            this.productName = product.productName;
+            this.productDescription = product.productDescription;
+            this.productPriceAmount = product.productPriceAmount;
+            this.productCategory = product.productCategory;
+            this.productType = product.productType;
             return this;
         }
-
         public Product build() {
             return new Product(this);
         }
