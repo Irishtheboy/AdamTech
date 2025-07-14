@@ -1,6 +1,7 @@
-package za.co.admatech.service;
+package za.co.admatech.service.order_item_domain_service;
 
 import za.co.admatech.domain.OrderItem;
+import za.co.admatech.service.IService;
 
 import java.util.List;
 

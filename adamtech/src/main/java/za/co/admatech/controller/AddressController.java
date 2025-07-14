@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import za.co.admatech.domain.Address;
-import za.co.admatech.service.AddressService;
+import za.co.admatech.service.address_domain_service.AddressService;
 
 import java.util.List;
 
