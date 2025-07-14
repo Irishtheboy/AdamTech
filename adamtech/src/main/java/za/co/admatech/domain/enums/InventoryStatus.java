@@ -22,4 +22,8 @@ public enum InventoryStatus {
     public String toString() {
         return status;
     }
+
+    public String getInventoryStatus() {
+        return null;
+    }
 }
