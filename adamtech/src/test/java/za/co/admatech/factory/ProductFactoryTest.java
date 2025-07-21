@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
+import za.co.admatech.domain.enums.ProductCategory;
+import za.co.admatech.factory.*;
 import org.junit.jupiter.api.*;
 import za.co.admatech.domain.enums.ProductType;
 
@@ -17,16 +19,16 @@ class ProductFactoryTest {
     private static Money price2 = new Money.Builder().setAmount(750).setCurrency("ZAR").build();
     private static Money price3 = new Money.Builder().setAmount(0).setCurrency("ZAR").build();
 
-    private static Product p1 = ProductFactory.createProduct(
-            001l, "Sneakers", "White running shoes", price1, "SKU123", ProductType.PERIPHERAL
+    Product p1 = ProductFactory.createProduct(
+            001l, "Sneakers", "White running shoes", price1, ProductCategory.COMPONENTS, ProductType.PERIPHERAL
     );
 
-    private static Product p2 = ProductFactory.createProduct(
-            002l, "Boots", "Leather boots", price2,"SKU456", ProductType.DESKTOP
+    private Product p2 = ProductFactory.createProduct(
+            002l, "Boots", "Leather boots", price2,ProductCategory.COMPONENTS, ProductType.DESKTOP
     );
 
     private static Product p3 = ProductFactory.createProduct(
-            003l, "Sandals", "Beach sandals", price3,"SKU789", ProductType.DESKTOP
+            003l, "Sandals", "Beach sandals", price3,ProductCategory.COMPONENTS, ProductType.DESKTOP
     );
 
     @Test

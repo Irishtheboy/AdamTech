@@ -78,7 +78,7 @@ class PaymentServiceTest {
 
     @Test
     void e_getPayments() {
-        List<Payment> payments = service.getPayments();
+        List<Payment> payments = service.getAll();
         assertNotNull(payments);
         assertFalse(payments.isEmpty());
         payments.forEach(System.out::println);
