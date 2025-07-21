@@ -1,7 +1,7 @@
-/*OrderFactory.java
-  OrderFactory Class
-  Author: Naqeebah Khan (219099073)
-  Date: 17 May 2025
+/*
+ * OrderFactory.java
+ * Author: Naqeebah Khan (219099073)
+ * Date: 17 May 2025
  */
 package za.co.admatech.factory;
 
@@ -16,28 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class OrderFactory {
-
-    public static Order createOrder(
-            Long id,
-            LocalDate orderDate,
-            OrderStatus orderStatus,
-            Money totalAmount,
-            List<OrderItem> orderItems,
-            Customer customer
-    ) {
-
-        if (orderDate == null || !Helper.isValidLocalDate(orderDate)) {
-            return null;
+    public static Order createOrder(Long id, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount, List<OrderItem> orderItems, Customer customer) {
+        if (orderDate == null || !Helper.isValidLocalDate(orderDate) || orderStatus == null || totalAmount == null || customer == null) {
+            throw new IllegalArgumentException("Order date, status, total amount, and customer must be valid");
         }
-
-        if(orderStatus == null || !Helper.isValidOrderStatus(orderStatus.getStatus())) {
-            return null;
+        if (orderItems == null) {
+            throw new IllegalArgumentException("Order items list cannot be null");
         }
-
-        if(totalAmount == null) {
-            return null;
-        }
-
+        
         return new Order.Builder()
                 .setId(id)
                 .setCustomer(customer)
@@ -45,7 +31,6 @@ public class OrderFactory {
                 .setOrderStatus(orderStatus)
                 .setTotalAmount(totalAmount)
                 .setOrderItems(orderItems)
-                .setCustomer(customer)
                 .build();
     }
 }

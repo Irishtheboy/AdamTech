@@ -16,6 +16,7 @@ import za.co.admatech.domain.Order;
 import za.co.admatech.domain.OrderItem;
 import za.co.admatech.domain.Product;
 import za.co.admatech.domain.enums.OrderStatus;
+import za.co.admatech.domain.enums.ProductCategory;
 import za.co.admatech.domain.enums.ProductType;
 import za.co.admatech.factory.OrderFactory;
 import za.co.admatech.factory.OrderItemFactory;
@@ -35,7 +36,7 @@ class OrderServiceTest {
             .setProductName("Test Item")
             .setProductDescription("Test Desc")
             .setProductPriceAmount(new Money(100, "ZAR"))
-            .setProductCategory("GAMING")
+            .setCategory(ProductCategory.AUDIO)
             .setProductType(ProductType.PERIPHERAL)
             .build();
 

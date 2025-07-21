@@ -1,27 +1,32 @@
-/*CartItem.java
-  CartItem Class
-  Author: Teyana Raubenheimer (230237622)
-  Date: 11 May 2025
- */
+/*
 
-package za.co.admatech.domain;
 
-import jakarta.persistence.*;
 
-import java.util.List;
 
-@Entity
-@Table(name = "cart")
-public class Cart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartID;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_customer_id")
+Cart.java
+
+
+
+Cart Class
+
+
+
+Author: Teyana Raubenheimer (230237622)
+
+
+
+Date: 11 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.*; import java.util.List;
+
+@Entity @Table(name = "cart") public class Cart { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long cartID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<CartItem> cartItems;
 
     public Customer getCustomer() {
@@ -45,7 +50,9 @@ public class Cart {
                 '}';
     }
 
-    protected Cart(){}
+    protected Cart() {
+    }
+
     protected Cart(Builder builder) {
         this.cartID = builder.cartID;
         this.customer = builder.customer;
@@ -61,10 +68,12 @@ public class Cart {
             this.cartID = cartID;
             return this;
         }
+
         public Builder setCustomer(Customer customer) {
             this.customer = customer;
             return this;
         }
+
         public Builder setCartItems(List<CartItem> cartItems) {
             this.cartItems = cartItems;
             return this;
@@ -76,8 +85,10 @@ public class Cart {
             this.cartItems = cart.getCartItems();
             return this;
         }
+
         public Cart build() {
             return new Cart(this);
         }
     }
+
 }

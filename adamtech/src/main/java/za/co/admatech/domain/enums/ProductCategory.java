@@ -1,7 +1,6 @@
-package za.co.admatech.domain.enums;
+/* ProductCategory.java Author: FN Lukhele (221075127) Date: 10 May 2025 */ package za.co.admatech.domain.enums;
 
-public enum ProductCategory {
-    LAPTOPS("Laptops", "💻", "Portable computers for work and play"),
+public enum ProductCategory { LAPTOPS("Laptops", "💻", "Portable computers for work and play"),
     SMARTPHONES("Smartphones", "📱", "Latest mobile devices and accessories"),
     COMPONENTS("Components", "🧩", "Internal parts for PC building"),
     GAMING("Gaming", "🎮", "Consoles, peripherals, and accessories"),
@@ -21,8 +20,17 @@ public enum ProductCategory {
         this.description = description;
     }
 
-    public String getDisplayName() { return displayName; }
-    public String getIcon() { return icon; }
-    public String getDescription() { return description; }
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
 

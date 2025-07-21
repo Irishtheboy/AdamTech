@@ -1,18 +1,29 @@
-package za.co.admatech.domain;
+/*
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 
-/* Money.java
 
-     Money POJO class
 
-     Author: FN Lukhele (221075127)
 
-     Date: 10 May 2025 */
-@Embeddable
-public class Money {
-    private int amount;
+Money.java
+
+
+
+Money POJO class
+
+
+
+Author: FN Lukhele (221075127)
+
+
+
+Date: 10 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.Embeddable; import jakarta.validation.constraints.NotNull; import java.math.BigDecimal;
+
+@Embeddable public class Money {
+    @NotNull private double amount;
+
+    @NotNull
     private String currency;
 
     public Money() {
@@ -24,11 +35,11 @@ public class Money {
     }
 
     public Money(double amount, String currency) {
-        this.amount = (int) amount; // Convert double to int
+        this.amount = amount;
         this.currency = currency;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -45,10 +56,10 @@ public class Money {
     }
 
     public static class Builder {
-        private int amount;
+        private double amount;
         private String currency;
 
-        public Builder setAmount(int amount) {
+        public Builder setAmount(double amount) {
             this.amount = amount;
             return this;
         }
@@ -68,4 +79,5 @@ public class Money {
             return this;
         }
     }
+
 }

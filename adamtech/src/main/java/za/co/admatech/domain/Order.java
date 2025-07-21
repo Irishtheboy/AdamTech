@@ -1,41 +1,39 @@
-/*Order.java
-  Order Class
-  Author: Naqeebah Khan (219099073)
-  Date: 10 May 2025
+/*
+ * Order.java
+ * Order Class
+ * Author: Naqeebah Khan (219099073)
+ * Date: 10 May 2025
  */
-
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import za.co.admatech.domain.enums.OrderStatus;
-
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table (name = "orders")
+@Table(name = "orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*
-    CHANGES MADE BY RORI:
-    - removed CustomerID
-    */
+    @NotNull
     private LocalDate orderDate;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private OrderStatus orderStatus;
 
     @Embedded
     private Money totalAmount;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     public Order() {
@@ -47,6 +45,7 @@ public class Order {
         this.orderStatus = builder.orderStatus;
         this.totalAmount = builder.totalAmount;
         this.orderItems = builder.orderItems;
+        this.customer = builder.customer;
     }
 
     public Long getId() {
@@ -97,10 +96,6 @@ public class Order {
             return this;
         }
 
-        /*
-        CHANGES MADE BY RORI:
-        - changed it from CustomerID to Customer
-         */
         public Builder setCustomer(Customer customer) {
             this.customer = customer;
             return this;
@@ -135,11 +130,9 @@ public class Order {
             this.orderItems = order.orderItems;
             return this;
         }
+
         public Order build() {
             return new Order(this);
         }
-
     }
 }
-
-

@@ -6,6 +6,7 @@ import za.co.admatech.domain.Inventory;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 import za.co.admatech.domain.enums.InventoryStatus;
+import za.co.admatech.domain.enums.ProductCategory;
 import za.co.admatech.domain.enums.ProductType;
 import za.co.admatech.util.Helper;
 
@@ -20,7 +21,6 @@ class InventoryFactoryTest {
             .setProductName("Gaming Mouse")
             .setProductDescription("RGB wireless gaming mouse")
             .setProductPriceAmount(new Money(799, "ZAR"))
-            .setProductCategory("GAMING")
             .setProductType(ProductType.PERIPHERAL)
             .build();
 
@@ -29,7 +29,6 @@ class InventoryFactoryTest {
             .setProductName("SSD 1TB")
             .setProductDescription("Solid State Drive")
             .setProductPriceAmount(new Money(799, "ZAR"))
-            .setProductCategory("STORAGE")
             .setProductType(ProductType.PERIPHERAL)
             .build();
 
@@ -49,7 +48,7 @@ class InventoryFactoryTest {
     @Order(1)
     void testCreateInventoryValid_1() {
         assertNotNull(i1);
-        assertEquals("Gaming Mouse", i1.getProductId().getProductName());
+        assertEquals("Gaming Mouse", i1.getId());
         System.out.println("Inventory 1: " + i1);
     }
 

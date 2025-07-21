@@ -1,24 +1,32 @@
 /*
- * Inventory.java
- * Inventory Class
- * Author: Seymour Lawrence (230185991)
- * Date: 11 May 2025
- */
-package za.co.admatech.domain;
 
-import jakarta.persistence.*;
-import za.co.admatech.domain.enums.InventoryStatus;
 
-@Entity
-@Table(name = "inventory")
-public class Inventory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+
+Inventory.java
+
+
+
+Inventory Class
+
+
+
+Author: Seymour Lawrence (230185991)
+
+
+
+Date: 11 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.*; import jakarta.validation.constraints.Min; import za.co.admatech.domain.enums.InventoryStatus;
+
+@Entity @Table(name = "inventory") public class Inventory { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Product productId;
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Min(0)
     private int quantity;
 
     @Enumerated(EnumType.STRING)
@@ -29,7 +37,7 @@ public class Inventory {
 
     private Inventory(Builder builder) {
         this.id = builder.id;
-        this.productId = builder.productId;
+        this.product = builder.product;
         this.quantity = builder.quantity;
         this.inventoryStatus = builder.inventoryStatus;
     }
@@ -38,8 +46,8 @@ public class Inventory {
         return id;
     }
 
-    public Product getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
@@ -54,7 +62,7 @@ public class Inventory {
     public String toString() {
         return "Inventory{" +
                 "id='" + id + '\'' +
-                ", productId='" + productId + '\'' +
+                ", product='" + product + '\'' +
                 ", quantity=" + quantity +
                 ", inventoryStatus=" + inventoryStatus +
                 '}';
@@ -62,7 +70,7 @@ public class Inventory {
 
     public static class Builder {
         private Long id;
-        private Product productId;
+        private Product product;
         private int quantity;
         private InventoryStatus inventoryStatus;
 
@@ -71,8 +79,8 @@ public class Inventory {
             return this;
         }
 
-        public Builder setProductId(Product productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -88,7 +96,7 @@ public class Inventory {
 
         public Builder copy(Inventory inventory) {
             this.id = inventory.id;
-            this.productId = inventory.productId;
+            this.product = inventory.product;
             this.quantity = inventory.quantity;
             this.inventoryStatus = inventory.inventoryStatus;
             return this;
@@ -98,4 +106,5 @@ public class Inventory {
             return new Inventory(this);
         }
     }
+
 }

@@ -1,4 +1,16 @@
-package za.co.admatech.factory;
+
+
+/*
+
+
+
+
+
+InventoryFactory.java
+
+
+
+Author: Seymour Lawrence (230185991) */ package za.co.admatech.factory;
 
 import za.co.admatech.domain.Inventory;
 import za.co.admatech.domain.Product;
@@ -6,21 +18,22 @@ import za.co.admatech.domain.enums.InventoryStatus;
 import za.co.admatech.util.Helper;
 
 public class InventoryFactory {
-    public static Inventory createInventory(
-            Long id,
-            Product productId,
-            int quantity,
-            InventoryStatus inventoryStatus
-    ) {
-        if (id == null || id < 0) return null;
-        if (productId == null) return null;
-        if (quantity < 0) return null;
-        if (inventoryStatus == null || !Helper.isValidInventoryStatus(inventoryStatus)) return null;
-        if (Helper.isValidProduct(productId) ) return null;
-
+    public static Inventory createInventory(Long id,
+                                            Product product,
+                                            int quantity,
+                                            InventoryStatus inventoryStatus) {
+        if (id == null ||
+                id < 0 ||
+                product == null ||
+                quantity < 0 ||
+                inventoryStatus == null) {
+            throw new IllegalArgumentException("ID, product, quantity, and inventory status must be valid");
+        }
+        if (!Helper.isValidProduct(product)) {
+            throw new IllegalArgumentException("Invalid product");
+        }
         return new Inventory.Builder()
-                .setId(id)
-                .setProductId(productId)
+                .setId(id).setProduct(product)
                 .setQuantity(quantity)
                 .setInventoryStatus(inventoryStatus)
                 .build();

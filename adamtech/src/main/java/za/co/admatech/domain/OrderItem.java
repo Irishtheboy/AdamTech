@@ -1,36 +1,42 @@
-/*OrderItem.java
-  OrderItem Class
-  Author: Naqeebah Khan (219099073)
-  Date: 10 May 2025
- */
+/*
 
-package za.co.admatech.domain;
 
-import jakarta.persistence.*;
 
-@Entity
-@Table(name = "order_items")
-public class OrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+OrderItem.java
+
+
+
+OrderItem Class
+
+
+
+Author: Naqeebah Khan (219099073)
+
+
+
+Date: 10 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.*; import jakarta.validation.constraints.Min; import jakarta.validation.constraints.NotNull;
+
+@Entity @Table(name = "order_items") public class OrderItem { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+
+    @Min(0)
     private int quantity;
 
     @Embedded
     private Money unitPrice;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "product")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     public OrderItem() {
-
     }
 
     private OrderItem(Builder builder) {
@@ -39,7 +45,6 @@ public class OrderItem {
         this.quantity = builder.quantity;
         this.unitPrice = builder.unitPrice;
         this.order = builder.order;
-
     }
 
     public Long getId() {
@@ -66,7 +71,7 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "id='" + id + '\'' +
-                ", productId='" + product + '\'' +
+                ", product='" + product + '\'' +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +
                 '}';
@@ -117,4 +122,5 @@ public class OrderItem {
             return new OrderItem(this);
         }
     }
+
 }

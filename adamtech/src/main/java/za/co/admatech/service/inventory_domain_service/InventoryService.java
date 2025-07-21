@@ -1,49 +1,69 @@
 /*
- * InventoryService.java
- * InventoryService Class
- * Author: Seymour Lawrence (230185991)
- * Date: 25 May 2025
- */
-package za.co.admatech.service.inventory_domain_service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import za.co.admatech.domain.Inventory;
-import za.co.admatech.repository.InventoryRepository;
+
+
+
+
+InventoryService.java
+
+
+
+Author: Seymour Lawrence (230185991)
+
+
+
+Date: 25 May 2025 */ package za.co.admatech.service.inventory_domain_service;
+
+import jakarta.persistence.EntityNotFoundException; import jakarta.transaction.Transactional; import org.springframework.stereotype.Service; import za.co.admatech.domain.Inventory; import za.co.admatech.repository.InventoryRepository; import za.co.admatech.util.Helper;
 
 import java.util.List;
 
-@Service
-public class InventoryService implements IInventoryService {
+@Service public class InventoryService implements IInventoryService { private final InventoryRepository inventoryRepository;
 
-    private static IInventoryService service;
-
-    @Autowired
-    private InventoryRepository inventoryRepository;
+    public InventoryService(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
+    }
 
     @Override
+    @Transactional
     public Inventory create(Inventory inventory) {
-        return this.inventoryRepository.save(inventory);
+        if (inventory == null || inventory.getProduct() == null || inventory.getQuantity() < 0 || inventory.getInventoryStatus() == null) {
+            throw new IllegalArgumentException("Invalid inventory data");
+        }
+        return inventoryRepository.save(inventory);
     }
 
     @Override
     public Inventory read(Long id) {
-        return this.inventoryRepository.findById(id).orElse(null);
+        return inventoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Inventory with ID " + id + " not found"));
     }
 
     @Override
+    @Transactional
     public Inventory update(Inventory inventory) {
-        return this.inventoryRepository.save(inventory);
+        if (inventory == null || inventory.getId() == null || inventory.getProduct() == null || inventory.getQuantity() < 0 || inventory.getInventoryStatus() == null) {
+            throw new IllegalArgumentException("Invalid inventory data or missing ID");
+        }
+        if (!inventoryRepository.existsById(inventory.getId())) {
+            throw new EntityNotFoundException("Inventory with ID " + inventory.getId() + " not found");
+        }
+        return inventoryRepository.save(inventory);
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id) {
-        this.inventoryRepository.deleteById(id);
+        if (!inventoryRepository.existsById(id)) {
+            return false;
+        }
+        inventoryRepository.deleteById(id);
         return true;
     }
 
     @Override
     public List<Inventory> getAll() {
-        return this.inventoryRepository.findAll();
+        return inventoryRepository.findAll();
     }
+
 }

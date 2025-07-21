@@ -6,5 +6,4 @@ import za.co.admatech.domain.*;
 import java.util.Optional;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    //Optional<Address> findAddress(Long addressID);
 }

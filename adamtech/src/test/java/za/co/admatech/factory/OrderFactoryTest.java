@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.*;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
+import za.co.admatech.domain.enums.ProductCategory;
 import za.co.admatech.domain.enums.ProductType;
 
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ class OrderFactoryTest {
             .setProductName("Test Widget")
             .setProductDescription("Standard widget")
             .setProductPriceAmount(new Money(500, "ZAR"))
-            .setProductCategory("GADGETS")
+            .setCategory(ProductCategory.COMPONENTS)
             .setProductType(ProductType.PERIPHERAL)
             .build();
 

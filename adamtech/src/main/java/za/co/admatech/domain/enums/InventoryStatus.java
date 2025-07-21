@@ -1,12 +1,7 @@
-/*InventoryStatus enum Class
-  Seymour Lawrence (230185991)
-  11 May 2025*/
+/* InventoryStatus enum Class Seymour Lawrence (230185991) 11 May 2025 */
 package za.co.admatech.domain.enums;
 
-public enum InventoryStatus {
-    IN_STOCK("In Stock"),
-    LOW_STOCK("Low Stock"),
-    OUT_OF_STOCK("Out of Stock");
+public enum InventoryStatus { IN_STOCK("In Stock"), LOW_STOCK("Low Stock"), OUT_OF_STOCK("Out of Stock");
 
     private final String status;
 
@@ -23,7 +18,4 @@ public enum InventoryStatus {
         return status;
     }
 
-    public String getInventoryStatus() {
-        return null;
-    }
 }

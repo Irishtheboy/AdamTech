@@ -1,17 +1,22 @@
-package za.co.admatech.factory;
+/*
 
-import za.co.admatech.domain.Money;
-import za.co.admatech.util.Helper;
+
+
+
+
+MoneyFactory.java
+
+
+
+Author: FN Lukhele (221075127) */ package za.co.admatech.factory;
+
+import za.co.admatech.domain.Money; import za.co.admatech.util.Helper;
+
+import java.math.BigDecimal;
 
 public class MoneyFactory {
-
-    public static Money createMoney(int amount, String currency) {
-        if (amount <= 0) {
-            return null; // Invalid amount
-        }
-        if (Helper.isNullOrEmpty(currency)) {
-            return null; // Invalid currency
-        }
+    public static Money createMoney(double amount,
+                                    String currency) {
 
         return new Money.Builder()
                 .setAmount(amount)
