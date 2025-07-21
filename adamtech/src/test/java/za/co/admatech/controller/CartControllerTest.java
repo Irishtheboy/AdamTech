@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.factory.CartFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,7 +35,10 @@ class CartControllerTest {
 
     @BeforeAll
     public static void setUp() {
-        cart = CartFactory.createCart("1010", "5");
+        Cart cart = new Cart.Builder()
+                .setCartID(1L)
+                .setCartItems(List.of()) // Empty for now
+                .build();
     }
 
     @Test
@@ -58,7 +63,7 @@ class CartControllerTest {
 
     @Test
     void c_update() {
-        Cart updatedCart = new Cart.Builder().copy(cart).setCartID("2020").build();
+        Cart updatedCart = new Cart.Builder().copy(cart).setCartID(20L).build();
         String url = BASE_URL + "/update";
         ResponseEntity<Cart> response = this.restTemplate.postForEntity(url, updatedCart, Cart.class);
         //assertNotNull(response);

@@ -18,9 +18,6 @@ public class CartFactory {
         if(Helper.isValidCustomer(customer)){
             return null;
         }
-        if(Helper.isValidCartID(cartID)){
-            return null;
-        }
         return new Cart.Builder()
                 .setCartID(cartID)
                 .setCustomer(customer)

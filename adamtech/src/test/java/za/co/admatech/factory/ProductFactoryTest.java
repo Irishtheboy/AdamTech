@@ -2,12 +2,14 @@ package za.co.admatech.factory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 import org.junit.jupiter.api.*;
+import za.co.admatech.domain.enums.ProductType;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductFactoryTest {
 
@@ -16,15 +18,15 @@ class ProductFactoryTest {
     private static Money price3 = new Money.Builder().setAmount(0).setCurrency("ZAR").build();
 
     private static Product p1 = ProductFactory.createProduct(
-            "prod001", "Sneakers", "White running shoes", "SKU123", price1, "cat001"
+            001l, "Sneakers", "White running shoes", price1, "SKU123", ProductType.PERIPHERAL
     );
 
     private static Product p2 = ProductFactory.createProduct(
-            "prod002", "Boots", "Leather boots", "SKU456", price2, "cat002"
+            002l, "Boots", "Leather boots", price2,"SKU456", ProductType.DESKTOP
     );
 
     private static Product p3 = ProductFactory.createProduct(
-            "prod003", "Sandals", "Beach sandals", "SKU789", price3, "cat003"
+            003l, "Sandals", "Beach sandals", price3,"SKU789", ProductType.DESKTOP
     );
 
     @Test

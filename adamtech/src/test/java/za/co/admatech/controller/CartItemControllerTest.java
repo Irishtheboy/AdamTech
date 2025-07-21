@@ -34,7 +34,13 @@ class CartItemControllerTest {
 
     @BeforeAll
     public static void setUp() {
-        cartItem = CartItemFactory.createCartItem("1111", 20, "201");
+        CartItem cartItem = CartItemFactory.createCartItem(
+                (long)124,
+                "EE5EE",
+                26,
+                "alyssis",
+                null
+        );
     }
 
     @Test
@@ -59,7 +65,7 @@ class CartItemControllerTest {
 
     @Test
     void c_update() {
-        CartItem updatedCartItem = new CartItem.Builder().copy(cartItem).setCartItemID("2222").build();
+        CartItem updatedCartItem = new CartItem.Builder().copy(cartItem).setCartItemID(22L).build();
         String url = BASE_URL + "/update";
         ResponseEntity<CartItem> response = this.restTemplate.postForEntity(url, updatedCartItem, CartItem.class);
         //assertNotNull(response);

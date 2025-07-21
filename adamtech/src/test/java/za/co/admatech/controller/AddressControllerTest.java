@@ -10,11 +10,11 @@ import za.co.admatech.factory.AddressFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.class)
 class AddressControllerTest {
     private static Address address;
-    @Autowired
+
     private TestRestTemplate restTemplate;
 
     private static final String BASE_URL = "http://localhost:8080/address";
@@ -80,7 +80,7 @@ class AddressControllerTest {
         this.restTemplate.delete(url);
         ResponseEntity<Address> response = this.restTemplate.getForEntity(BASE_URL + "/read/" + address.getAddressID(), Address.class);
         assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
         System.out.println("Deleted_address: " + response.getBody());
     }
 }

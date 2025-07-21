@@ -8,6 +8,7 @@ public class ProductFactory {
     public static Product createProduct(
             Long productId,
             String productName,
+            String productDescription,
             Money productPriceAmount,
             String productCategory,
             ProductType productType

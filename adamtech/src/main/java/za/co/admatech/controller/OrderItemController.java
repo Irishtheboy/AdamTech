@@ -14,7 +14,7 @@ import za.co.admatech.service.order_item_domain_service.OrderItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("order-item")
 public class OrderItemController {
 
     private OrderItemService service;
@@ -30,7 +30,7 @@ public class OrderItemController {
     }
 
     @GetMapping("/read/{orderItemID}")
-    public OrderItem read(@PathVariable String orderItemID) {
+    public OrderItem read(@PathVariable Long orderItemID) {
         return service.read(orderItemID);
     }
 
@@ -40,12 +40,12 @@ public class OrderItemController {
     }
 
     @DeleteMapping("/delete/{orderItemID}")
-    public boolean delete(@PathVariable String orderItemID) {
+    public boolean delete(@PathVariable Long orderItemID) {
         return service.delete(orderItemID);
     }
 
     @GetMapping("/getAll")
     public List<OrderItem> getAll() {
-        return service.getAll();
+        return service.getOrderItems();
     }
 }

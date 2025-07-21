@@ -6,37 +6,25 @@
 
 package za.co.admatech.factory;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.domain.Product;
 import za.co.admatech.util.Helper;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class CartFactoryTest {
-//    private static CartItem validCartItem = new CartItem.Builder()
-//            .setCartItemID("1")
-//           // .setProductID()
-//            .setQuantity(2)
-//            .setCartID(null) // Assuming cartID is optional
-//            .build();
-//
-//    private static Customer validCustomer = new Customer.Builder()
-//            .setCustomerID("101")
-//            .setFirstName("Teyana")
-//            .setLastName("Raubenheimer")
-//            .build();
-
-
-    private static Cart c = CartFactory.createCart("101", "1");
-
+    Cart c = CartFactory.createCart(
+            324l,
+            null,
+            List.of()
+    );
     @Test
     @Order(1)
     public void testCreateCart() {
@@ -47,7 +35,7 @@ class CartFactoryTest {
     @Test
     @Order(2)
     public void testCreateCartThatFails() {
-        Cart invalidCart = CartFactory.createCart(null, null);
+        Cart invalidCart = CartFactory.createCart(23l, null, List.of());
         assertNull(invalidCart);
     }
 

@@ -10,13 +10,14 @@ import za.co.admatech.domain.Customer;
 import za.co.admatech.factory.AddressFactory;
 import za.co.admatech.factory.CustomerFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.class)
 class CustomerControllerTest {
     private static Customer customer;
     private static Address address;
-    @Autowired
     protected TestRestTemplate restTemplate;
 
     private static final String BASE_URL = "http://localhost:8080/customer";
@@ -33,11 +34,14 @@ class CustomerControllerTest {
                 (short) 1299
         );
         customer = CustomerFactory.createCustomer(
-                "1277AAB17",
+                7l,
                 "Rorisang",
                 "Makgana",
                 "radamtech@corporate.adamtect",
-                address
+                "0111111111",
+                null,
+                List.of(),
+                List.of()
         );
     }
 
@@ -88,7 +92,7 @@ class CustomerControllerTest {
 
         ResponseEntity<Customer> response = this.restTemplate.getForEntity(BASE_URL + "/delete/" + customer.getCustomerID(), Customer.class);
         assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
         System.out.println("Deleted_customer: " + response.getBody());
     }
 }

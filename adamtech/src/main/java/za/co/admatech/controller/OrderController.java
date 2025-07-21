@@ -14,7 +14,7 @@ import za.co.admatech.service.order_domain_service.OrderService;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("order")
 public class OrderController {
     private OrderService service;
 
@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     @GetMapping("/read/{orderID}")
-    public Order read(@PathVariable String orderID) {
+    public Order read(@PathVariable Long orderID) {
         return service.read(orderID);
     }
 
@@ -39,7 +39,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete/{orderID}")
-    public boolean delete(@PathVariable String orderID) {
+    public boolean delete(@PathVariable Long orderID) {
         return service.delete(orderID);
     }
 

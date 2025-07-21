@@ -10,22 +10,27 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
 import za.co.admatech.domain.Product;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class CartItemFactoryTest {
-
-    private static CartItem ci = CartItemFactory.createCartItem("202", 2, "101");
-
+    public CartItem cartItem = CartItemFactory.createCartItem(
+            235l,
+            "S5858S",
+            34,
+            "RIRS22",
+            null
+    );
     @Test
     @Order(1)
     public void testCreateCartItem() {
-        assertNotNull(ci);
-        System.out.println(ci.toString());
+        assertNotNull(cartItem);
+        System.out.println(cartItem.toString());
 
     }
 
@@ -33,7 +38,7 @@ class CartItemFactoryTest {
     @Order(2)
     public void testCreateCartItemThatFails() {
         //fail();
-        assertNotNull(ci);
-        System.out.println(ci.toString());
+        assertNotNull(cartItem);
+        System.out.println(cartItem.toString());
     }
 }

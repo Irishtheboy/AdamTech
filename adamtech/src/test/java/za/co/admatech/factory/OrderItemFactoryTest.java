@@ -6,49 +6,46 @@ package za.co.admatech.factory;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.OrderItem;
+import za.co.admatech.domain.Product;
+import za.co.admatech.domain.enums.ProductType;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrderItemFactoryTest {
 
-    private static OrderItem orderItem1 = OrderItemFactory.createOrderItem(
-            "PROD101",
-            2,
-            new Money.Builder()
-                    .setAmount(199)
-                    .build()
+    private Product product = new Product.Builder()
+            .setProductName("Test Item")
+            .setProductDescription("Test Desc")
+            .setProductPriceAmount(new Money(100, "ZAR"))
+            .setProductCategory("GAMING")
+            .setProductType(ProductType.PERIPHERAL)
+            .build();
+
+    private OrderItem orderItem = OrderItemFactory.createOrderItem(
+            987L,
+            1,
+            new Money(100.00, "ZAR"),
+            null,
+            product
     );
 
-    private static OrderItem orderItem2 = OrderItemFactory.createOrderItem(
-            "PROD102",
-            5,
-            new Money.Builder()
-                    .setAmount(99)
-                    .build()
-    );
 
     private static OrderItem updatedOrderItem;
 
     @Test
     void createOrderItem1() {
-        assertNotNull(orderItem1);
-        System.out.println(orderItem1);
-
-    }
-
-    @Test
-    void createOrderItem2() {
-        assertNotNull(orderItem2);
-        System.out.println(orderItem2);
+        assertNotNull(orderItem);
+        System.out.println(orderItem);
 
     }
 
     @Test
     void read() {
-        OrderItem read = orderItem1;
+        OrderItem read = orderItem;
         assertNotNull(read);
         System.out.println(read);
 
@@ -57,7 +54,7 @@ class OrderItemFactoryTest {
     @Test
     void update() {
         updatedOrderItem = new OrderItem.Builder()
-                .copy(orderItem1)
+                .copy(orderItem)
                 .setQuantity(10)
                 .build();
         assertNotNull(updatedOrderItem);
@@ -68,8 +65,8 @@ class OrderItemFactoryTest {
 
     @Test
     void delete() {
-        orderItem1 = null;
-        assertNull(orderItem1);
+        orderItem = null;
+        assertNull(orderItem);
         System.out.println("Order item deleted successfully");
 
     }
