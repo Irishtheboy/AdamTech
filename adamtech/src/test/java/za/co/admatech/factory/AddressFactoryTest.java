@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AddressFactoryTest {
 
-    private AddressFactory addressFactory;
-    Address address = addressFactory.createAddress(
+    Address address = AddressFactory.createAddress(
             07111L,
             (short) 77,
             "Bakersdraft",

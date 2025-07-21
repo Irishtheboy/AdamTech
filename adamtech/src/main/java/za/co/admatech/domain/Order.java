@@ -1,56 +1,59 @@
-/*Order.java
-  Order Class
-  Author: Naqeebah Khan (219099073)
-  Date: 10 May 2025
+/*
+ * Order.java
+ * Order Class
+ * Author: Naqeebah Khan (219099073)
+ * Date: 10 May 2025
  */
-
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import za.co.admatech.domain.enums.OrderStatus;
-
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table (name = "orders")
+@Table(name = "orders")
 public class Order {
-
     @Id
-    @GeneratedValue
-    private String id;
-    private String customerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @NotNull
     private LocalDate orderDate;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private OrderStatus orderStatus;
 
     @Embedded
     private Money totalAmount;
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     public Order() {
     }
 
     public Order(Builder builder) {
         this.id = builder.id;
-        this.customerId = builder.customerId;
         this.orderDate = builder.orderDate;
         this.orderStatus = builder.orderStatus;
         this.totalAmount = builder.totalAmount;
         this.orderItems = builder.orderItems;
+        this.customer = builder.customer;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public LocalDate getOrderDate() {
@@ -73,7 +76,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id='" + id + '\'' +
-                ", customerId='" + customerId + '\'' +
+                ", customer='" + customer + '\'' +
                 ", orderDate=" + orderDate +
                 ", orderStatus='" + orderStatus + '\'' +
                 ", totalAmount='" + totalAmount + '\'' +
@@ -81,20 +84,20 @@ public class Order {
     }
 
     public static class Builder {
-        private String id;
-        private String customerId;
+        private Long id;
         private LocalDate orderDate;
         private OrderStatus orderStatus;
         private Money totalAmount;
         private List<OrderItem> orderItems;
+        private Customer customer;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
@@ -120,18 +123,16 @@ public class Order {
 
         public Builder copy(Order order) {
             this.id = order.id;
-            this.customerId = order.customerId;
+            this.customer = order.customer;
             this.orderDate = order.orderDate;
             this.orderStatus = order.orderStatus;
             this.totalAmount = order.totalAmount;
             this.orderItems = order.orderItems;
             return this;
         }
+
         public Order build() {
             return new Order(this);
         }
-
     }
 }
-
-

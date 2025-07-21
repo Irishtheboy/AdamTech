@@ -1,43 +1,47 @@
-package za.co.admatech.domain;
+/*
 
-import za.co.admatech.domain.enums.PaymentStatus;
 
-import java.time.LocalDate;
 
-/* Payment.java
 
-     Payment POJO class
 
-     Author: FN Lukhele (221075127)
+Payment.java
 
-     Date: 10 May 2025
 
-*/
 
-public class Payment {
-    private String Id;
-    private String orderId;
+Payment POJO class
+
+
+
+Author: FN Lukhele (221075127)
+
+
+
+Date: 10 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; import za.co.admatech.domain.enums.PaymentStatus; import java.time.LocalDate;
+
+@Entity @Table(name = "payment") public class Payment { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @NotNull
     private LocalDate paymentDate;
+
+    @Embedded
     private Money amount;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    public Payment() {
+    public Long getId() {
+        return id;
     }
 
-    private Payment(Builder builder) {
-        this.Id = builder.Id;
-        this.orderId = builder.orderId;
-        this.paymentDate = builder.paymentDate;
-        this.amount = builder.amount;
-        this.paymentStatus = builder.paymentStatus;
-    }
-
-    public String getId() {
-        return Id;
-    }
-
-    public String getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
     public LocalDate getPaymentDate() {
@@ -55,28 +59,39 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "Id='" + Id + '\'' +
-                ", orderId='" + orderId + '\'' +
+                "id='" + id + '\'' +
+                ", order=" + order +
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
                 ", paymentStatus=" + paymentStatus +
                 '}';
     }
 
-    public static class Builder{
-        private String Id;
-        private String orderId;
+    protected Payment() {
+    }
+
+    protected Payment(Builder builder) {
+        id = builder.id;
+        order = builder.order;
+        paymentDate = builder.paymentDate;
+        amount = builder.amount;
+        paymentStatus = builder.paymentStatus;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Order order;
         private LocalDate paymentDate;
         private Money amount;
         private PaymentStatus paymentStatus;
 
-        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
-            this.paymentStatus = paymentStatus;
+        public Builder setId(Long id) {
+            this.id = id;
             return this;
         }
 
-        public Builder setAmount(Money amount) {
-            this.amount = amount;
+        public Builder setOrder(Order order) {
+            this.order = order;
             return this;
         }
 
@@ -85,31 +100,28 @@ public class Payment {
             return this;
         }
 
-        public Builder setOrderId(String orderId) {
-            this.orderId = orderId;
+        public Builder setAmount(Money amount) {
+            this.amount = amount;
             return this;
         }
 
-        public Builder setId(String id) {
-            Id = id;
+        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
+            this.paymentStatus = paymentStatus;
             return this;
         }
 
         public Builder copy(Payment payment) {
-            payment.Id = this.Id;
-            payment.orderId = this.orderId;
-            payment.paymentDate = this.paymentDate;
-            payment.amount = this.amount;
-            payment.paymentStatus = this.paymentStatus;
+            this.id = payment.id;
+            this.order = payment.order;
+            this.paymentDate = payment.paymentDate;
+            this.amount = payment.amount;
+            this.paymentStatus = payment.paymentStatus;
             return this;
-        }
-
-        public Payment copy() {
-            return new Payment(this);
         }
 
         public Payment build() {
             return new Payment(this);
         }
     }
+
 }

@@ -1,95 +1,94 @@
-/*CartItem.java
-  CartItem Class
-  Author: Teyana Raubenheimer (230237622)
-  Date: 11 May 2025
- */
+/*
 
-package za.co.admatech.domain;
 
-import jakarta.persistence.*;
 
-import java.util.List;
 
-@Entity
-public class Cart {
-    @Id
-    @GeneratedValue
-    private String cartID;
-    private String customerID;
-    private String cartItemID;
 
-    @OneToMany
-    @JoinColumn(name = "cart_id")
+Cart.java
+
+
+
+Cart Class
+
+
+
+Author: Teyana Raubenheimer (230237622)
+
+
+
+Date: 11 May 2025 */ package za.co.admatech.domain;
+
+import jakarta.persistence.*; import java.util.List;
+
+@Entity @Table(name = "cart") public class Cart { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long cartID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<CartItem> cartItems;
 
-
-    public Cart() {
-
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public Cart(Builder builder) {
-        this.cartID = builder.cartID;
-        this.customerID = builder.customerID;
-        this.cartItemID = builder.cartItemID;
-    }
-
-    public String getCartID() {
+    public Long getCartID() {
         return cartID;
     }
 
-    public String  getCustomerID() {
-        return customerID;
+    public List<CartItem> getCartItems() {
+        return cartItems;
     }
-
-    public String  getCartItemID() {
-        return cartItemID;
-    }
-
 
     @Override
     public String toString() {
         return "Cart{" +
                 "cartID='" + cartID + '\'' +
-                ", customerID='" + customerID + '\'' +
-                ", cartItemID='" + cartItemID + '\'' +
+                ", customer=" + customer +
+                ", cartItems=" + cartItems +
                 '}';
     }
 
-    public static class Builder {
-        private String cartID;
-        private String  customerID;
-        private String  cartItemID;
+    protected Cart() {
+    }
 
-        public Builder setCartID(String cartID) {
+    protected Cart(Builder builder) {
+        this.cartID = builder.cartID;
+        this.customer = builder.customer;
+        this.cartItems = builder.cartItems;
+    }
+
+    public static class Builder {
+        private Long cartID;
+        private Customer customer;
+        private List<CartItem> cartItems;
+
+        public Builder setCartID(Long cartID) {
             this.cartID = cartID;
             return this;
-
         }
 
-        public Builder setCustomerID(String  customerID) {
-
-            this.customerID = customerID;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
-        public Builder setCartItemID(String cartItemID) {
-            this.cartItemID = cartItemID;
+        public Builder setCartItems(List<CartItem> cartItems) {
+            this.cartItems = cartItems;
             return this;
         }
 
         public Builder copy(Cart cart) {
-            this.cartID = cartID;
-            this.customerID = customerID;
-            this.cartItemID = cartItemID;
+            this.cartID = cart.getCartID();
+            this.customer = cart.getCustomer();
+            this.cartItems = cart.getCartItems();
             return this;
-
         }
 
         public Cart build() {
             return new Cart(this);
         }
-
-
-
     }
+
 }

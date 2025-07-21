@@ -33,6 +33,12 @@
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.9.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -67,21 +73,15 @@
 
     </dependencies>
 
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            &lt;!&ndash; Spring Boot Maven Plugin &ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <version>3.2.5</version>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
-
+    <build>
+        <plugins>
+            <!-- Spring Boot Maven Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
-
-
-
-
-

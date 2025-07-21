@@ -1,51 +1,60 @@
-/*OrderItemController.java
-  Order Item Controller Class
-  Author: Naqeebah Khan (219099073)
-  Date: 03 June 2025
- */
-package za.co.admatech.controller;
+/*
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import za.co.admatech.domain.OrderItem;
-import za.co.admatech.service.OrderItemService;
+
+
+
+OrderItemController.java
+
+
+
+Author: Naqeebah Khan (219099073)
+
+
+
+Date: 03 June 2025 */ package za.co.admatech.controller;
+
+import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*; import za.co.admatech.domain.OrderItem; import za.co.admatech.service.order_item_domain_service.OrderItemService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/order-items")
+@CrossOrigin(origins = "*") // Adjust origins as needed for production
 public class OrderItemController {
+    private final OrderItemService orderItemService;
 
-    private OrderItemService service;
-
-    @Autowired
-    public OrderItemController(OrderItemService service) {
-        this.service = service;
+    public OrderItemController(OrderItemService orderItemService) {
+        this.orderItemService = orderItemService;
     }
 
-    @PostMapping("/create")
-    public OrderItem create(@RequestBody OrderItem orderItem) {
-        return service.create(orderItem);
+    @PostMapping
+    public ResponseEntity<OrderItem> create(@Valid @RequestBody OrderItem orderItem) {
+        OrderItem created = orderItemService.create(orderItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/read/{orderItemID}")
-    public OrderItem read(@PathVariable String orderItemID) {
-        return service.read(orderItemID);
+    @GetMapping("/{orderItemID}")
+    public ResponseEntity<OrderItem> read(@PathVariable Long orderItemID) {
+        OrderItem orderItem = orderItemService.read(orderItemID);
+        return ResponseEntity.ok(orderItem);
     }
 
-    @PutMapping("/update")
-    public OrderItem update(@RequestBody OrderItem orderItem) {
-        return service.update(orderItem);
+    @PutMapping
+    public ResponseEntity<OrderItem> update(@Valid @RequestBody OrderItem orderItem) {
+        OrderItem updated = orderItemService.update(orderItem);
+        return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/delete/{orderItemID}")
-    public boolean delete(@PathVariable String orderItemID) {
-        return service.delete(orderItemID);
+    @DeleteMapping("/{orderItemID}")
+    public ResponseEntity<Void> delete(@PathVariable Long orderItemID) {
+        boolean deleted = orderItemService.delete(orderItemID);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/getAll")
-    public List<OrderItem> getAll() {
-        return service.getAll();
+    @GetMapping
+    public ResponseEntity<List<OrderItem>> getAll() {
+        return ResponseEntity.ok(orderItemService.getAll());
     }
-}
+
+    }

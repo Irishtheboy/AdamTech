@@ -1,73 +1,84 @@
-/*OrderFactory Test Class
-  Naqeebah Khan 219099073
-  17 May 2025*/
 package za.co.admatech.factory;
 
-import org.junit.jupiter.api.MethodOrderer;
-//import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import za.co.admatech.domain.Money;
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.*;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
+import za.co.admatech.domain.enums.ProductCategory;
+import za.co.admatech.domain.enums.ProductType;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class OrderFactoryTest {
 
-    private static Order order1 = OrderFactory.createOrder(
-            "CUSTORD1001",
-            LocalDate.of(2025, 05, 05),
-            OrderStatus.PENDING,
-            new Money.Builder()
-                    .setAmount(450)
-                    .build()
+    // Static objects for dependencies
+    private static final Product product = new Product.Builder()
+            .setProductId(1001L)
+            .setProductName("Test Widget")
+            .setProductDescription("Standard widget")
+            .setProductPriceAmount(new Money(500, "ZAR"))
+            .setCategory(ProductCategory.COMPONENTS)
+            .setProductType(ProductType.PERIPHERAL)
+            .build();
 
+    private static final OrderItem orderItem = new OrderItem.Builder()
+            .setId(3001L)
+            .setProduct(product)
+            .setQuantity(2)
+            .setUnitPrice(new Money(500, "ZAR"))
+            .build();
+
+    private static final Customer customer = new Customer.Builder()
+            .setCustomerID(999L)
+            .setFirstName("Rorisang")
+            .setLastName("Makgana")
+            .setEmail("rorisang@example.com")
+            .setPhoneNumber("0821234567")
+            .setCart(null)
+            .setAddress(List.of()) // empty for test
+            .setOrders(List.of())
+            .build();
+
+    private static final Order order1 = OrderFactory.createOrder(
+            2001L,
+            LocalDate.of(2025, 5, 5),
+            OrderStatus.PENDING,
+            new Money(1000, "ZAR"),
+            List.of(orderItem),
+            customer
     );
 
-    public static Order order2 = OrderFactory.createOrder(
-            "CUSTORD1002",
-            LocalDate.of(2025,06,06),
+    private static final Order order2 = OrderFactory.createOrder(
+            2002L,
+            LocalDate.of(2025, 6, 6),
             OrderStatus.CONFIRMED,
-            new Money.Builder()
-                    .setAmount(850)
-                    .build()
+            new Money(850, "ZAR"),
+            List.of(orderItem),
+            customer
     );
 
     private static Order updatedOrder;
 
     @Test
-//    @Order(1)
-    public void createOrder1(){
+    void createOrder1() {
         assertNotNull(order1);
-        System.out.println(order1.toString());
+        System.out.println(order1);
     }
 
     @Test
-//    @Order(2)
-    void createOrder2(){
+    void createOrder2() {
         assertNotNull(order2);
-        System.out.println(order2.toString());
+        System.out.println(order2);
     }
 
     @Test
-//    @Order(3)
-    void read(){
-        Order read = order1;
-        assertNotNull(read);
-        System.out.println(read);
-    }
-
-
-
-    @Test
-//    @Order(4)
-    void update(){
-        updatedOrder =  new Order.Builder()
+    void updateOrderStatus() {
+        updatedOrder = new Order.Builder()
                 .copy(order1)
                 .setOrderStatus(OrderStatus.SHIPPED)
                 .build();
@@ -77,15 +88,9 @@ class OrderFactoryTest {
     }
 
     @Test
-//    @Order(5)
-    void delete(){
-        order1 = null;
-        assertNull(order1);
+    void deleteOrderSimulation() {
+        Order deleted = null;
+        assertNull(deleted); // simulate delete, actual deletion would occur via service layer
         System.out.println("Order deleted successfully");
     }
-
-
-    }
-
-
-  
+}

@@ -13,8 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
+import za.co.admatech.domain.OrderItem;
+import za.co.admatech.domain.Product;
 import za.co.admatech.domain.enums.OrderStatus;
+import za.co.admatech.domain.enums.ProductCategory;
+import za.co.admatech.domain.enums.ProductType;
 import za.co.admatech.factory.OrderFactory;
+import za.co.admatech.factory.OrderItemFactory;
+import za.co.admatech.service.order_domain_service.IOrderService;
 
 import java.time.LocalDate;
 
@@ -26,12 +32,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderServiceTest {
     @Autowired
     private IOrderService service;
-    private Order order = OrderFactory.createOrder(
-            "456",
-            LocalDate.now(),
-            OrderStatus.PENDING,
-            new Money(500.00, "ZAR")
-    );
+    private Product product = new Product.Builder()
+            .setProductName("Test Item")
+            .setProductDescription("Test Desc")
+            .setProductPriceAmount(new Money(100, "ZAR"))
+            .setCategory(ProductCategory.AUDIO)
+            .setProductType(ProductType.PERIPHERAL)
+            .build();
+
+    LocalDate date = LocalDate.of(2020, 1, 1);
+    private Order order = new Order.Builder()
+            .setId(231l)
+            .setOrderDate(date)
+            .setOrderStatus(OrderStatus.COMPLETED)
+            .setTotalAmount(new Money(100, "ZAR"))
+            .build();
 
     @Test
     void a_create() {
