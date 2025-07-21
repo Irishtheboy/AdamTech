@@ -1,16 +1,6 @@
-package za.co.admatech.domain.enums;
-/* PaymentStatus.java
+/* PaymentStatus.java PaymentStatus POJO class Author: FN Lukhele (221075127) Date: 10 May 2025 */ package za.co.admatech.domain.enums;
 
-     PaymentStatus POJO class
-
-     Author: FN Lukhele (221075127)
-
-     Date: 10 May 2025 */
-public enum PaymentStatus {
-    PENDING("Pending"),
-    COMPLETED("Completed"),
-    FAILED("Failed"),
-    REFUNDED("Refunded");
+public enum PaymentStatus { PENDING("Pending"), COMPLETED("Completed"), FAILED("Failed"), REFUNDED("Refunded");
 
     private final String status;
 
@@ -26,4 +16,5 @@ public enum PaymentStatus {
     public String toString() {
         return status;
     }
+
 }
