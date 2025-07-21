@@ -4,12 +4,12 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class MoneyFactoryTest {
 
     private static Money m = MoneyFactory.createMoney(100, "USD");
