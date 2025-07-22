@@ -6,10 +6,11 @@
 
 package za.co.admatech.service;
 
+import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Order;
 
 import java.util.List;
-
+@Service
 public interface IOrderService extends IService <Order, String>{
     List<Order> getOrders();
 
