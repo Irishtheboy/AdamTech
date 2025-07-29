@@ -45,7 +45,7 @@ import java.util.List;
         if (!Helper.isValidProduct(product) || product.getProductId() == null) {
             throw new IllegalArgumentException("Invalid product data or missing ID");
         }
-        if (!productRepository.existsById(product.getProductId())) {
+        if (!productRepository.existsById(product.getProductId()) {
             throw new EntityNotFoundException("Product with ID " + product.getProductId() + " not found");
         }
         return productRepository.save(product);

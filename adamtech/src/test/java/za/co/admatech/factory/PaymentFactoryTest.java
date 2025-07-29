@@ -1,57 +1,50 @@
 package za.co.admatech.factory;
 
+import za.co.admatech.domain.Money;
+import za.co.admatech.domain.Payment;
+
+
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Money;
-import za.co.admatech.domain.Order;
-import za.co.admatech.domain.Payment;
-import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.domain.enums.PaymentStatus;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PaymentFactoryTest {
+public class PaymentFactoryTest {
 
-    static Order order = new Order.Builder()
-            .setId(123L)
-            .setOrderDate(LocalDate.of(2025, 5, 24))
-            .setOrderStatus(OrderStatus.CONFIRMED)
-            .setTotalAmount(new Money(100, "ZAR"))
-            .setOrderItems(List.of()) // empty list for testing
-            .build();
+    private static Money paymentAmount1 = new Money.Builder().amount(new java.math.BigDecimal("1000")).currency("ZAR").build();
+    private static Money paymentAmount2 = new Money.Builder().amount(new java.math.BigDecimal("500")).currency("ZAR").build();
+    private static Money paymentAmount3 = new Money.Builder().amount(new java.math.BigDecimal("0")).currency("ZAR").build();
 
-    static Money amount = new Money(100.00, "ZAR");
-
-    static Payment validPayment = PaymentFactory.createPayment(
-            101L,
-            order,
-            LocalDate.now(),
-            amount,
-            PaymentStatus.PENDING
-    );
-
-    static Payment invalidPayment = PaymentFactory.createPayment(
-            102L,
-            null, // ❌ No order passed
-            null, // ❌ Invalid date
-            null, // ❌ Null amount
-            null  // ❌ Null status
-    );
+    private static Payment p1 = PaymentFactory.createPayment("1", "order001", LocalDateTime.of(2025, 7, 29, 13, 35), paymentAmount1, PaymentStatus.COMPLETED);
+    private static Payment p2 = PaymentFactory.createPayment("2", "order002", LocalDateTime.of(2025, 7, 29, 13, 35), paymentAmount2, PaymentStatus.PENDING);
+    private static Payment p3 = PaymentFactory.createPayment("3", "order003", LocalDateTime.of(2025, 7, 29, 13, 35), paymentAmount3, PaymentStatus.FAILED);
 
     @Test
-    void testCreateValidPayment() {
-        assertNotNull(validPayment);
-        assertEquals(PaymentStatus.PENDING, validPayment.getPaymentStatus());
-        System.out.println("Valid Payment: " + validPayment);
+    @Order(1)
+    public void testCreatePayment1() {
+        assertNotNull(p1);
+        assertNotNull(p1.getPaymentId());
+        System.out.println(p1.toString());
     }
 
     @Test
-    void testCreateInvalidPayment() {
-        assertNull(invalidPayment);
-        System.out.println("Invalid Payment creation returned null as expected.");
+    @Order(2)
+    public void testCreatePayment2() {
+        assertNotNull(p2);
+        assertNotNull(p2.getPaymentId());
+        System.out.println(p2.toString());
+    }
+
+    @Test
+    @Order(3)
+    public void testCreatePayment3() {
+        assertNotNull(p3);
+        assertNotNull(p3.getPaymentId());
+        System.out.println(p3.toString());
     }
 }

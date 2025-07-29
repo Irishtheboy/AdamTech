@@ -1,26 +1,19 @@
-/*
+package za.co.admatech.factory;
 
 
-
-
-
-MoneyFactory.java
-
-
-
-Author: FN Lukhele (221075127) */ package za.co.admatech.factory;
-
-import za.co.admatech.domain.Money; import za.co.admatech.util.Helper;
+import za.co.admatech.domain.Money;
+import za.co.admatech.util.Helper;
 
 import java.math.BigDecimal;
 
 public class MoneyFactory {
-    public static Money createMoney(double amount,
-                                    String currency) {
-
+    public static Money createMoney(BigDecimal amount, String currency) {
+        if (amount == null || Helper.isNullOrEmpty(currency)) {
+            return null;
+        }
         return new Money.Builder()
-                .setAmount(amount)
-                .setCurrency(currency)
+                .amount(amount)
+                .currency(currency)
                 .build();
     }
 }
