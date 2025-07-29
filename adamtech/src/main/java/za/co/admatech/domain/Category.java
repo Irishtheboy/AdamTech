@@ -1,88 +1,58 @@
-/*
+package za.co.admatech.domain;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Category {
+    @Id
+    @Column(nullable = false)
+    private String categoryId;
+
+    @Column(nullable = false)
+    private String parentCategoryId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "parentCategoryId", referencedColumnName = "categoryId", insertable = false, updatable = false)
+    private Category parentCategory;
+
+    // Public no-arg constructor
+    public Category() {}
 
 
 
-
-
-Category.java
-
-
-
-Category Class
-
-
-
-Author: Unknown
-
-
-
-Date: 11 May 2025 */ package za.co.admatech.domain;
-
-import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; import za.co.admatech.domain.enums.ProductCategory;
-
-@Entity @Table(name = "category") public class Category { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private ProductCategory productCategory;
-
-    @NotNull
-    private String productName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id='" + id + '\'' +
-                ", productCategory=" + productCategory +
-                ", productName='" + productName + '\'' +
-                '}';
-    }
-
-    protected Category() {
-    }
-
-    protected Category(Builder builder) {
-        this.id = builder.id;
-        this.productCategory = builder.productCategory;
-        this.productName = builder.productName;
+    private Category(Builder builder) {
+        this.categoryId = builder.categoryId;
+        this.parentCategoryId = builder.parentCategoryId;
+        this.name = builder.name;
+        this.parentCategory = builder.parentCategory;
     }
 
     public static class Builder {
-        private Long id;
-        private ProductCategory productCategory;
-        private String productName;
+        private String categoryId;
+        private String parentCategoryId;
+        private String name;
+        private Category parentCategory;
 
-        public Builder setID(Long id) {
-            this.id = id;
+        public Builder categoryId(String categoryId) {
+            this.categoryId = categoryId;
             return this;
         }
 
-        public Builder setProductCategory(ProductCategory productCategory) {
-            this.productCategory = productCategory;
+        public Builder parentCategoryId(String parentCategoryId) {
+            this.parentCategoryId = parentCategoryId;
             return this;
         }
 
-        public Builder setProductName(String productName) {
-            this.productName = productName;
+        public Builder name(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder copy(Category category) {
-            this.id = category.getId();
-            this.productCategory = category.getProductCategory();
-            this.productName = category.getProductName();
+        public Builder parentCategory(Category parentCategory) {
+            this.parentCategory = parentCategory;
             return this;
         }
 
@@ -91,4 +61,22 @@ import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; imp
         }
     }
 
+    public Category copy() {
+        return new Builder()
+                .categoryId(this.categoryId)
+                .parentCategoryId(this.parentCategoryId)
+                .name(this.name)
+                .parentCategory(this.parentCategory)
+                .build();
+    }
+
+    // Getters and setters
+    public String getCategoryId() { return categoryId; }
+    public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
+    public String getParentCategoryId() { return parentCategoryId; }
+    public void setParentCategoryId(String parentCategoryId) { this.parentCategoryId = parentCategoryId; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public Category getParentCategory() { return parentCategory; }
+    public void setParentCategory(Category parentCategory) { this.parentCategory = parentCategory; }
 }

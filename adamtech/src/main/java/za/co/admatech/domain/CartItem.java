@@ -1,104 +1,69 @@
-/*
+package za.co.admatech.domain;
 
+import jakarta.persistence.*;
 
+@Entity
+public class CartItem {
+    @Id
+    @Column(nullable = false)
+    private String id;
 
+    @Column(nullable = false)
+    private String productId;
 
-
-CartItem.java
-
-
-
-CartItem Class
-
-
-
-Author: Teyana Raubenheimer (230237622)
-
-
-
-Date: 11 May 2025 */ package za.co.admatech.domain;
-
-import jakarta.persistence.*; import jakarta.validation.constraints.Min;
-
-@Entity public class CartItem { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long cartItemID;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @Min(0)
+    @Column(nullable = false)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
+    @ManyToOne
+    @JoinColumn(name = "cartId", referencedColumnName = "id")
     private Cart cart;
 
-    protected CartItem() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "productId", referencedColumnName = "productId", insertable = false, updatable = false)
+    private Product product;
 
-    protected CartItem(Builder builder) {
-        this.cartItemID = builder.cartItemID;
-        this.product = builder.product;
+    // Public no-arg constructor
+    public CartItem() {}
+
+
+
+    private CartItem(Builder builder) {
+        this.id = builder.id;
+        this.productId = builder.productId;
         this.quantity = builder.quantity;
         this.cart = builder.cart;
-    }
-
-    public Long getCartItemID() {
-        return cartItemID;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public Cart getCart(){
-        return cart;
-    }
-
-    @Override
-    public String toString() {
-        return "CartItem{" +
-                "cartItemID='" + cartItemID + '\'' +
-                ", product='" + product + '\'' +
-                ", quantity=" + quantity +
-                '}';
+        this.product = builder.product;
     }
 
     public static class Builder {
-        private Long cartItemID;
-        private Product product;
+        private String id;
+        private String productId;
         private int quantity;
         private Cart cart;
+        private Product product;
 
-        public Builder setCartItemID(Long cartItemID) {
-            this.cartItemID = cartItemID;
+        public Builder id(String id) {
+            this.id = id;
             return this;
         }
 
-        public Builder setProduct(Product product) {
-            this.product = product;
+        public Builder productId(String productId) {
+            this.productId = productId;
             return this;
         }
 
-        public Builder setQuantity(int quantity) {
+        public Builder quantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder setCart(Cart cart) {
+        public Builder cart(Cart cart) {
             this.cart = cart;
             return this;
         }
 
-        public Builder copy(CartItem cartItem) {
-            this.cartItemID = cartItem.getCartItemID();
-            this.product = cartItem.getProduct();
-            this.quantity = cartItem.getQuantity();
-            this.cart = cartItem.getCart();
+        public Builder product(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -107,4 +72,25 @@ import jakarta.persistence.*; import jakarta.validation.constraints.Min;
         }
     }
 
+    public CartItem copy() {
+        return new Builder()
+                .id(this.id)
+                .productId(this.productId)
+                .quantity(this.quantity)
+                .cart(this.cart)
+                .product(this.product)
+                .build();
+    }
+
+    // Getters and setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public Cart getCart() { return cart; }
+    public void setCart(Cart cart) { this.cart = cart; }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 }

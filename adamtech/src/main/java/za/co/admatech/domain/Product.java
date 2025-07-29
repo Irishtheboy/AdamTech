@@ -1,88 +1,126 @@
-/*
+package za.co.admatech.domain;
 
+import jakarta.persistence.*;
+import za.co.admatech.domain.enums.InventoryStatus;
+import za.co.admatech.domain.enums.PaymentStatus;
+import za.co.admatech.domain.enums.ProductType;
 
+@Entity
+public class Product {
+    @Id
+    @Column(nullable = false)
+    private String productId;
 
+    @Column(nullable = false)
+    private String name;
 
+    @Column(nullable = false)
+    private String description;
 
-Product.java
-
-
-
-Author: Seymour Lawrence (230185991)
-
-
-
-Date: 11 May 2025 */ package za.co.admatech.domain;
-
-import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; import za.co.admatech.domain.enums.ProductCategory; import za.co.admatech.domain.enums.ProductType;
-
-@Entity @Table(name = "product") public class Product { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long productId;
-
-    @NotNull
-    private String productName;
-
-    private String productDescription;
+    @Column(nullable = false)
+    private String sku;
 
     @Embedded
-    private Money productPriceAmount;
+    @Column(nullable = false)
+    private Money price;
 
-    @Enumerated
-    private ProductCategory category;
+    @ManyToOne
+    @JoinColumn(name = "categoryId", referencedColumnName = "categoryId")
+    private Category category;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProductType productType;
 
-    public Long getProductId() { return productId; }
-    public String getProductName() { return productName; }
-    public String getProductDescription() { return productDescription; }
-    public Money getProductPriceAmount() { return productPriceAmount; }
-    public ProductCategory getCategory() { return category; }
-    public ProductType getProductType() { return productType; }
+    // Public no-arg constructor
+    public Product() {}
 
-    @Override
-    public String toString() {
-        return "Product{productId=" + productId + ", productName='" + productName + '\'' +
-                ", productDescription='" + productDescription + '\'' +
-                ", productPriceAmount=" + productPriceAmount +
-                ", category=" + category + ", productType=" + productType + '}';
-    }
 
-    protected Product() {}
-    protected Product(Builder builder) {
+
+    private Product(Builder builder) {
         this.productId = builder.productId;
-        this.productName = builder.productName;
-        this.productDescription = builder.productDescription;
-        this.productPriceAmount = builder.productPriceAmount;
+        this.name = builder.name;
+        this.description = builder.description;
+        this.sku = builder.sku;
+        this.price = builder.price;
         this.category = builder.category;
         this.productType = builder.productType;
     }
 
     public static class Builder {
-        private Long productId;
-        private String productName;
-        private String productDescription;
-        private Money productPriceAmount;
-        private ProductCategory category;
+        private String productId;
+        private String name;
+        private String description;
+        private String sku;
+        private Money price;
+        private Category category;
         private ProductType productType;
 
-        public Builder setProductId(Long productId) { this.productId = productId; return this; }
-        public Builder setProductName(String productName) { this.productName = productName; return this; }
-        public Builder setProductDescription(String productDescription) { this.productDescription = productDescription; return this; }
-        public Builder setProductPriceAmount(Money productPriceAmount) { this.productPriceAmount = productPriceAmount; return this; }
-        public Builder setCategory(ProductCategory category) { this.category = category; return this; }
-        public Builder setProductType(ProductType productType) { this.productType = productType; return this; }
-
-        public Builder copy(Product product) {
-            this.productId = product.productId;
-            this.productName = product.productName;
-            this.productDescription = product.productDescription;
-            this.productPriceAmount = product.productPriceAmount;
-            this.category = product.category;
-            this.productType = product.productType;
+        public Builder productId(String productId) {
+            this.productId = productId;
             return this;
         }
 
-        public Product build() { return new Product(this); }
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder sku(String sku) {
+            this.sku = sku;
+            return this;
+        }
+
+        public Builder price(Money price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder category(Category category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder productType(ProductType productType) {
+            this.productType = productType;
+            return this;
+        }
+
+        public Product build() {
+            return new Product(this);
+        }
     }
 
+    public Product copy() {
+        return new Builder()
+                .productId(this.productId)
+                .name(this.name)
+                .description(this.description)
+                .sku(this.sku)
+                .price(this.price)
+                .category(this.category)
+                .productType(this.productType)
+                .build();
+    }
+
+    // Getters and setters
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getSku() { return sku; }
+    public void setSku(String sku) { this.sku = sku; }
+    public Money getPrice() { return price; }
+    public void setPrice(Money price) { this.price = price; }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+    public ProductType getProductType() { return productType; }
+    public void setProductType(ProductType productType) { this.productType = productType; }
 }
