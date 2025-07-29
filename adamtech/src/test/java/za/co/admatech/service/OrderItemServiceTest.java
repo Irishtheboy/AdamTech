@@ -1,14 +1,20 @@
 /*
 OrderItemServiceTest.java
 Author: Naqeebah Khan (219099073)
-Date: 24 May 2025 */
+Date: 24 May 2025
+Description: This test class contains integration tests for the OrderItemService class,
+verifying the functionality of create, read, update, delete, and getAll methods
+using Spring Boot without mocks.
+*/
+
 package za.co.admatech.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.*;
+import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.domain.enums.ProductCategory;
 import za.co.admatech.domain.enums.ProductType;
@@ -18,11 +24,18 @@ import za.co.admatech.repository.OrderRepository;
 import za.co.admatech.repository.ProductRepository;
 import za.co.admatech.service.order_item_domain_service.OrderItemService;
 
-import jakarta.transaction.Transactional; import java.math.BigDecimal; import java.time.LocalDate; import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest @TestMethodOrder(MethodOrderer.OrderAnnotation.class) @Transactional class OrderItemServiceTest { @Autowired private OrderItemService service;
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
+class OrderItemServiceTest {
+
+    @Autowired
+    private OrderItemService service;
 
     @Autowired
     private ProductRepository productRepository;
@@ -33,110 +46,97 @@ import static org.junit.jupiter.api.Assertions.*;
     @Autowired
     private CustomerRepository customerRepository;
 
-    private static Product product;
-    private static Order order;
-    private static OrderItem orderItem;
-    private static Customer customer;
+    private final String ORDER_ITEM_ID = "OI101";
+    private final Money PRICE = new Money.Builder()
+            .amount(new java.math.BigDecimal("1200.00"))
+            .currency("ZAR")
+            .build();
 
-    @BeforeAll
-    public static void setUp() {
-        product = ProductFactory.createProduct(
-                987L,
-                "Test Item",
-                "Test Desc",
-                new Money(2323, "ZAR"),
-                ProductCategory.GAMING,
-                ProductType.PERIPHERAL
+    Category gamingCategory = new Category.Builder()
+            .categoryId("C101")
+            .parentCategoryId(null)  // Or some valid parent ID
+            .name("Gaming")
+            .build();
+
+    private OrderItem createTestOrderItem() {
+        Product product = ProductFactory.createProduct(
+                "P101", "Keyboard", "Gaming keyboard", PRICE,
+                gamingCategory, ProductType.DESKTOP
         );
-        customer = CustomerFactory.createCustomer(
-                988L,
+        productRepository.save(product);
+        Address address = AddressFactory.createAddress(401L, "100", "Main Rd", "Suburb", "City", "Province", "1234");
+
+        Customer customer = CustomerFactory.createCustomer(
                 "Jane",
                 "Smith",
-                "jane.smith@example.com",
-                "0987654321",
-                CartFactory.createCart(989L, null, List.of()),
-                List.of(AddressFactory.createAddress(
-                        990L,
-                        (short) 12,
-                        "Main Street",
-                        "Suburb",
-                        "City",
-                        "Province",
-                        (short) 1234
-                )),
-                List.of()
+                "jane@example.com",
+                address
         );
-        order = (Order) OrderFactory.createOrder(
-                991L,
-                LocalDate.of(2020, 1, 1),
-                OrderStatus.COMPLETED,
-                new Money(2323, "ZAR"),
-                List.of(),
-                customer
+
+
+        customerRepository.save(customer);
+
+        Order order = OrderFactory.createOrder(
+                "O101",
+                LocalDateTime.now(),  // Use LocalDateTime, not LocalDate
+                PRICE,
+                customer,
+                List.of()  // list of OrderItem(s)
         );
-        orderItem = OrderItemFactory.createOrderItem(
-                992L,
-                1,
-                new Money(2323, "ZAR"),
-                (za.co.admatech.domain.Order) order,
-                product
+
+        orderRepository.save(order);
+
+        return OrderItemFactory.createOrderItem(
+                ORDER_ITEM_ID, 1, PRICE, order, product
         );
     }
 
     @Test
-    @Order(1)
-    void create() {
-        productRepository.save(product);
-        Customer save = customerRepository.save(customer);
-        OrderItem created = service.create(orderItem);
+    void a_create() {
+        OrderItem created = service.create(createTestOrderItem());
         assertNotNull(created);
-        assertEquals(orderItem.getId(), created.getId());
-        assertEquals(orderItem.getQuantity(), created.getQuantity());
-        System.out.println("Created OrderItem: " + created);
-
-        // Update orderItem for subsequent tests
-        orderItem = created;
+        assertEquals(ORDER_ITEM_ID, created.getOrderItemId());
+        assertEquals(1, created.getQuantity());
+        System.out.println("Created: " + created);
     }
 
     @Test
-    @Order(2)
-    void read() {
-        OrderItem read = service.read(orderItem.getId());
+    void b_read() {
+        service.create(createTestOrderItem());
+        OrderItem read = service.read(ORDER_ITEM_ID);
         assertNotNull(read);
-        assertEquals(orderItem.getId(), read.getId());
-        assertEquals(orderItem.getQuantity(), read.getQuantity());
-        System.out.println("Read OrderItem: " + read);
+        assertEquals(ORDER_ITEM_ID, read.getOrderItemId());
+        System.out.println("Read: " + read);
     }
 
     @Test
-    @Order(3)
-    void update() {
+    void c_update() {
+        service.create(createTestOrderItem());
         OrderItem updatedItem = new OrderItem.Builder()
-                .copy(orderItem)
-                .setQuantity(2)
+                .copy(service.read(ORDER_ITEM_ID))
+                .quantity(3)
                 .build();
-        OrderItem updated = service.update(updatedItem);
-        assertNotNull(updated);
-        assertEquals(orderItem.getId(), updated.getId());
-        assertEquals(2, updated.getQuantity());
-        System.out.println("Updated OrderItem: " + updated);
+        OrderItem result = service.update(updatedItem);
+        assertNotNull(result);
+        assertEquals(3, result.getQuantity());
+        System.out.println("Updated: " + result);
     }
 
     @Test
-    @Order(4)
-    void delete() {
-        assertDoesNotThrow(() -> service.delete(orderItem.getId()));
-        assertNull(service.read(orderItem.getId()));
-        System.out.println("Deleted OrderItem: " + orderItem.getId());
+    void d_delete() {
+        service.create(createTestOrderItem());
+        boolean deleted = service.delete(ORDER_ITEM_ID);
+        assertTrue(deleted);
+        assertThrows(EntityNotFoundException.class, () -> service.read(ORDER_ITEM_ID));
+        System.out.println("Deleted: " + deleted);
     }
 
     @Test
-    @Order(5)
-    void getAll() {
-        List<OrderItem> items = service.getAll();
-        assertNotNull(items);
-        assertTrue(items.size() >= 0);
-        System.out.println("All OrderItems: " + items);
+    void e_getAll() {
+        service.create(createTestOrderItem());
+        List<OrderItem> all = service.getAll();
+        assertNotNull(all);
+        assertFalse(all.isEmpty());
+        all.forEach(System.out::println);
     }
-
 }

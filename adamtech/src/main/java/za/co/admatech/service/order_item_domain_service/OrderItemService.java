@@ -1,24 +1,21 @@
-/*
-
-
-
-
-
+package za.co.admatech.service.order_item_domain_service;/*
 OrderItemService.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025 */
 
 
-
-Author: Naqeebah Khan (219099073)
-
-
-
-Date: 24 May 2025 */ package za.co.admatech.service.order_item_domain_service;
-
-import jakarta.persistence.EntityNotFoundException; import jakarta.transaction.Transactional; import org.springframework.stereotype.Service; import za.co.admatech.domain.OrderItem; import za.co.admatech.repository.OrderItemRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import za.co.admatech.domain.OrderItem;
+import za.co.admatech.repository.OrderItemRepository;
 
 import java.util.List;
 
-@Service public class OrderItemService implements IOrderItemService { private final OrderItemRepository orderItemRepository;
+@Service
+public class OrderItemService implements IOrderItemService {
+
+    private final OrderItemRepository orderItemRepository;
 
     public OrderItemService(OrderItemRepository orderItemRepository) {
         this.orderItemRepository = orderItemRepository;
@@ -27,43 +24,57 @@ import java.util.List;
     @Override
     @Transactional
     public OrderItem create(OrderItem orderItem) {
-        if (orderItem == null || orderItem.getProduct() == null || orderItem.getOrder() == null || orderItem.getQuantity() <= 0 || orderItem.getUnitPrice() == null) {
+        if (orderItem == null || orderItem.getQuantity() < 0) {
             throw new IllegalArgumentException("Invalid order item data");
         }
         return orderItemRepository.save(orderItem);
     }
 
     @Override
-    public OrderItem read(Long id) {
-        return orderItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("OrderItem with ID " + id + " not found"));
+    public OrderItem read(String id) {
+        try {
+            Long longId = Long.valueOf(id);
+            return orderItemRepository.findById(longId)
+                    .orElseThrow(() -> new EntityNotFoundException("OrderItem with ID " + id + " not found"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid order item ID format: " + id, e);
+        }
     }
 
     @Override
     @Transactional
     public OrderItem update(OrderItem orderItem) {
-        if (orderItem == null || orderItem.getId() == null || orderItem.getProduct() == null || orderItem.getOrder() == null || orderItem.getQuantity() <= 0 || orderItem.getUnitPrice() == null) {
+        if (orderItem.getOrderItemId() == null || orderItem.getQuantity() < 0) {
             throw new IllegalArgumentException("Invalid order item data or missing ID");
         }
-        if (!orderItemRepository.existsById(orderItem.getId())) {
-            throw new EntityNotFoundException("OrderItem with ID " + orderItem.getId() + " not found");
+        try {
+            Long longId = Long.valueOf(orderItem.getOrderItemId());
+            if (!orderItemRepository.existsById(longId)) {
+                throw new EntityNotFoundException("OrderItem with ID " + orderItem.getOrderItemId() + " not found");
+            }
+            return orderItemRepository.save(orderItem);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid order item ID format: " + orderItem.getOrderItemId(), e);
         }
-        return orderItemRepository.save(orderItem);
     }
 
     @Override
     @Transactional
-    public boolean delete(Long id) {
-        if (!orderItemRepository.existsById(id)) {
-            return false;
+    public boolean delete(String id) {
+        try {
+            Long longId = Long.valueOf(id);
+            if (!orderItemRepository.existsById(longId)) {
+                return false;
+            }
+            orderItemRepository.deleteById(longId);
+            return true;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid order item ID format: " + id, e);
         }
-        orderItemRepository.deleteById(id);
-        return true;
     }
 
     @Override
     public List<OrderItem> getAll() {
         return orderItemRepository.findAll();
     }
-
 }

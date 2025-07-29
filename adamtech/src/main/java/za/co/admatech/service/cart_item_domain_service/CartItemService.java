@@ -1,24 +1,22 @@
 /*
-
-
-
-
-
 CartItemService.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025 */
+package za.co.admatech.service.cart_item_domain_service;
 
-
-
-Author: Teyana Raubenheimer (230237622)
-
-
-
-Date: 23 May 2025 */ package za.co.admatech.service.cart_item_domain_service;
-
-import jakarta.persistence.EntityNotFoundException; import jakarta.transaction.Transactional; import org.springframework.stereotype.Service; import za.co.admatech.domain.CartItem; import za.co.admatech.repository.CartItemRepository; import za.co.admatech.util.Helper;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import za.co.admatech.domain.CartItem;
+import za.co.admatech.repository.CartItemRepository;
+import za.co.admatech.service.cart_item_domain_service.ICartItemService;
 
 import java.util.List;
 
-@Service public class CartItemService implements ICartItemService { private final CartItemRepository cartItemRepository;
+@Service
+public class CartItemService implements ICartItemService {
+
+    private final CartItemRepository cartItemRepository;
 
     public CartItemService(CartItemRepository cartItemRepository) {
         this.cartItemRepository = cartItemRepository;
@@ -27,14 +25,14 @@ import java.util.List;
     @Override
     @Transactional
     public CartItem create(CartItem cartItem) {
-        if (cartItem == null || cartItem.getProduct() == null || cartItem.getCart() == null || cartItem.getQuantity() <= 0) {
+        if (cartItem == null || cartItem.getQuantity() < 0) {
             throw new IllegalArgumentException("Invalid cart item data");
         }
         return cartItemRepository.save(cartItem);
     }
 
     @Override
-    public CartItem read(Long id) {
+    public CartItem read(String id) {
         return cartItemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("CartItem with ID " + id + " not found"));
     }
@@ -42,18 +40,18 @@ import java.util.List;
     @Override
     @Transactional
     public CartItem update(CartItem cartItem) {
-        if (cartItem == null || cartItem.getCartItemID() == null || cartItem.getProduct() == null || cartItem.getCart() == null || cartItem.getQuantity() <= 0) {
+        if (cartItem.getId() == null || cartItem.getQuantity() < 0) {
             throw new IllegalArgumentException("Invalid cart item data or missing ID");
         }
-        if (!cartItemRepository.existsById(cartItem.getCartItemID())) {
-            throw new EntityNotFoundException("CartItem with ID " + cartItem.getCartItemID() + " not found");
+        if (!cartItemRepository.existsById(cartItem.getId())) {
+            throw new EntityNotFoundException("CartItem with ID " + cartItem.getId() + " not found");
         }
         return cartItemRepository.save(cartItem);
     }
 
     @Override
     @Transactional
-    public boolean delete(Long id) {
+    public boolean delete(String id) {
         if (!cartItemRepository.existsById(id)) {
             return false;
         }
@@ -65,5 +63,4 @@ import java.util.List;
     public List<CartItem> getAll() {
         return cartItemRepository.findAll();
     }
-
 }

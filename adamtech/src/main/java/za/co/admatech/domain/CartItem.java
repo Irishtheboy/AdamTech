@@ -1,3 +1,7 @@
+/*
+CartItem.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025 */
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
@@ -24,8 +28,6 @@ public class CartItem {
 
     // Public no-arg constructor
     public CartItem() {}
-
-
 
     private CartItem(Builder builder) {
         this.id = builder.id;
@@ -80,6 +82,16 @@ public class CartItem {
                 .cart(this.cart)
                 .product(this.product)
                 .build();
+    }
+
+    // New method to get a Builder with current values
+    public Builder getBuilder() {
+        return new Builder()
+                .id(this.id)
+                .productId(this.productId)
+                .quantity(this.quantity)
+                .cart(this.cart)
+                .product(this.product);
     }
 
     // Getters and setters

@@ -29,8 +29,6 @@ public class OrderItem {
     // Public no-arg constructor
     public OrderItem() {}
 
-
-
     private OrderItem(Builder builder) {
         this.orderItemId = builder.orderItemId;
         this.productId = builder.productId;
@@ -78,11 +76,23 @@ public class OrderItem {
             return this;
         }
 
+        // Add copy method to builder
+        public Builder copy(OrderItem orderItem) {
+            this.orderItemId = orderItem.getOrderItemId();
+            this.productId = orderItem.getProductId();
+            this.quantity = orderItem.getQuantity();
+            this.unitPrice = orderItem.getUnitPrice();
+            this.order = orderItem.getOrder();
+            this.product = orderItem.getProduct();
+            return this;
+        }
+
         public OrderItem build() {
             return new OrderItem(this);
         }
     }
 
+    // Optional: copy method on OrderItem instance
     public OrderItem copy() {
         return new Builder()
                 .orderItemId(this.orderItemId)
@@ -95,16 +105,51 @@ public class OrderItem {
     }
 
     // Getters and setters
-    public String getOrderItemId() { return orderItemId; }
-    public void setOrderItemId(String orderItemId) { this.orderItemId = orderItemId; }
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public Money getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(Money unitPrice) { this.unitPrice = unitPrice; }
-    public Order getOrder() { return order; }
-    public void setOrder(Order order) { this.order = order; }
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
+    public String getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(String orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Money getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Money unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }

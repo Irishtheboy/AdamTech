@@ -1,20 +1,15 @@
 /*
-
-
-
-
-
 OrderItemController.java
-
-
-
 Author: Naqeebah Khan (219099073)
+Date: 03 June 2025 */
+package za.co.admatech.controller;
 
-
-
-Date: 03 June 2025 */ package za.co.admatech.controller;
-
-import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*; import za.co.admatech.domain.OrderItem; import za.co.admatech.service.order_item_domain_service.OrderItemService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import za.co.admatech.domain.OrderItem;
+import za.co.admatech.service.order_item_domain_service.OrderItemService;
 
 import java.util.List;
 
@@ -34,9 +29,9 @@ public class OrderItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{orderItemID}")
-    public ResponseEntity<OrderItem> read(@PathVariable Long orderItemID) {
-        OrderItem orderItem = orderItemService.read(orderItemID);
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderItem> read(@PathVariable String id) {
+        OrderItem orderItem = orderItemService.read(id);
         return ResponseEntity.ok(orderItem);
     }
 
@@ -46,9 +41,9 @@ public class OrderItemController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{orderItemID}")
-    public ResponseEntity<Void> delete(@PathVariable Long orderItemID) {
-        boolean deleted = orderItemService.delete(orderItemID);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = orderItemService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
@@ -56,5 +51,4 @@ public class OrderItemController {
     public ResponseEntity<List<OrderItem>> getAll() {
         return ResponseEntity.ok(orderItemService.getAll());
     }
-
-    }
+}

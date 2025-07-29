@@ -58,10 +58,20 @@ public class Cart {
             return this;
         }
 
+        // Add this method to support your test code
+        public Builder copy(Cart cart) {
+            this.id = cart.getId();
+            this.customerId = cart.getCustomerId();
+            this.items = cart.getItems();
+            this.customer = cart.getCustomer();
+            return this;
+        }
+
         public Cart build() {
             return new Cart(this);
         }
     }
+
 
     public Cart copy() {
         return new Builder()

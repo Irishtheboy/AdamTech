@@ -1,26 +1,36 @@
 /*
-
-
-
-
-
 CartItemServiceTest.java
-
-
-
 Author: Teyana Raubenheimer (230237622)
+Date: 24 May 2025
+*/
+package za.co.admatech.service;
 
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.annotation.Order;
+import za.co.admatech.domain.*;
+import za.co.admatech.domain.enums.ProductCategory;
+import za.co.admatech.domain.enums.ProductType;
+import za.co.admatech.factory.*;
+import za.co.admatech.repository.CartRepository;
+import za.co.admatech.repository.CustomerRepository;
+import za.co.admatech.repository.ProductRepository;
+import za.co.admatech.service.cart_item_domain_service.ICartItemService;
 
-
-Date: 24 May 2025 */ package za.co.admatech.service;
-
-import org.junit.jupiter.api.*; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.test.context.SpringBootTest; import za.co.admatech.domain.Cart; import za.co.admatech.domain.CartItem; import za.co.admatech.domain.Customer; import za.co.admatech.domain.Product; import za.co.admatech.domain.enums.ProductCategory; import za.co.admatech.domain.enums.ProductType; import za.co.admatech.factory.AddressFactory; import za.co.admatech.factory.CartFactory; import za.co.admatech.factory.CartItemFactory; import za.co.admatech.factory.CustomerFactory; import za.co.admatech.factory.ProductFactory; import za.co.admatech.repository.CartRepository; import za.co.admatech.repository.CustomerRepository; import za.co.admatech.repository.ProductRepository; import za.co.admatech.service.cart_item_domain_service.ICartItemService;
-
-import jakarta.transaction.Transactional; import java.math.BigDecimal; import java.util.List;
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest @TestMethodOrder(MethodOrderer.OrderAnnotation.class) @Transactional class CartItemServiceTest { @Autowired private ICartItemService service;
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Transactional
+class CartItemServiceTest {
+
+    @Autowired
+    private ICartItemService service;
 
     @Autowired
     private ProductRepository productRepository;
@@ -38,42 +48,54 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @BeforeAll
     public static void setUp() {
+        Category category = new Category.Builder()
+                .categoryId("cat-101")
+                .parentCategoryId("root")
+                .name("Gaming Peripherals")
+                .build();
+
         product = ProductFactory.createProduct(
-                124L,
-                "Test Product",
-                "Description",
-                new za.co.admatech.domain.Money(1000, "ZAR"),
-                ProductCategory.GAMING,
+                "prod-101",
+                "Mechanical Keyboard",
+                "RGB Gaming Keyboard",
+                new Money.Builder()
+                        .amount(new BigDecimal("1200.00"))
+                        .currency("ZAR")
+                        .build(),
+                category,
                 ProductType.PERIPHERAL
         );
+
+        Address address = AddressFactory.createAddress(
+                101L,
+                "221B",
+                "Baker Street",
+                "Suburbia",
+                "Cape Town",
+                "Western Cape",
+                "8001"
+        );
+
         customer = CustomerFactory.createCustomer(
-                125L,
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "1234567890",
-                null, // Will be set after cart creation
-                List.of(AddressFactory.createAddress(
-                        126L,
-                        (short) 12,
-                        "Main Street",
-                        "Suburb",
-                        "City",
-                        "Province",
-                        (short) 1234
-                )),
-                List.of()
+                "cust-101",
+                "Jane",
+                "Smith",
+                "jane.smith@example.com",
+                address
         );
+
         cart = CartFactory.createCart(
-                127L,
-                customer,
-                List.of()
+                "cart-101",
+                customer.getCustomerId(),
+                List.of(),
+                customer
         );
+
         cartItem = CartItemFactory.createCartItem(
-                128L,
-                product,
-                26,
-                cart
+                product.getProductId(),
+                5,
+                cart,
+                product
         );
     }
 
@@ -85,20 +107,19 @@ import static org.junit.jupiter.api.Assertions.*;
         cartRepository.save(cart);
         CartItem created = service.create(cartItem);
         assertNotNull(created);
-        assertEquals(cartItem.getCartItemID(), created.getCartItemID());
+        assertEquals(cartItem.getId(), created.getId());
         assertEquals(cartItem.getQuantity(), created.getQuantity());
         System.out.println("Created CartItem: " + created);
 
-        // Update cartItem for subsequent tests
-        cartItem = created;
+        cartItem = created; // update for later tests
     }
 
     @Test
     @Order(2)
     void read() {
-        CartItem read = service.read(cartItem.getCartItemID());
+        CartItem read = service.read(cartItem.getId());
         assertNotNull(read);
-        assertEquals(cartItem.getCartItemID(), read.getCartItemID());
+        assertEquals(cartItem.getId(), read.getId());
         assertEquals(cartItem.getQuantity(), read.getQuantity());
         System.out.println("Read CartItem: " + read);
     }
@@ -106,23 +127,24 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @Order(3)
     void update() {
-        CartItem updatedItem = new CartItem.Builder()
-                .copy(cartItem)
-                .setQuantity(30)
+        // Use cartItem.copy() to create a copy, then modify via Builder
+        CartItem updatedItem = cartItem.copy() // Correctly call copy on CartItem
+                .getBuilder() // Assuming a method to get Builder (see note below)
+                .quantity(10)
                 .build();
         CartItem updated = service.update(updatedItem);
         assertNotNull(updated);
-        assertEquals(cartItem.getCartItemID(), updated.getCartItemID());
-        assertEquals(30, updated.getQuantity());
+        assertEquals(cartItem.getId(), updated.getId());
+        assertEquals(10, updated.getQuantity());
         System.out.println("Updated CartItem: " + updated);
     }
 
     @Test
     @Order(4)
     void delete() {
-        assertDoesNotThrow(() -> service.delete(cartItem.getCartItemID()));
-        assertNull(service.read(cartItem.getCartItemID()));
-        System.out.println("Deleted CartItem: " + cartItem.getCartItemID());
+        assertDoesNotThrow(() -> service.delete(cartItem.getId()));
+        assertNull(service.read(cartItem.getId()));
+        System.out.println("Deleted CartItem: " + cartItem.getId());
     }
 
     @Test
@@ -130,8 +152,7 @@ import static org.junit.jupiter.api.Assertions.*;
     void getAll() {
         List<CartItem> items = service.getAll();
         assertNotNull(items);
-        assertTrue(items.size() >= 0);
+        assertFalse(items.isEmpty()); // Fixed to check for non-empty list
         System.out.println("All CartItems: " + items);
     }
-
 }

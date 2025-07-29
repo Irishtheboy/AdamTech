@@ -1,38 +1,29 @@
-/*
-
-
-
-
-
-CartServiceTest.java
-
-
-
-Author: Teyana Raubenheimer (230237622)
-
-
-
-Date: 25 May 2025 */ package za.co.admatech.service;
+package za.co.admatech.service;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.annotation.Order;
 import za.co.admatech.domain.*;
-import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.factory.AddressFactory;
 import za.co.admatech.factory.CartFactory;
 import za.co.admatech.factory.CustomerFactory;
-import za.co.admatech.factory.OrderFactory;
 import za.co.admatech.repository.AddressRepository;
 import za.co.admatech.repository.CustomerRepository;
 import za.co.admatech.service.cart_domain_service.ICartService;
 
-import jakarta.transaction.Transactional; import java.math.BigDecimal; import java.time.LocalDate; import java.util.List;
+import jakarta.transaction.Transactional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest @TestMethodOrder(MethodOrderer.OrderAnnotation.class) @Transactional class CartServiceTest { @Autowired private ICartService service;
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Transactional
+class CartServiceTest {
+
+    @Autowired
+    private ICartService service;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -48,27 +39,42 @@ import static org.junit.jupiter.api.Assertions.*;
     public static void setUp() {
         address = AddressFactory.createAddress(
                 2L,
-                (short) 101,
+                "101",
                 "Tech Avenue",
                 "Cape Town",
                 "Western Cape",
                 "Limpopo",
-                (short)434
+                "4343"
         );
-        customer = CustomerFactory.createCustomer(
-                123L,
-                "Rorisang",
-                "Makgana",
-                "rorisang@example.com",
-                "0821234567",
-                null, // Will be set after cart creation
-                List.of(address),
-                List.of()
+
+        customer = createMockCustomer();
+
+         cart = CartFactory.createCart(
+                "1",                                // String id
+                customer.getCustomerId(),           // String customerId
+                List.<CartItem>of(),                // Empty typed list
+                customer                            // Customer object
         );
-        cart = CartFactory.createCart(
-                1L,
-                customer,
-                List.of()
+
+    }
+
+    private static Customer createMockCustomer() {
+        Address mockAddress = AddressFactory.createAddress(
+                999L,
+                "150",
+                "Mock Street",
+                "Mock City",
+                "Mock Province",
+                "Mock Region",
+                "9999"
+        );
+
+        return CustomerFactory.createCustomer(
+                "cust-999",
+                "MockFirstName",
+                "MockLastName",
+                "mock@example.com",
+                mockAddress
         );
     }
 
@@ -77,42 +83,46 @@ import static org.junit.jupiter.api.Assertions.*;
     void create() {
         addressRepository.save(address);
         customerRepository.save(customer);
+
         Cart created = service.create(cart);
         assertNotNull(created);
-        assertEquals(cart.getCartID(), created.getCartID());
+        assertEquals(cart.getId(), created.getId());
         System.out.println("Created Cart: " + created);
 
-        // Update cart for subsequent tests
-        cart = created;
+        cart = created; // update static cart reference for next tests
     }
 
     @Test
     @Order(2)
     void read() {
-        Cart read = service.read(cart.getCartID());
+        Cart read = service.read(cart.getId());
         assertNotNull(read);
-        assertEquals(cart.getCartID(), read.getCartID());
+        assertEquals(cart.getId(), read.getId());
         System.out.println("Read Cart: " + read);
     }
 
     @Test
+    @Order(3)
     void update() {
         Cart updatedCart = new Cart.Builder()
                 .copy(cart)
-                .setCustomer(customer)
+                .customer(customer)   // builder method naming style
                 .build();
+
         Cart updated = service.update(updatedCart);
         assertNotNull(updated);
-        assertEquals(cart.getCartID(), updated.getCartID());
+        assertEquals(cart.getId(), updated.getId());
         System.out.println("Updated Cart: " + updated);
+
+        cart = updated; // update for next tests
     }
 
     @Test
     @Order(4)
     void delete() {
-        assertDoesNotThrow(() -> service.delete(cart.getCartID()));
-        assertNull(service.read(cart.getCartID()));
-        System.out.println("Deleted Cart: " + cart.getCartID());
+        assertDoesNotThrow(() -> service.delete(cart.getId()));
+        assertNull(service.read(cart.getId()));
+        System.out.println("Deleted Cart: " + cart.getId());
     }
 
     @Test
@@ -123,5 +133,4 @@ import static org.junit.jupiter.api.Assertions.*;
         assertTrue(carts.size() >= 0);
         System.out.println("All Carts: " + carts);
     }
-
 }

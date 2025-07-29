@@ -3,7 +3,13 @@ CustomerController.java
 Author: Rorisang Makgana (230602363)
 Date: 11 May 2025 */
 package za.co.admatech.controller;
-import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*; import za.co.admatech.domain.Customer; import za.co.admatech.service.customer_domain_service.CustomerService;
+
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import za.co.admatech.domain.Customer;
+import za.co.admatech.service.customer_domain_service.CustomerService;
 
 import java.util.List;
 
@@ -23,9 +29,9 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{customerID}")
-    public ResponseEntity<Customer> read(@PathVariable Long customerID) {
-        Customer customer = customerService.read(customerID);
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> read(@PathVariable String id) {
+        Customer customer = customerService.read(id);
         return ResponseEntity.ok(customer);
     }
 
@@ -35,9 +41,9 @@ public class CustomerController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{customerID}")
-    public ResponseEntity<Void> delete(@PathVariable Long customerID) {
-        boolean deleted = customerService.delete(customerID);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = customerService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
@@ -45,5 +51,4 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> getAll() {
         return ResponseEntity.ok(customerService.getAll());
     }
-
 }
