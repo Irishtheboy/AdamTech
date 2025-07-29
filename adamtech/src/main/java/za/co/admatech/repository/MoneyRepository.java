@@ -2,7 +2,8 @@ package za.co.admatech.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import za.co.admatech.domain.Product;
+import za.co.admatech.domain.Money;
+
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface MoneyRepository extends JpaRepository<Money, Long> {
 }

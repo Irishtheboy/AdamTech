@@ -143,5 +143,16 @@ public class Address {
         public Address build() {
             return new Address(this);
         }
+        public Builder copy(Address address) {
+            this.addressId = address.getAddressId();
+            this.houseNumber = address.getHouseNumber();
+            this.streetName = address.getStreetName();
+
+            this.city = address.getCity();
+            this.province = address.getProvince();
+            this.postalCode = address.getPostalCode();
+            return this;
+        }
+
     }
 }
