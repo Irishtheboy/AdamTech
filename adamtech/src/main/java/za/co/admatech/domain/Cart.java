@@ -20,7 +20,12 @@ Date: 11 May 2025 */ package za.co.admatech.domain;
 
 import jakarta.persistence.*; import java.util.List;
 
-@Entity @Table(name = "cart") public class Cart { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long cartID;
+@Entity
+@Table(name = "cart")
+public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cartID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

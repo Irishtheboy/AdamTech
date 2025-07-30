@@ -18,7 +18,7 @@ public class AddressController{
         this.addressService = addressService;
     }
 
-@PostMapping
+@PostMapping("/create_address")
 public ResponseEntity<Address> create(@Valid @RequestBody Address address) {
     Address created = addressService.create(address);
     return ResponseEntity.status(HttpStatus.CREATED).body(created);
