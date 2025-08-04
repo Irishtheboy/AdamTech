@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import za.co.admatech.domain.enums.OrderStatus;
 
 @Entity
+@Table(name = "cart_order")
 public class CartOrder {
     @Id
     @Column(nullable = false)
