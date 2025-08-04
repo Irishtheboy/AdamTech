@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import za.co.admatech.domain.enums.InventoryStatus;
 
 @Entity
+@Table(name = "inventory")
 public class Inventory {
     @Id
     @Column(nullable = false)

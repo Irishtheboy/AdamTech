@@ -7,6 +7,7 @@ package za.co.admatech.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "cart_item")
 public class CartItem {
     @Id
     @Column(nullable = false)

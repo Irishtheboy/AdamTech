@@ -3,6 +3,7 @@ package za.co.admatech.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "category")
 public class Category {
     @Id
     @Column(nullable = false)
