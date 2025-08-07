@@ -12,7 +12,7 @@ import jakarta.persistence.*;
 public class CartItem {
     @Id
     @GeneratedValue
-    private String cartItemID;
+    private Long cartItemID;
     private String  productID;
     private int quantity;
     private String cartID;
@@ -33,7 +33,7 @@ public class CartItem {
     }
 
 
-    public String getCartItemID() {
+    public Long getCartItemID() {
         return cartItemID;
     }
 
@@ -60,12 +60,12 @@ public class CartItem {
     }
 
     public static class Builder {
-        private String cartItemID;
+        private Long cartItemID;
         private String productID;
         private int quantity;
         private String cartID;
 
-        public Builder setCartItemID(String cartItemID) {
+        public Builder setCartItemID(Long cartItemID) {
             this.cartItemID = cartItemID;
             return this;
         }

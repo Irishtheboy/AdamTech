@@ -28,7 +28,7 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Cart read(String id) {
+    public Cart read(Long id) {
         return this.repository.findById(id).orElse(null);
     }
 
@@ -38,7 +38,7 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         this.repository.deleteById(id);
         return true;
     }

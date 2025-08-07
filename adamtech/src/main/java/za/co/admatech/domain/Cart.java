@@ -14,7 +14,7 @@ import java.util.List;
 public class Cart {
     @Id
     @GeneratedValue
-    private String cartID;
+    private Long cartID;
     private String customerID;
     private String cartItemID;
 
@@ -33,7 +33,7 @@ public class Cart {
         this.cartItemID = builder.cartItemID;
     }
 
-    public String getCartID() {
+    public Long getCartID() {
         return cartID;
     }
 
@@ -56,11 +56,11 @@ public class Cart {
     }
 
     public static class Builder {
-        private String cartID;
+        private Long cartID;
         private String  customerID;
         private String  cartItemID;
 
-        public Builder setCartID(String cartID) {
+        public Builder setCartID(Long cartID) {
             this.cartID = cartID;
             return this;
 

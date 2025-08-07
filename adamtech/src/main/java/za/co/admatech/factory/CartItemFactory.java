@@ -20,7 +20,7 @@ public class CartItemFactory {
         }
 
         return new CartItem.Builder()
-                .setCartItemID(cartItemID)
+               // .setCartItemID(cartItemID)
                 .setProductID(productID)
                 .setQuantity(quantity)
                 .setCartID(cartID)
