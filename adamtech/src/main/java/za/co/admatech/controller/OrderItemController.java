@@ -30,7 +30,7 @@ public class OrderItemController {
     }
 
     @GetMapping("/read/{orderItemID}")
-    public OrderItem read(@PathVariable String orderItemID) {
+    public OrderItem read(@PathVariable Long orderItemID) {
         return service.read(orderItemID);
     }
 
@@ -40,7 +40,7 @@ public class OrderItemController {
     }
 
     @DeleteMapping("/delete/{orderItemID}")
-    public boolean delete(@PathVariable String orderItemID) {
+    public boolean delete(@PathVariable Long orderItemID) {
         return service.delete(orderItemID);
     }
 

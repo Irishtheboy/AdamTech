@@ -14,7 +14,7 @@ public class OrderItem {
 
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
     private String productId;
 
     private int quantity;
@@ -39,11 +39,11 @@ public class OrderItem {
         this.order = builder.order;
 
     }
-    public String getOrderItemId() {
+    public Long getOrderItemId() {
         return id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -74,13 +74,13 @@ public class OrderItem {
     }
 
     public static class Builder {
-        private String id;
+        private Long id;
         private String productId;
         private int quantity;
         private Money unitPrice;
         private Order order;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
