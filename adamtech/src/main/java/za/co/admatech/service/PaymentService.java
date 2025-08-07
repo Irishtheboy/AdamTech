@@ -8,7 +8,7 @@ import za.co.admatech.repository.PaymentRepository;
 import java.util.List;
 
 @Service
-public class PaymentService implements IService<Payment, String> {
+public class PaymentService implements IService<Payment, Long> {
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -18,7 +18,7 @@ public class PaymentService implements IService<Payment, String> {
         return paymentRepository.save(payment);
     }
     @Override
-    public Payment read(String id) {
+    public Payment read(Long id) {
         return paymentRepository.findById(id).orElse(null);
     }
     @Override
@@ -26,7 +26,7 @@ public class PaymentService implements IService<Payment, String> {
         return paymentRepository.save(payment);
     }
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         paymentRepository.deleteById(id);
         return true;
     }

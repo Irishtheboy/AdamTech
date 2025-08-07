@@ -1,3 +1,5 @@
+
+
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,31 +9,31 @@ import za.co.admatech.service.AddressService;
 
 @RestController
 @RequestMapping("/address")
-
 public class AddressController {
-    private final AddressService addressService;
+    private AddressService service;
+
     @Autowired
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
+    public AddressController(AddressService service) {
+        this.service = service;
     }
 
     @PostMapping("/create")
-    public Address create(@RequestBody Address address){
-        return addressService.create(address);
+    public Address create(@RequestBody Address address) {
+        return service.create(address);
     }
 
-    @GetMapping("read/{addressID}")
-    public Address read(@PathVariable Long addressID){
-        return addressService.read(addressID);
+    @GetMapping("/read/{addressID}")
+    public Address read(@PathVariable Long addressID) {
+        return service.read(addressID);
     }
 
     @PutMapping("/update")
-    public Address update(@RequestBody Address address){
-        return addressService.update(address);
+    public Address update(@RequestBody Address address) {
+        return service.update(address);
     }
 
-    @RequestMapping("/delete/{addressID}")
-    public boolean delete(@PathVariable Long addressID){
-        return addressService.delete(addressID);
+    @DeleteMapping("/delete/{addressID}")
+    public boolean delete(@PathVariable Long addressID) {
+        return service.delete(addressID);
     }
 }

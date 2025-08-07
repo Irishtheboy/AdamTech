@@ -11,7 +11,7 @@ import static za.co.admatech.util.Helper.generateId;
 
 public class PaymentFactory {
     public static Payment createPayment(LocalDate paymentDate, String orderId, Money amount, PaymentStatus paymentStatus) {
-        String id = generateId();
+
 
 
         if (!Helper.isValidLocalDate(paymentDate)) {
@@ -31,7 +31,6 @@ public class PaymentFactory {
 
 
         return new Payment.Builder()
-                .setId(id)
                 .setOrderId(orderId)
                 .setPaymentDate(paymentDate)
                 .setAmount(amount)

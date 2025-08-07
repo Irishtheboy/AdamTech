@@ -21,7 +21,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer read(String customerId) {
-        return customerRepository.findCustomerById(customerId).orElse(null);
+        return customerRepository.findById(customerId).orElse(null);
     }
 
     @Override

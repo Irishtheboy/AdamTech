@@ -1,5 +1,9 @@
 package za.co.admatech.domain;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
@@ -13,11 +17,14 @@ import java.time.LocalDate;
      Date: 10 May 2025
 
 */
-
+@Entity
 public class Payment {
-    private String Id;
+    @Id
+    private Long Id;
     private String orderId;
     private LocalDate paymentDate;
+
+    @Embedded
     private Money amount;
     private PaymentStatus paymentStatus;
 
@@ -32,7 +39,7 @@ public class Payment {
         this.paymentStatus = builder.paymentStatus;
     }
 
-    public String getId() {
+    public Long getId() {
         return Id;
     }
 
@@ -64,7 +71,7 @@ public class Payment {
     }
 
     public static class Builder{
-        private String Id;
+        private Long Id;
         private String orderId;
         private LocalDate paymentDate;
         private Money amount;
@@ -90,7 +97,7 @@ public class Payment {
             return this;
         }
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             Id = id;
             return this;
         }

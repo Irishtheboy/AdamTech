@@ -14,7 +14,7 @@ import za.co.admatech.service.OrderItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/orderItem")
 public class OrderItemController {
 
     private OrderItemService service;

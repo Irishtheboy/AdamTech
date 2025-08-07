@@ -21,7 +21,7 @@ public class AddressService implements IAddressService{
 
     @Override
     public Address read(Long addressID) {
-        return addressRepository.findAddress(addressID).orElse(null);
+        return addressRepository.findById(addressID).orElse(null);
     }
 
     @Override
