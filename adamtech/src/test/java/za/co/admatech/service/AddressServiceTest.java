@@ -1,88 +1,82 @@
-/*
+package za.co.admatech.service;/*
+AddressServiceTest.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025
+Description: This test class contains integration tests for the AddressService class,
+verifying the functionality of create, read, update, delete, and getAll methods
+using Spring Boot without mocks.
+*/
 
 
+import jakarta.persistence.EntityNotFoundException;
+import za.co.admatech.domain.Address;
+import za.co.admatech.service.address_domain_service.AddressService;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-
-
-AddressServiceTest.java */ package za.co.admatech.service;
-
-import org.junit.jupiter.api.*; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.test.context.SpringBootTest; import za.co.admatech.domain.Address; import za.co.admatech.factory.AddressFactory; import za.co.admatech.service.address_domain_service.AddressService;
-
-import jakarta.transaction.Transactional; import java.util.List;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest @TestMethodOrder(MethodOrderer.OrderAnnotation.class) @Transactional class AddressServiceTest { @Autowired private AddressService addressService;
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
+class AddressServiceTest {
 
-    private static Address address;
+    @Autowired
+    private AddressService service;
 
-    @BeforeAll
-    public static void setup() {
-        address = AddressFactory.createAddress(
-                12L,
-                (short) 12,
-                "Devin's Chapman",
-                "Cravenwood",
-                "Mulburrey",
-                "Lancashire",
-                (short) 1299
-        );
-    }
+    // Mock Address setup
+    private final Long VALID_ID = 1L;
+    private final Address address = new Address.Builder()
+            .addressId(VALID_ID)
+            .streetName("Main St") // Example field, ensure it passes Helper.isValidAddress
+            .build();
 
     @Test
-    @Order(1)
-    void create() {
-        Address created = addressService.create(address);
+    void a_create() {
+        Address created = service.create(address);
         assertNotNull(created);
-        assertEquals(address.getAddressID(), created.getAddressID());
-        assertEquals(address.getStreetName(), created.getStreetName());
-        System.out.println("Created Address: " + created);
-
-        // Update address for subsequent tests
-        address = created;
+        assertEquals(VALID_ID, created.getAddressId());
+        System.out.println("Created: " + created);
     }
 
     @Test
-    @Order(2)
-    void read() {
-        Address read = addressService.read(address.getAddressID());
+    void b_read() {
+        Address saved = service.create(address);
+        Address read = service.read(saved.getAddressId());
         assertNotNull(read);
-        assertEquals(address.getAddressID(), read.getAddressID());
-        assertEquals(address.getStreetName(), read.getStreetName());
-        System.out.println("Read Address: " + read);
+        assertEquals(VALID_ID, read.getAddressId());
+        System.out.println("Read: " + read);
     }
 
     @Test
-    @Order(3)
-    void update() {
-        Address updatedAddress = new Address.Builder()
-                .copy(address)
-                .setStreetName("Updated Devin's Chapman")
-                .setSuburb("Updated Cravenwood")
-                .build();
-        Address updated = addressService.update(updatedAddress);
-        assertNotNull(updated);
-        assertEquals(address.getAddressID(), updated.getAddressID());
-        assertEquals("Updated Devin's Chapman", updated.getStreetName());
-        assertEquals("Updated Cravenwood", updated.getSuburb());
-        System.out.println("Updated Address: " + updated);
+    void c_update() {
+        Address saved = service.create(address);
+        Address updated = saved.copy();
+        updated.setStreetName("New St"); // Example update logic
+        Address result = service.update(updated);
+        assertNotNull(result);
+        assertEquals(VALID_ID, result.getAddressId());
+        assertEquals("New St", result.getStreetName()); // Verify updated field
+        System.out.println("Updated: " + result);
     }
 
     @Test
-    @Order(4)
-    void delete() {
-        assertDoesNotThrow(() -> addressService.delete(address.getAddressID()));
-        assertNull(addressService.read(address.getAddressID()));
-        System.out.println("Deleted Address: " + address.getAddressID());
+    void d_delete() {
+        Address saved = service.create(address);
+        boolean deleted = service.delete(saved.getAddressId());
+        assertTrue(deleted);
+        assertThrows(EntityNotFoundException.class, () -> service.read(saved.getAddressId()));
+        System.out.println("Deleted: " + deleted);
     }
 
     @Test
-    @Order(5)
-    void getAll() {
-        List<Address> addresses = addressService.getAll();
+    void e_getAddresses() {
+        service.create(address);
+        List<Address> addresses = service.getAll();
         assertNotNull(addresses);
-        assertTrue(addresses.size() >= 0);
-        System.out.println("All Addresses: " + addresses);
+        assertFalse(addresses.isEmpty());
+        addresses.forEach(System.out::println);
     }
-
 }

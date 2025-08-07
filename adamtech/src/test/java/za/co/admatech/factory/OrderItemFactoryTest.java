@@ -1,109 +1,50 @@
-/*OrderItemFactory Test Class
-  Naqeebah Khan 219099073
-  17 May 2025*/
 package za.co.admatech.factory;
+
+
+import za.co.admatech.domain.*;
+
 
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Customer;
-import za.co.admatech.domain.Money;
-import za.co.admatech.domain.OrderItem;
-import za.co.admatech.domain.Product;
-import za.co.admatech.domain.enums.OrderStatus;
-import za.co.admatech.domain.enums.ProductCategory;
-import za.co.admatech.domain.enums.ProductType;
+import za.co.admatech.domain.Order;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class OrderItemFactoryTest {
-    private static Product product;
-    private static Order order;
-    private static OrderItem orderItem;
-    private static Customer customer;
+public class OrderItemFactoryTest {
 
-    @BeforeAll
-    public static void setUp() {
-        product = ProductFactory.createProduct(
-                987L,
-                "Test Item",
-                "Test Desc",
-                new Money(2323, "ZAR"),
-                ProductCategory.GAMING,
-                ProductType.PERIPHERAL
-        );
-        customer = CustomerFactory.createCustomer(
-                988L,
-                "Jane",
-                "Smith",
-                "jane.smith@example.com",
-                "0987654321",
-                CartFactory.createCart(989L, null, List.of()),
-                List.of(AddressFactory.createAddress(
-                        990L,
-                        (short) 12,
-                        "Main Street",
-                        "Suburb",
-                        "City",
-                        "Province",
-                        (short) 1234
-                )),
-                List.of()
-        );
-        order = (Order) OrderFactory.createOrder(
-                991L,
-                LocalDate.of(2020, 1, 1),
-                OrderStatus.COMPLETED,
-                new Money(2323, "ZAR"),
-                List.of(),
-                customer
-        );
-        orderItem = OrderItemFactory.createOrderItem(
-                992L,
-                1,
-                new Money(2323, "ZAR"),
-                (za.co.admatech.domain.Order) order,
-                product
-        );
-    }
+    private static Money unitPrice = new Money.Builder().amount(new BigDecimal("500")).currency("ZAR").build();
+    private static Order order = new Order.Builder().id("1").build();
+    private static Product product = new Product.Builder().productId("1").build();
 
-    private static OrderItem updatedOrderItem;
+    private static OrderItem oi1 = OrderItemFactory.createOrderItem("1", "prod001", 2, unitPrice, order, product);
+    private static OrderItem oi2 = OrderItemFactory.createOrderItem("2", "prod002", 1, unitPrice, order, product);
+    private static OrderItem oi3 = OrderItemFactory.createOrderItem("3", "prod003", 3, unitPrice, order, product);
 
     @Test
-    void createOrderItem1() {
-        assertNotNull(orderItem);
-        System.out.println(orderItem);
-
+    @org.junit.jupiter.api.Order(1)
+    public void testCreateOrderItem1() {
+        assertNotNull(oi1);
+        assertNotNull(oi1.getOrderItemId());
+        System.out.println(oi1.toString());
     }
 
     @Test
-    void read() {
-        OrderItem read = orderItem;
-        assertNotNull(read);
-        System.out.println(read);
-
+    @org.junit.jupiter.api.Order(2)
+    public void testCreateOrderItem2() {
+        assertNotNull(oi2);
+        assertNotNull(oi2.getOrderItemId());
+        System.out.println(oi2.toString());
     }
 
     @Test
-    void update() {
-        updatedOrderItem = new OrderItem.Builder()
-                .copy(orderItem)
-                .setQuantity(10)
-                .build();
-        assertNotNull(updatedOrderItem);
-        assertEquals(10, updatedOrderItem.getQuantity());
-        System.out.println(updatedOrderItem);
-
-    }
-
-    @Test
-    void delete() {
-        orderItem = null;
-        assertNull(orderItem);
-        System.out.println("Order item deleted successfully");
-
+    @org.junit.jupiter.api.Order(3)
+    public void testCreateOrderItem3() {
+        assertNotNull(oi3);
+        assertNotNull(oi3.getOrderItemId());
+        System.out.println(oi3.toString());
     }
 }

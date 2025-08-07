@@ -1,28 +1,25 @@
 /*
-
-
-
-
-
 CartController.java
+Author: Naqeebah Khan (219099073)
+Date: 03 June 2025 */
+package za.co.admatech.controller;
 
-
-
-Author: Teyana Raubenheimer (230237622)
-
-
-
-Date: 30 May 2025 */ package za.co.admatech.controller;
-
-import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*; import za.co.admatech.domain.Cart; import za.co.admatech.service.cart_domain_service.CartService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import za.co.admatech.domain.Cart;
+import za.co.admatech.service.cart_domain_service.ICartService;
 
 import java.util.List;
 
-@RestController @RequestMapping("/carts")
-@CrossOrigin(origins = "*") // Adjust origins as needed for production public class CartController { private final CartService cartService;
-public class CartController{
-    private CartService cartService;
-    public CartController(CartService cartService) {
+@RestController
+@RequestMapping("/carts")
+@CrossOrigin(origins = "*")
+public class CartController {
+    private final ICartService cartService;
+
+    public CartController(ICartService cartService) {
         this.cartService = cartService;
     }
 
@@ -32,9 +29,9 @@ public class CartController{
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{cartID}")
-    public ResponseEntity<Cart> read(@PathVariable Long cartID) {
-        Cart cart = cartService.read(cartID);
+    @GetMapping("/{id}")
+    public ResponseEntity<Cart> read(@PathVariable String id) {
+        Cart cart = cartService.read(id);
         return ResponseEntity.ok(cart);
     }
 
@@ -44,9 +41,9 @@ public class CartController{
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{cartID}")
-    public ResponseEntity<Void> delete(@PathVariable Long cartID) {
-        boolean deleted = cartService.delete(cartID);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = cartService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
@@ -54,5 +51,4 @@ public class CartController{
     public ResponseEntity<List<Cart>> getAll() {
         return ResponseEntity.ok(cartService.getAll());
     }
-
 }

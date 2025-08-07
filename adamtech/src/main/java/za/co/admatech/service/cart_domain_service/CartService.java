@@ -1,24 +1,21 @@
 /*
-
-
-
-
-
 CartService.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025 */
+package za.co.admatech.service.cart_domain_service;
 
-
-
-Author: Teyana Raubenheimer (230237622)
-
-
-
-Date: 24 May 2025 */ package za.co.admatech.service.cart_domain_service;
-
-import jakarta.persistence.EntityNotFoundException; import jakarta.transaction.Transactional; import org.springframework.stereotype.Service; import za.co.admatech.domain.Cart; import za.co.admatech.repository.CartRepository; import za.co.admatech.util.Helper;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import za.co.admatech.domain.Cart;
+import za.co.admatech.repository.CartRepository;
 
 import java.util.List;
 
-@Service public class CartService implements ICartService { private final CartRepository cartRepository;
+@Service
+public class CartService implements ICartService {
+
+    private final CartRepository cartRepository;
 
     public CartService(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
@@ -27,43 +24,57 @@ import java.util.List;
     @Override
     @Transactional
     public Cart create(Cart cart) {
-        if (!Helper.isValidCart(cart)) {
-            throw new IllegalArgumentException("Invalid cart data");
+        if (cart == null) {
+            throw new IllegalArgumentException("Cart data is null");
         }
         return cartRepository.save(cart);
     }
 
     @Override
-    public Cart read(Long cartId) {
-        return cartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart with ID " + cartId + " not found"));
+    public Cart read(String id) {
+        try {
+            Long longId = Long.valueOf(id);
+            return cartRepository.findById(longId)
+                    .orElseThrow(() -> new EntityNotFoundException("Cart with ID " + id + " not found"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid cart ID format: " + id, e);
+        }
     }
 
     @Override
     @Transactional
     public Cart update(Cart cart) {
-        if (!Helper.isValidCart(cart) || cart.getCartID() == null) {
-            throw new IllegalArgumentException("Invalid cart data or missing ID");
+        if (cart.getId() == null) {
+            throw new IllegalArgumentException("Missing cart ID");
         }
-        if (!cartRepository.existsById(cart.getCartID())) {
-            throw new EntityNotFoundException("Cart with ID " + cart.getCartID() + " not found");
+        try {
+            Long longId = Long.valueOf(cart.getId());
+            if (!cartRepository.existsById(longId)) {
+                throw new EntityNotFoundException("Cart with ID " + cart.getId() + " not found");
+            }
+            return cartRepository.save(cart);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid cart ID format: " + cart.getId(), e);
         }
-        return cartRepository.save(cart);
     }
 
     @Override
     @Transactional
-    public boolean delete(Long cartId) {
-        if (!cartRepository.existsById(cartId)) {
-            return false;
+    public boolean delete(String id) {
+        try {
+            Long longId = Long.valueOf(id);
+            if (!cartRepository.existsById(longId)) {
+                return false;
+            }
+            cartRepository.deleteById(longId);
+            return true;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid cart ID format: " + id, e);
         }
-        cartRepository.deleteById(cartId);
-        return true;
     }
 
     @Override
     public List<Cart> getAll() {
         return cartRepository.findAll();
     }
-
 }

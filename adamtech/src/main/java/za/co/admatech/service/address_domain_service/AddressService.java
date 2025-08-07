@@ -4,11 +4,19 @@ Author: Rorisang Makgana (230602363)
 Date: 11 May 2025 */
 package za.co.admatech.service.address_domain_service;
 
-import jakarta.persistence.EntityNotFoundException; import jakarta.transaction.Transactional; import org.springframework.stereotype.Service; import za.co.admatech.domain.Address; import za.co.admatech.repository.AddressRepository; import za.co.admatech.util.Helper;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import za.co.admatech.domain.Address;
+import za.co.admatech.repository.AddressRepository;
+import za.co.admatech.util.Helper;
 
 import java.util.List;
 
-@Service public class AddressService implements IAddressService { private final AddressRepository addressRepository;
+@Service
+public class AddressService implements IAddressService {
+
+    private final AddressRepository addressRepository;
 
     public AddressService(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
@@ -32,11 +40,11 @@ import java.util.List;
     @Override
     @Transactional
     public Address update(Address address) {
-        if (!Helper.isValidAddress(address) || address.getAddressID() == null) {
+        if (!Helper.isValidAddress(address) || address.getAddressId() == null) {
             throw new IllegalArgumentException("Invalid address data or missing ID");
         }
-        if (!addressRepository.existsById(address.getAddressID())) {
-            throw new EntityNotFoundException("Address with ID " + address.getAddressID() + " not found");
+        if (!addressRepository.existsById(address.getAddressId())) {
+            throw new EntityNotFoundException("Address with ID " + address.getAddressId() + " not found");
         }
         return addressRepository.save(address);
     }
@@ -55,5 +63,4 @@ import java.util.List;
     public List<Address> getAll() {
         return addressRepository.findAll();
     }
-
 }

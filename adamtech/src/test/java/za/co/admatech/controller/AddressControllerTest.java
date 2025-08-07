@@ -1,114 +1,79 @@
-/*
+package za.co.admatech.controller;
 
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import za.co.admatech.domain.Address;
+import za.co.admatech.service.address_domain_service.AddressService;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-
-AddressControllerTest.java
-
-
-
-Author: Rorisang Makgana (230602363) */ package za.co.admatech.controller;
-
-import org.junit.jupiter.api.*; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.test.context.SpringBootTest; import org.springframework.boot.test.web.server.LocalServerPort; import org.springframework.http.HttpMethod; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.client.RestClientException; import za.co.admatech.domain.Address; import za.co.admatech.factory.AddressFactory;
-
-import jakarta.transaction.Transactional;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) @TestMethodOrder(MethodOrderer.OrderAnnotation.class) @Transactional class AddressControllerTest { @LocalServerPort private int port;
+@WebMvcTest(AddressController.class)
+class AddressControllerTest {
 
     @Autowired
-    private org.springframework.boot.test.web.client.TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
-    private String baseUrl;
+    @MockBean
+    private AddressService addressService;
 
-    private static Address address;
-
-    @BeforeAll
-    public static void setup() {
-        address = AddressFactory.createAddress(
-                12L,
-                (short) 12,
-                "Devin's Chapman",
-                "Cravenwood",
-                "Mulburrey",
-                "Lancashire",
-                (short) 1299
-        );
-    }
+    private Address sampleAddress;
 
     @BeforeEach
-    public void init() {
-        baseUrl = "http://localhost:" + port + "/addresses";
+    void setUp() {
+        sampleAddress = new Address();
+        sampleAddress.setAddressId(12L);
+        sampleAddress.setStreetNumber("123");
+        sampleAddress.setStreetName("Main Street");
+        sampleAddress.setCity("Cape Town");
+        sampleAddress.setPostalCode("8001");
     }
 
     @Test
-    @Order(1)
-    void create() {
-        ResponseEntity<Address> response = restTemplate.postForEntity(baseUrl, address, Address.class);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(address.getAddressID(), response.getBody().getAddressID());
-        assertEquals(address.getStreetName(), response.getBody().getStreetName());
-        System.out.println("Created Address: " + response.getBody());
+    void testGetAddressById() throws Exception {
+        when(addressService.read(12L)).thenReturn(sampleAddress);
 
-        // Update address for subsequent tests
-        address = response.getBody();
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/address/ADDR001"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.addressId").value("ADDR001"))
+                .andExpect(jsonPath("$.city").value("Cape Town"));
+
+        verify(addressService).read(12L);
     }
 
     @Test
-    @Order(2)
-    void read() {
-        String url = baseUrl + "/" + address.getAddressID();
-        ResponseEntity<Address> response = restTemplate.getForEntity(url, Address.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(address.getAddressID(), response.getBody().getAddressID());
-        assertEquals(address.getStreetName(), response.getBody().getStreetName());
-        System.out.println("Read Address: " + response.getBody());
+    void testCreateAddress() throws Exception {
+        when(addressService.create(any(Address.class))).thenReturn(sampleAddress);
+
+        String json = """
+                {
+                  "addressId": "ADDR001",
+                  "streetNumber": "123",
+                  "streetName": "Main Street",
+                  "city": "Cape Town",
+                  "postalCode": "8001"
+                }
+                """;
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/address/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.streetName").value("Main Street"));
     }
 
     @Test
-    @Order(3)
-    void update() {
-        Address updatedAddress = new Address.Builder()
-                .copy(address)
-                .setStreetName("Updated Devin's Chapman")
-                .setSuburb("Updated Cravenwood")
-                .build();
-        ResponseEntity<Address> response = restTemplate.exchange(baseUrl, HttpMethod.PUT, new org.springframework.http.HttpEntity<>(updatedAddress), Address.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(updatedAddress.getAddressID(), response.getBody().getAddressID());
-        assertEquals("Updated Devin's Chapman", response.getBody().getStreetName());
-        assertEquals("Updated Cravenwood", response.getBody().getSuburb());
-        System.out.println("Updated Address: " + response.getBody());
+    void testDeleteAddress() throws Exception {
+        doNothing().when(addressService).delete(12L);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/address/delete/ADDR001"))
+                .andExpect(status().isOk());
+
+        verify(addressService).delete(12L);
     }
-
-    @Test
-    @Order(4)
-    void delete() {
-        String url = baseUrl + "/" + address.getAddressID();
-        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        System.out.println("Deleted Address: " + address.getAddressID());
-
-        // Verify deletion
-        ResponseEntity<Address> readResponse = restTemplate.getForEntity(url, Address.class);
-        assertEquals(HttpStatus.NOT_FOUND, readResponse.getStatusCode());
-    }
-
-    @Test
-    @Order(5)
-    void getAll() {
-        ResponseEntity<Address[]> response = restTemplate.getForEntity(baseUrl, Address[].class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().length >= 0);
-        System.out.println("All Addresses: " + List.of(response.getBody()));
-    }
-
 }

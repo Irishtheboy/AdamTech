@@ -1,35 +1,30 @@
 package za.co.admatech.factory;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Money;
-import za.co.admatech.domain.Product;
-import za.co.admatech.domain.enums.ProductCategory;
-import za.co.admatech.factory.*;
-import org.junit.jupiter.api.*;
+import org.springframework.core.annotation.Order;
+import za.co.admatech.domain.*;
 import za.co.admatech.domain.enums.ProductType;
+import za.co.admatech.factory.ProductFactory;
+
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ProductFactoryTest {
+public class ProductFactoryTest {
 
-    private static Money price1 = new Money.Builder().setAmount(1000).setCurrency("ZAR").build();
-    private static Money price2 = new Money.Builder().setAmount(750).setCurrency("ZAR").build();
-    private static Money price3 = new Money.Builder().setAmount(0).setCurrency("ZAR").build();
+    private static Money price1 = new Money.Builder().amount(new BigDecimal("1000")).currency("ZAR").build();
+    private static Money price2 = new Money.Builder().amount(new BigDecimal("750")).currency("ZAR").build();
+    private static Money price3 = new Money.Builder().amount(new BigDecimal("0")).currency("ZAR").build();
 
-    Product p1 = ProductFactory.createProduct(
-            001l, "Sneakers", "White running shoes", price1, ProductCategory.COMPONENTS, ProductType.PERIPHERAL
-    );
+    private static Category category = new Category.Builder().categoryId("1").name("Components").build();
 
-    private Product p2 = ProductFactory.createProduct(
-            002l, "Boots", "Leather boots", price2,ProductCategory.COMPONENTS, ProductType.DESKTOP
-    );
-
-    private static Product p3 = ProductFactory.createProduct(
-            003l, "Sandals", "Beach sandals", price3,ProductCategory.COMPONENTS, ProductType.DESKTOP
-    );
+    private static Product p1 = ProductFactory.createProduct("1", "Sneakers", "White running shoes", "SKU001", price1, category, ProductType.PERIPHERAL);
+    private static Product p2 = ProductFactory.createProduct("2", "Boots", "Leather boots", "SKU002", price2, category, ProductType.DESKTOP);
+    private static Product p3 = ProductFactory.createProduct("3", "Sandals", "Beach sandals", "SKU003", price3, category, ProductType.DESKTOP);
 
     @Test
     @Order(1)

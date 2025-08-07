@@ -22,8 +22,8 @@ public class Helper { /* METHODS FOR VALIDATING THE CUSTOMER DOMAIN */ public st
         return customer != null &&
                 !isNullOrEmpty(customer.getFirstName()) &&
                 !isNullOrEmpty(customer.getLastName()) &&
-                isValidEmail(customer.getEmail()) &&
-                isValidPhoneNumber(customer.getPhoneNumber());
+                isValidEmail(customer.getEmail());
+
     }
 
     /* METHODS FOR VALIDATING THE ADDRESS DOMAIN */
@@ -36,12 +36,22 @@ public class Helper { /* METHODS FOR VALIDATING THE CUSTOMER DOMAIN */ public st
     }
 
     public static boolean isValidAddress(Address address) {
-        return address != null &&
-                isValidStreetNumber(address.getStreetNumber()) &&
-                !isNullOrEmpty(address.getStreetName()) &&
-                !isNullOrEmpty(address.getCity()) &&
-                isValidPostalCode(address.getPostalCode());
+        if (address == null) return false;
+
+        try {
+            short streetNum = Short.parseShort(address.getStreetNumber());
+            short postalCodeNum = Short.parseShort(address.getPostalCode());
+
+            return isValidStreetNumber(streetNum) &&
+                    !isNullOrEmpty(address.getStreetName()) &&
+                    !isNullOrEmpty(address.getCity()) &&
+                    isValidPostalCode(postalCodeNum);
+
+        } catch (NumberFormatException e) {
+            return false; // invalid number format in streetNumber or postalCode
+        }
     }
+
 
     public static boolean isValidPostalCodeRegex(String postalCode) {
         return postalCode != null && postalCode.matches("^[1-9]\\d{3}$");
@@ -69,25 +79,14 @@ public class Helper { /* METHODS FOR VALIDATING THE CUSTOMER DOMAIN */ public st
         return status != null;
     }
 
-    public static boolean isValidOrder(Order order) {
-        return order != null &&
-                isValidLocalDate(order.getOrderDate()) &&
-                order.getCustomer() != null &&
-                order.getOrderItems() != null &&
-                isValidOrderStatus(order.getOrderStatus());
-    }
+
 
     /* METHODS FOR VALIDATING THE PAYMENT DOMAIN */
     public static boolean isValidPaymentStatus(PaymentStatus status) {
         return status != null;
     }
 
-    public static boolean isValidPayment(Payment payment) {
-        return payment != null &&
-                isValidLocalDate(payment.getPaymentDate()) &&
-                payment.getAmount() != null &&
-                isValidPaymentStatus(payment.getPaymentStatus());
-    }
+
 
     public static String generateId() {
         return UUID.randomUUID().toString();
@@ -99,7 +98,7 @@ public class Helper { /* METHODS FOR VALIDATING THE CUSTOMER DOMAIN */ public st
     }
 
     public static boolean isValidProduct(Product product) {
-        return product != null && !isNullOrEmpty(product.getProductName()) && product.getProductPriceAmount() != null;
+        return product != null && !isNullOrEmpty(product.getProductId()) && product.getPrice() != null;
     }
 
 }

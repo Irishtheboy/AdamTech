@@ -1,120 +1,90 @@
-/*
+package za.co.admatech.domain;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "order_item")
+public class OrderItem {
+    @Id
+    @Column(nullable = false)
+    private String orderItemId;
 
+    @Column(nullable = false)
+    private String productId;
 
-
-OrderItem.java
-
-
-
-OrderItem Class
-
-
-
-Author: Naqeebah Khan (219099073)
-
-
-
-Date: 10 May 2025 */ package za.co.admatech.domain;
-
-import jakarta.persistence.*; import jakarta.validation.constraints.Min; import jakarta.validation.constraints.NotNull;
-
-@Entity @Table(name = "order_items") public class OrderItem { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-
-    @Min(0)
+    @Column(nullable = false)
     private int quantity;
 
     @Embedded
+    @Column(nullable = false)
     private Money unitPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @ManyToOne
+    @JoinColumn(name = "orderId", referencedColumnName = "id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @ManyToOne
+    @JoinColumn(name = "productId", referencedColumnName = "productId", insertable = false, updatable = false)
     private Product product;
 
-    public OrderItem() {
-    }
+    // Public no-arg constructor
+    public OrderItem() {}
 
     private OrderItem(Builder builder) {
-        this.id = builder.id;
-        this.product = builder.product;
+        this.orderItemId = builder.orderItemId;
+        this.productId = builder.productId;
         this.quantity = builder.quantity;
         this.unitPrice = builder.unitPrice;
         this.order = builder.order;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public Money getUnitPrice() {
-        return unitPrice;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "id='" + id + '\'' +
-                ", product='" + product + '\'' +
-                ", quantity=" + quantity +
-                ", unitPrice=" + unitPrice +
-                '}';
+        this.product = builder.product;
     }
 
     public static class Builder {
-        private Long id;
-        private Product product;
+        private String orderItemId;
+        private String productId;
         private int quantity;
         private Money unitPrice;
         private Order order;
+        private Product product;
 
-        public Builder setId(Long id) {
-            this.id = id;
+        public Builder orderItemId(String orderItemId) {
+            this.orderItemId = orderItemId;
             return this;
         }
 
-        public Builder setProduct(Product product) {
-            this.product = product;
+        public Builder productId(String productId) {
+            this.productId = productId;
             return this;
         }
 
-        public Builder setQuantity(int quantity) {
+        public Builder quantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder setUnitPrice(Money unitPrice) {
+        public Builder unitPrice(Money unitPrice) {
             this.unitPrice = unitPrice;
             return this;
         }
 
-        public Builder setOrder(Order order) {
+        public Builder order(Order order) {
             this.order = order;
             return this;
         }
 
+        public Builder product(Product product) {
+            this.product = product;
+            return this;
+        }
+
+        // Add copy method to builder
         public Builder copy(OrderItem orderItem) {
-            this.id = orderItem.id;
-            this.product = orderItem.product;
-            this.quantity = orderItem.quantity;
-            this.unitPrice = orderItem.unitPrice;
-            this.order = orderItem.order;
+            this.orderItemId = orderItem.getOrderItemId();
+            this.productId = orderItem.getProductId();
+            this.quantity = orderItem.getQuantity();
+            this.unitPrice = orderItem.getUnitPrice();
+            this.order = orderItem.getOrder();
+            this.product = orderItem.getProduct();
             return this;
         }
 
@@ -123,4 +93,64 @@ import jakarta.persistence.*; import jakarta.validation.constraints.Min; import 
         }
     }
 
+    // Optional: copy method on OrderItem instance
+    public OrderItem copy() {
+        return new Builder()
+                .orderItemId(this.orderItemId)
+                .productId(this.productId)
+                .quantity(this.quantity)
+                .unitPrice(this.unitPrice)
+                .order(this.order)
+                .product(this.product)
+                .build();
+    }
+
+    // Getters and setters
+    public String getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(String orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Money getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Money unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }

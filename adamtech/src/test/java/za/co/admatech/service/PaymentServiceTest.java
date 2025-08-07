@@ -1,16 +1,26 @@
-package za.co.admatech.service;
+package za.co.admatech.service;/*
+PaymentServiceTest.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025
+Description: This test class contains integration tests for the PaymentService class,
+verifying the functionality of create, read, update, delete, and getAll methods
+using Spring Boot without mocks.
+*/
 
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Money;
+
+import jakarta.persistence.EntityNotFoundException;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.Payment;
+import za.co.admatech.domain.Money;
 import za.co.admatech.domain.enums.PaymentStatus;
 import za.co.admatech.factory.PaymentFactory;
 import za.co.admatech.service.payment_domain_service.PaymentService;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,18 +33,23 @@ class PaymentServiceTest {
     private PaymentService service;
 
     // Mock Order and Payment setup
-    private final Order order = new Order.Builder()
-            .setId(01L)
-            .setOrderDate(LocalDate.of(2025, 5, 24))
-            .setOrderStatus(za.co.admatech.domain.enums.OrderStatus.CONFIRMED)
-            .setTotalAmount(new Money(1200, "ZAR"))
+    private final String ORDER_ID = "1";
+    private final String PAYMENT_ID = "101";
+    private final LocalDate PAYMENT_DATE = LocalDate.of(2025, 5, 25);
+    private final Money VALID_MONEY = new Money.Builder()
+            .amount(new java.math.BigDecimal("1200.00"))
+            .currency("ZAR")
             .build();
-
+    private final Order order = new Order.Builder()
+            .id(ORDER_ID)
+            .orderDate(LocalDateTime.of(2025, 5, 24, 0, 0))
+            .totalAmount(VALID_MONEY)
+            .build();
     private final Payment payment = PaymentFactory.createPayment(
-            101L,
-            order,
-            LocalDate.of(2025, 5, 25),
-            new Money(1200, "ZAR"),
+            PAYMENT_ID,
+            order.getId(),
+            PAYMENT_DATE.atStartOfDay(),
+            VALID_MONEY,
             PaymentStatus.PENDING
     );
 
@@ -42,6 +57,7 @@ class PaymentServiceTest {
     void a_create() {
         Payment created = service.create(payment);
         assertNotNull(created);
+        assertEquals(PAYMENT_ID, created.getPaymentId());
         assertEquals(PaymentStatus.PENDING, created.getPaymentStatus());
         System.out.println("Created: " + created);
     }
@@ -49,20 +65,20 @@ class PaymentServiceTest {
     @Test
     void b_read() {
         Payment saved = service.create(payment);
-        Payment read = service.read(saved.getId());
+        Payment read = service.read(saved.getPaymentId());
         assertNotNull(read);
+        assertEquals(PAYMENT_ID, read.getPaymentId());
         System.out.println("Read: " + read);
     }
 
     @Test
     void c_update() {
         Payment saved = service.create(payment);
-        Payment updated = new Payment.Builder()
-                .copy(saved)
-                .setPaymentStatus(PaymentStatus.COMPLETED)
-                .build();
+        Payment updated = saved.copy();
+        updated.setPaymentStatus(PaymentStatus.COMPLETED); // Example update logic
         Payment result = service.update(updated);
         assertNotNull(result);
+        assertEquals(PAYMENT_ID, result.getPaymentId());
         assertEquals(PaymentStatus.COMPLETED, result.getPaymentStatus());
         System.out.println("Updated: " + result);
     }
@@ -70,14 +86,15 @@ class PaymentServiceTest {
     @Test
     void d_delete() {
         Payment saved = service.create(payment);
-        boolean deleted = service.delete(saved.getId());
+        boolean deleted = service.delete(saved.getPaymentId());
         assertTrue(deleted);
-        assertNull(service.read(saved.getId()));
+        assertThrows(EntityNotFoundException.class, () -> service.read(saved.getPaymentId()));
         System.out.println("Deleted: " + deleted);
     }
 
     @Test
     void e_getPayments() {
+        service.create(payment);
         List<Payment> payments = service.getAll();
         assertNotNull(payments);
         assertFalse(payments.isEmpty());

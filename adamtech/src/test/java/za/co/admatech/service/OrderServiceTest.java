@@ -1,86 +1,91 @@
-/*OrderServiceTest.java
-  Order Service Test class
-  Author: Naqeebah Khan (219099073)
-  Date: 24 May 2025
- */
+package za.co.admatech.service;/*
+OrderServiceTest.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025
+Description: This test class contains integration tests for the OrderService class,
+verifying the functionality of create, read, update, delete, and getAll methods
+using Spring Boot without mocks.
+*/
 
-package za.co.admatech.service;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import jakarta.persistence.EntityNotFoundException;
+import za.co.admatech.domain.Order;
+import za.co.admatech.domain.Money;
+import za.co.admatech.service.order_domain_service.OrderService;
+import za.co.admatech.util.Helper;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Money;
-import za.co.admatech.domain.Order;
-import za.co.admatech.domain.OrderItem;
-import za.co.admatech.domain.Product;
-import za.co.admatech.domain.enums.OrderStatus;
-import za.co.admatech.domain.enums.ProductCategory;
-import za.co.admatech.domain.enums.ProductType;
-import za.co.admatech.factory.OrderFactory;
-import za.co.admatech.factory.OrderItemFactory;
-import za.co.admatech.service.order_domain_service.IOrderService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class OrderServiceTest {
-    @Autowired
-    private IOrderService service;
-    private Product product = new Product.Builder()
-            .setProductName("Test Item")
-            .setProductDescription("Test Desc")
-            .setProductPriceAmount(new Money(100, "ZAR"))
-            .setCategory(ProductCategory.AUDIO)
-            .setProductType(ProductType.PERIPHERAL)
-            .build();
 
-    LocalDate date = LocalDate.of(2020, 1, 1);
-    private Order order = new Order.Builder()
-            .setId(231l)
-            .setOrderDate(date)
-            .setOrderStatus(OrderStatus.COMPLETED)
-            .setTotalAmount(new Money(100, "ZAR"))
+    @Autowired
+    private OrderService service;
+
+    // Mock Order setup
+    private final String VALID_ID = "1";
+    private final LocalDateTime VALID_DATE = LocalDateTime.of(2025, 5, 24, 0, 0);
+    private final Money VALID_MONEY = new Money.Builder()
+            .amount(new java.math.BigDecimal("1200.00"))
+            .currency("ZAR")
+            .build();
+    private final Order order = new Order.Builder()
+            .id(VALID_ID)
+            .orderDate(VALID_DATE)
+            .totalAmount(VALID_MONEY)
             .build();
 
     @Test
     void a_create() {
-        Order createdOrder = service.create(order);
-        assertNotNull(createdOrder);
-        System.out.println(createdOrder);
+        Order created = service.create(order);
+        assertNotNull(created);
+        assertEquals(VALID_ID, created.getId());
+        System.out.println("Created: " + created);
     }
 
     @Test
     void b_read() {
-        Order readOrder = service.read(order.getId());
-        assertNotNull(readOrder);
-        System.out.println(readOrder);
+        Order saved = service.create(order);
+        Order read = service.read(saved.getId());
+        assertNotNull(read);
+        assertEquals(VALID_ID, read.getId());
+        System.out.println("Read: " + read);
     }
 
     @Test
     void c_update() {
-        Order updateOrder = new Order.Builder().copy(order)
-                .setOrderStatus(OrderStatus.COMPLETED)
-                .build();
-        Order updatedOrder = service.update(updateOrder);
-        assertNotNull(updatedOrder);
-        System.out.println(updateOrder);
+        Order saved = service.create(order);
+        Order updated = saved.copy();
+        updated.setOrderDate(LocalDateTime.of(2025, 5, 25, 0, 0)); // Example update logic
+        Order result = service.update(updated);
+        assertNotNull(result);
+        assertEquals(VALID_ID, result.getId());
+        assertEquals(LocalDateTime.of(2025, 5, 25, 0, 0), result.getOrderDate());
+        System.out.println("Updated: " + result);
     }
 
     @Test
     void d_delete() {
-        boolean deleted = service.delete(order.getId());
+        Order saved = service.create(order);
+        boolean deleted = service.delete(saved.getId());
         assertTrue(deleted);
-        System.out.println("Order successfully deleted");
+        assertThrows(EntityNotFoundException.class, () -> service.read(saved.getId()));
+        System.out.println("Deleted: " + deleted);
     }
 
     @Test
     void e_getOrders() {
-        System.out.println(service.getAll());
+        service.create(order);
+        List<Order> orders = service.getAll();
+        assertNotNull(orders);
+        assertFalse(orders.isEmpty());
+        orders.forEach(System.out::println);
     }
 }

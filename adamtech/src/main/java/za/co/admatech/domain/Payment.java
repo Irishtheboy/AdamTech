@@ -1,121 +1,71 @@
-/*
+package za.co.admatech.domain;
 
+import jakarta.persistence.*;
+import za.co.admatech.domain.enums.PaymentStatus;
 
+import java.time.LocalDateTime;
 
+@Entity
+public class Payment {
+    @Id
+    @Column(nullable = false)
+    private String paymentId;
 
+    @Column(nullable = false)
+    private String orderId;
 
-Payment.java
-
-
-
-Payment POJO class
-
-
-
-Author: FN Lukhele (221075127)
-
-
-
-Date: 10 May 2025 */ package za.co.admatech.domain;
-
-import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; import za.co.admatech.domain.enums.PaymentStatus; import java.time.LocalDate;
-
-@Entity @Table(name = "payment") public class Payment { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @NotNull
-    private LocalDate paymentDate;
+    @Column(nullable = false)
+    private LocalDateTime paymentDate;
 
     @Embedded
+    @Column(nullable = false)
     private Money amount;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    public Long getId() {
-        return id;
-    }
+    // Public no-arg constructor
+    public Payment() {}
 
-    public Order getOrder() {
-        return order;
-    }
 
-    public LocalDate getPaymentDate() {
-        return paymentDate;
-    }
-
-    public Money getAmount() {
-        return amount;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "id='" + id + '\'' +
-                ", order=" + order +
-                ", paymentDate=" + paymentDate +
-                ", amount=" + amount +
-                ", paymentStatus=" + paymentStatus +
-                '}';
-    }
-
-    protected Payment() {
-    }
-
-    protected Payment(Builder builder) {
-        id = builder.id;
-        order = builder.order;
-        paymentDate = builder.paymentDate;
-        amount = builder.amount;
-        paymentStatus = builder.paymentStatus;
+    private Payment(Builder builder) {
+        this.paymentId = builder.paymentId;
+        this.orderId = builder.orderId;
+        this.paymentDate = builder.paymentDate;
+        this.amount = builder.amount;
+        this.paymentStatus = builder.paymentStatus;
     }
 
     public static class Builder {
-        private Long id;
-        private Order order;
-        private LocalDate paymentDate;
+        private String paymentId;
+        private String orderId;
+        private LocalDateTime paymentDate;
         private Money amount;
         private PaymentStatus paymentStatus;
 
-        public Builder setId(Long id) {
-            this.id = id;
+        public Builder paymentId(String paymentId) {
+            this.paymentId = paymentId;
             return this;
         }
 
-        public Builder setOrder(Order order) {
-            this.order = order;
+        public Builder orderId(String orderId) {
+            this.orderId = orderId;
             return this;
         }
 
-        public Builder setPaymentDate(LocalDate paymentDate) {
+        public Builder paymentDate(LocalDateTime paymentDate) {
             this.paymentDate = paymentDate;
             return this;
         }
 
-        public Builder setAmount(Money amount) {
+        public Builder amount(Money amount) {
             this.amount = amount;
             return this;
         }
 
-        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
+        public Builder paymentStatus(PaymentStatus paymentStatus) {
             this.paymentStatus = paymentStatus;
-            return this;
-        }
-
-        public Builder copy(Payment payment) {
-            this.id = payment.id;
-            this.order = payment.order;
-            this.paymentDate = payment.paymentDate;
-            this.amount = payment.amount;
-            this.paymentStatus = payment.paymentStatus;
             return this;
         }
 
@@ -124,4 +74,25 @@ import jakarta.persistence.*; import jakarta.validation.constraints.NotNull; imp
         }
     }
 
+    public Payment copy() {
+        return new Builder()
+                .paymentId(this.paymentId)
+                .orderId(this.orderId)
+                .paymentDate(this.paymentDate)
+                .amount(this.amount)
+                .paymentStatus(this.paymentStatus)
+                .build();
+    }
+
+    // Getters and setters
+    public String getPaymentId() { return paymentId; }
+    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
+    public String getOrderId() { return orderId; }
+    public void setOrderId(String orderId) { this.orderId = orderId; }
+    public LocalDateTime getPaymentDate() { return paymentDate; }
+    public void setPaymentDate(LocalDateTime paymentDate) { this.paymentDate = paymentDate; }
+    public Money getAmount() { return amount; }
+    public void setAmount(Money amount) { this.amount = amount; }
+    public PaymentStatus getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
 }
