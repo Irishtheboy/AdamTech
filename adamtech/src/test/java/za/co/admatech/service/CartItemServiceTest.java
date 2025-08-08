@@ -18,19 +18,25 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class CartItemServiceTest {
+
     @Autowired
     private ICartItemService service;
-    private CartItem cartItem = CartItemFactory.createCartItem("123", 10, "1");
+
+    private static CartItem cartItem;
 
     @Test
     void a_create() {
-        CartItem createdItem = service.create(cartItem);
+        CartItem newItem = CartItemFactory.createCartItem("123", 10, "1");
+        CartItem createdItem = service.create(newItem);
         assertNotNull(createdItem);
+        assertNotNull(createdItem.getCartItemID());  // ID should now be generated
+        cartItem = createdItem; // save for later tests
         System.out.println(createdItem);
     }
 
     @Test
     void b_read() {
+        assertNotNull(cartItem);  // ensure previous test ran and set this
         CartItem readItem = service.read(cartItem.getCartItemID());
         assertNotNull(readItem);
         System.out.println(readItem);
@@ -38,14 +44,18 @@ class CartItemServiceTest {
 
     @Test
     void c_update() {
-        CartItem newItem = new CartItem.Builder().copy(cartItem).setQuantity(3).build();
-        CartItem updated = service.update(newItem);
+        CartItem updatedItem = new CartItem.Builder()
+                .copy(cartItem)
+                .setQuantity(3)
+                .build();
+        CartItem updated = service.update(updatedItem);
         assertNotNull(updated);
         System.out.println(updated);
     }
 
     @Test
     void d_delete() {
+        assertNotNull(cartItem);
         boolean deleted = service.delete(cartItem.getCartItemID());
         assertTrue(deleted);
         System.out.println(deleted);
@@ -55,5 +65,4 @@ class CartItemServiceTest {
     void e_getAll() {
         System.out.println(service.getAll());
     }
-
 }
