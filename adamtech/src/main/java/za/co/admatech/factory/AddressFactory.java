@@ -10,27 +10,17 @@ import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
 public class AddressFactory {
-    public static Address createAddress(
-        Long addressID,
-        short streetNumber,
-        String streetName,
-        String suburb,
-        String city,
-        String province,
-        short postalCode
-    ){
-        if(Helper.isNullOrEmpty(suburb)){
-            return null;
-        }
-
+    public static Address createAddress(short streetNumber, String streetName,
+                                        String suburb, String city,
+                                        String province, short postalCode) {
         return new Address.Builder()
-        .setAddressID(addressID)
-        .setStreetName(streetName)
-        .setStreetNumber(streetNumber)
-        .setSuburb(suburb)
-        .setCity(city)
-        .setProvince(province)
-        .setPostalCode(postalCode)
-        .build();
-    }   
+                .setStreetNumber(streetNumber)
+                .setStreetName(streetName)
+                .setSuburb(suburb)
+                .setCity(city)
+                .setProvince(province)
+                .setPostalCode(postalCode)
+                .build();
+    }
+
 }

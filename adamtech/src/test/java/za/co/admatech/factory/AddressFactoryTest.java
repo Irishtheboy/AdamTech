@@ -1,38 +1,39 @@
 package za.co.admatech.factory;
+
 /**
  * AddressFactoryTest.java
- * AddressFactoryTest Factory Test class
+ * Factory test class for AddressFactory
  *
- * Author: Rorisang Makgana(230602363)
+ * Author: Rorisang Makgana (230602363)
  */
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.*;
 import za.co.admatech.domain.Address;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AddressFactoryTest {
 
-    private AddressFactory addressFactory;
-    Address address = addressFactory.createAddress(
-            07111L,
-            (short) 77,
-            "Bakersdraft",
-            "Kuils River",
-            "Cape Town",
-            "Western Cape",
-            (short) 7440);
+    private static Address address;
+
+    @BeforeAll
+    public static void setup() {
+        address = AddressFactory.createAddress(
+                (short)1L,                    // addressID
+                // streetNumber
+                "Devin's Chapman",     // streetName
+                "Cravenwood",          // suburb
+                "Mulburrey",           // city
+                "Lancashire",          // province
+                (short) 1299           // postalCode
+        );
+    }
 
     @Test
     @Order(1)
     void createAddress() {
         assertNotNull(address);
-        System.out.println(address);
+        System.out.println("Created Address: " + address);
     }
-
 }

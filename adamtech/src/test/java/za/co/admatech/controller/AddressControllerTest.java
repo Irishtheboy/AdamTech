@@ -10,8 +10,9 @@ import za.co.admatech.factory.AddressFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+
 class AddressControllerTest {
     private static Address address;
     @Autowired
@@ -22,7 +23,6 @@ class AddressControllerTest {
     @BeforeAll
     public static void setup() {
         address = AddressFactory.createAddress(
-                (long) 12,
                 (short) 12,
                 "Devin's Chapman",
                 "Cravenwood",

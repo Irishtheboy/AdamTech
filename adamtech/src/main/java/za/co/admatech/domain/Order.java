@@ -17,8 +17,8 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String customerId;
 
     private LocalDate orderDate;
@@ -45,7 +45,7 @@ public class Order {
         this.orderItems = builder.orderItems;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -81,14 +81,14 @@ public class Order {
     }
 
     public static class Builder {
-        private String id;
+        private Long id;
         private String customerId;
         private LocalDate orderDate;
         private OrderStatus orderStatus;
         private Money totalAmount;
         private List<OrderItem> orderItems;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }

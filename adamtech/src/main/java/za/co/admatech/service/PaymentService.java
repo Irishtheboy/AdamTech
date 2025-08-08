@@ -8,7 +8,7 @@ import za.co.admatech.repository.PaymentRepository;
 import java.util.List;
 
 @Service
-public class PaymentService implements IService<Payment, Long> {
+public class PaymentService implements IPaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;

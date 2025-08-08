@@ -10,9 +10,7 @@ import za.co.admatech.domain.Order;
 
 import java.util.List;
 
-public interface IOrderService extends IService <Order, String>{
-    List<Order> getOrders();
-
+public interface IOrderService extends IService <Order, Long>{
     List<Order> getAll();
 }
 

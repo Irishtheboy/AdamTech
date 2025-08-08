@@ -24,7 +24,6 @@ class CustomerControllerTest {
     @BeforeAll
     public static void setup(){
         address = AddressFactory.createAddress(
-                (long)12,
                 (short) 12,
                 "Devin's Chapman",
                 "Cravenwood",
@@ -32,6 +31,7 @@ class CustomerControllerTest {
                 "Lancashire",
                 (short) 1299
         );
+
         customer = CustomerFactory.createCustomer(
                 "1277AAB17",
                 "Rorisang",

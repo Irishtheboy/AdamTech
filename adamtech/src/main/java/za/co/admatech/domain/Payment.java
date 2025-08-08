@@ -1,38 +1,33 @@
 package za.co.admatech.domain;
 
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
 
-/* Payment.java
-
-     Payment POJO class
-
-     Author: FN Lukhele (221075127)
-
-     Date: 10 May 2025
-
-*/
 @Entity
 public class Payment {
     @Id
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;  // use lowercase 'id' per Java convention
+
     private String orderId;
     private LocalDate paymentDate;
 
     @Embedded
     private Money amount;
+
     private PaymentStatus paymentStatus;
 
     public Payment() {
     }
 
     private Payment(Builder builder) {
-        this.Id = builder.Id;
+        this.id = builder.id;
         this.orderId = builder.orderId;
         this.paymentDate = builder.paymentDate;
         this.amount = builder.amount;
@@ -40,7 +35,7 @@ public class Payment {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public String getOrderId() {
@@ -62,7 +57,7 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "Id='" + Id + '\'' +
+                "id=" + id +
                 ", orderId='" + orderId + '\'' +
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
@@ -70,25 +65,15 @@ public class Payment {
                 '}';
     }
 
-    public static class Builder{
-        private Long Id;
+    public static class Builder {
+        private Long id;
         private String orderId;
         private LocalDate paymentDate;
         private Money amount;
         private PaymentStatus paymentStatus;
 
-        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
-            this.paymentStatus = paymentStatus;
-            return this;
-        }
-
-        public Builder setAmount(Money amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public Builder setPaymentDate(LocalDate paymentDate) {
-            this.paymentDate = paymentDate;
+        public Builder setId(Long id) {
+            this.id = id;
             return this;
         }
 
@@ -97,22 +82,28 @@ public class Payment {
             return this;
         }
 
-        public Builder setId(Long id) {
-            Id = id;
+        public Builder setPaymentDate(LocalDate paymentDate) {
+            this.paymentDate = paymentDate;
+            return this;
+        }
+
+        public Builder setAmount(Money amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
+            this.paymentStatus = paymentStatus;
             return this;
         }
 
         public Builder copy(Payment payment) {
-            payment.Id = this.Id;
-            payment.orderId = this.orderId;
-            payment.paymentDate = this.paymentDate;
-            payment.amount = this.amount;
-            payment.paymentStatus = this.paymentStatus;
+            this.id = payment.id;
+            this.orderId = payment.orderId;
+            this.paymentDate = payment.paymentDate;
+            this.amount = payment.amount;
+            this.paymentStatus = payment.paymentStatus;
             return this;
-        }
-
-        public Payment copy() {
-            return new Payment(this);
         }
 
         public Payment build() {

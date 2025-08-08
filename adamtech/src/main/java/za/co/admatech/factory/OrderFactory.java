@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class OrderFactory {
 
     public static Order createOrder(String customerId, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
-        String id = customerId;
+
 
         if(Helper.isNullOrEmpty(customerId)){
             return null;
@@ -35,7 +35,7 @@ public class OrderFactory {
 
 
         return new Order.Builder()
-                .setId(Helper.generateId())
+
                 .setCustomerId(customerId)
                 .setOrderDate(orderDate)
                 .setOrderStatus(orderStatus)

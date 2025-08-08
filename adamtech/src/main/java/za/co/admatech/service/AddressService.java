@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Address;
 import za.co.admatech.repository.AddressRepository;
-@Service
 
-public class AddressService implements IAddressService{
+import java.util.List;
+
+@Service
+public class AddressService implements IAddressService {
+
     private final AddressRepository addressRepository;
 
     @Autowired
@@ -35,4 +38,8 @@ public class AddressService implements IAddressService{
         return true;
     }
 
+    @Override
+    public List<Address> getAll() {
+        return addressRepository.findAll();
+    }
 }

@@ -29,8 +29,11 @@ class CartServiceTest {
     void a_create() {
         Cart createdCart = service.create(cart);
         assertNotNull(createdCart);
+        assertNotNull(createdCart.getCartID()); // make sure ID is generated
+        cart = createdCart;  // Update the local reference to have the generated ID
         System.out.println(createdCart);
     }
+
 
     @Test
     @Order(2)

@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 public class Cart {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartID;
     private String customerID;
     private String cartItemID;

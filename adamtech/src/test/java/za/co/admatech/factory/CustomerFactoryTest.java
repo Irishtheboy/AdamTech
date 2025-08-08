@@ -24,8 +24,8 @@ class CustomerFactoryTest {
     private AddressFactory addressFactory;
     private static Cart cart;
     private Address address = addressFactory.createAddress(
-            07111L,
-            (short) 77,
+            (short)07111,
+
             "Bakersdraft",
             "Kuils River",
             "Cape Town",
