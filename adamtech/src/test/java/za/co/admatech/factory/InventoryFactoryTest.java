@@ -1,30 +1,33 @@
 package za.co.admatech.factory;
 
-import org.springframework.core.annotation.Order;
-import za.co.admatech.domain.*;
-import za.co.admatech.domain.enums.InventoryStatus;
-import za.co.admatech.factory.InventoryFactory;
+import static org.junit.jupiter.api.Assertions.*;
 
+import za.co.admatech.domain.Inventory;
+import za.co.admatech.domain.enums.InventoryStatus;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class InventoryFactoryTest {
+class InventoryFactoryTest {
 
-    private static Product mockProduct = new Product.Builder().productId("prod001").name("Test Product").build();
+    private static Inventory i1 = InventoryFactory.createInventory(
+             "prod001", 100, InventoryStatus.IN_STOCK
+    );
 
-    private static Inventory i1 = InventoryFactory.createInventory("1", "prod001", 100, InventoryStatus.IN_STOCK, mockProduct);
-    private static Inventory i2 = InventoryFactory.createInventory("2", "prod002", 50, InventoryStatus.LOW_STOCK, mockProduct);
-    private static Inventory i3 = InventoryFactory.createInventory("3", "prod003", 0, InventoryStatus.OUT_OF_STOCK, mockProduct);
+    private static Inventory i2 = InventoryFactory.createInventory(
+             "prod002", 5, InventoryStatus.LOW_STOCK
+    );
+
+    private static Inventory i3 = InventoryFactory.createInventory(
+             "prod003", 0, InventoryStatus.OUT_OF_STOCK
+    );
 
     @Test
     @Order(1)
     public void testCreateInventory1() {
         assertNotNull(i1);
-        assertNotNull(i1.getInventoryId());
+        assertNotNull(i1.getId());
         System.out.println(i1.toString());
     }
 
@@ -32,7 +35,7 @@ public class InventoryFactoryTest {
     @Order(2)
     public void testCreateInventory2() {
         assertNotNull(i2);
-        assertNotNull(i2.getInventoryId());
+        assertNotNull(i2.getId());
         System.out.println(i2.toString());
     }
 
@@ -40,7 +43,7 @@ public class InventoryFactoryTest {
     @Order(3)
     public void testCreateInventory3() {
         assertNotNull(i3);
-        assertNotNull(i3.getInventoryId());
+        assertNotNull(i3.getId());
         System.out.println(i3.toString());
     }
 }

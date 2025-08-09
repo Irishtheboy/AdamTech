@@ -2,78 +2,85 @@ package za.co.admatech.controller;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import za.co.admatech.domain.Address;
-import za.co.admatech.service.address_domain_service.AddressService;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import za.co.admatech.factory.AddressFactory;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(AddressController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+
 class AddressControllerTest {
-
+    private static Address address;
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
 
-    @MockBean
-    private AddressService addressService;
+    private static final String BASE_URL = "http://localhost:8080/address";
 
-    private Address sampleAddress;
-
-    @BeforeEach
-    void setUp() {
-        sampleAddress = new Address();
-        sampleAddress.setAddressId(12L);
-        sampleAddress.setStreetNumber("123");
-        sampleAddress.setStreetName("Main Street");
-        sampleAddress.setCity("Cape Town");
-        sampleAddress.setPostalCode("8001");
+    @BeforeAll
+    public static void setup() {
+        address = AddressFactory.createAddress(
+                (short) 12,
+                "Devin's Chapman",
+                "Cravenwood",
+                "Mulburrey",
+                "Lancashire",
+                (short) 1299
+        );
     }
 
     @Test
-    void testGetAddressById() throws Exception {
-        when(addressService.read(12L)).thenReturn(sampleAddress);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/address/ADDR001"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.addressId").value("ADDR001"))
-                .andExpect(jsonPath("$.city").value("Cape Town"));
-
-        verify(addressService).read(12L);
+    @Order(1)
+    void create() {
+        String url = BASE_URL + "/create";
+        ResponseEntity<Address> response = this.restTemplate.postForEntity(url, address, Address.class);
+        System.out.println(response);
+        assertNotNull(response);
+        assertEquals(address.getAddressID(), response.getBody().getAddressID());
+        System.out.println("Created_address: " + response.getBody());
     }
 
     @Test
-    void testCreateAddress() throws Exception {
-        when(addressService.create(any(Address.class))).thenReturn(sampleAddress);
-
-        String json = """
-                {
-                  "addressId": "ADDR001",
-                  "streetNumber": "123",
-                  "streetName": "Main Street",
-                  "city": "Cape Town",
-                  "postalCode": "8001"
-                }
-                """;
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/address/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.streetName").value("Main Street"));
+    @Order(2)
+    void read() {
+        String url = BASE_URL + "/read/" + address.getAddressID();
+        ResponseEntity<Address> response = this.restTemplate.getForEntity(url, Address.class);
+        System.out.println(response);
+        assertNotNull(response);
+        assertEquals(address.getAddressID(), response.getBody().getAddressID());
+        System.out.println("Read_address: " + response.getBody());
     }
 
     @Test
-    void testDeleteAddress() throws Exception {
-        doNothing().when(addressService).delete(12L);
+    @Order(3)
+    void update() {
+        Address updatedAddress = new Address.Builder()
+                .copy(address)
+                .setStreetName("Updated Devin's Chapman")
+                .setSuburb("Updated Cravenwood")
+                .build();
+        String url = BASE_URL + "/update";
+        ResponseEntity<Address> response = this.restTemplate.postForEntity(url, updatedAddress, Address.class);
+        System.out.println(response);
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(updatedAddress.getAddressID(), response.getBody().getAddressID());
+        assertEquals("Updated Devin's Chapman", response.getBody().getStreetName());
+        assertEquals("Updated Cravenwood", response.getBody().getSuburb());
+        System.out.println("Updated_address: " + response.getBody());
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/address/delete/ADDR001"))
-                .andExpect(status().isOk());
-
-        verify(addressService).delete(12L);
+    @Test
+    @Order(4)
+    void delete() {
+        String url = BASE_URL + "/delete/" + address.getAddressID();
+        this.restTemplate.delete(url);
+        ResponseEntity<Address> response = this.restTemplate.getForEntity(BASE_URL + "/read/" + address.getAddressID(), Address.class);
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+        System.out.println("Deleted_address: " + response.getBody());
     }
 }

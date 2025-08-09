@@ -1,54 +1,53 @@
-/*
-CartItemController.java
-Author: Naqeebah Khan (219099073)
-Date: 03 June 2025 */
+/*CartItemController.java
+  Author: Teyana Raubenheimer (230237622)
+  Date: 30 May 2025
+ */
+
 package za.co.admatech.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
-import za.co.admatech.service.cart_item_domain_service.ICartItemService;
+import za.co.admatech.service.CartItemService;
+import za.co.admatech.service.CartService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/cart-items")
-@CrossOrigin(origins = "*")
 public class CartItemController {
-    private final ICartItemService cartItemService;
+    private CartItemService service;
 
-    public CartItemController(ICartItemService cartItemService) {
-        this.cartItemService = cartItemService;
+    @Autowired
+    public CartItemController(CartItemService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<CartItem> create(@Valid @RequestBody CartItem cartItem) {
-        CartItem created = cartItemService.create(cartItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @PostMapping("/create")
+    public CartItem create(@RequestBody CartItem cartItem) {
+        return service.create(cartItem);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CartItem> read(@PathVariable String id) {
-        CartItem cartItem = cartItemService.read(id);
-        return ResponseEntity.ok(cartItem);
+    @GetMapping("/read/{cartItemID}")
+    public CartItem read(@PathVariable Long cartItemID) {
+        return service.read(cartItemID);
     }
 
-    @PutMapping
-    public ResponseEntity<CartItem> update(@Valid @RequestBody CartItem cartItem) {
-        CartItem updated = cartItemService.update(cartItem);
-        return ResponseEntity.ok(updated);
+    @PutMapping("/update")
+    public CartItem update(@RequestBody CartItem cartItem) {
+        return service.update(cartItem);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean deleted = cartItemService.delete(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    @DeleteMapping("/delete/{cartItemID}")
+    public boolean delete(@PathVariable Long cartItemID) {
+        return service.delete(cartItemID);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CartItem>> getAll() {
-        return ResponseEntity.ok(cartItemService.getAll());
+    @GetMapping("/getAll")
+    public List<CartItem> getAll() {
+        return service.getAll();
     }
+
 }
+

@@ -1,3 +1,9 @@
+/*CartItem.java
+  CartItem Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 11 May 2025
+ */
+
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
@@ -5,91 +11,85 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "cart")
 public class Cart {
     @Id
-    @Column(nullable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cartID;
+    private String customerID;
+    private String cartItemID;
 
-    @Column(nullable = false)
-    private String customerId;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<CartItem> items;
-
-    @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "customerId", insertable = false, updatable = false)
-    private Customer customer;
-
-    // Public no-arg constructor
-    public Cart() {}
+    @OneToMany
+    @JoinColumn(name = "cart_id")
+    private List<CartItem> cartItems;
 
 
+    public Cart() {
 
-    private Cart(Builder builder) {
-        this.id = builder.id;
-        this.customerId = builder.customerId;
-        this.items = builder.items;
-        this.customer = builder.customer;
+    }
+
+    public Cart(Builder builder) {
+        this.cartID = builder.cartID;
+        this.customerID = builder.customerID;
+        this.cartItemID = builder.cartItemID;
+    }
+
+    public Long getCartID() {
+        return cartID;
+    }
+
+    public String  getCustomerID() {
+        return customerID;
+    }
+
+    public String  getCartItemID() {
+        return cartItemID;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "cartID='" + cartID + '\'' +
+                ", customerID='" + customerID + '\'' +
+                ", cartItemID='" + cartItemID + '\'' +
+                '}';
     }
 
     public static class Builder {
-        private String id;
-        private String customerId;
-        private List<CartItem> items;
-        private Customer customer;
+        private Long cartID;
+        private String  customerID;
+        private String  cartItemID;
 
-        public Builder id(String id) {
-            this.id = id;
+        public Builder setCartID(Long cartID) {
+            this.cartID = cartID;
+            return this;
+
+        }
+
+        public Builder setCustomerID(String  customerID) {
+
+            this.customerID = customerID;
             return this;
         }
 
-        public Builder customerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCartItemID(String cartItemID) {
+            this.cartItemID = cartItemID;
             return this;
         }
 
-        public Builder items(List<CartItem> items) {
-            this.items = items;
-            return this;
-        }
-
-        public Builder customer(Customer customer) {
-            this.customer = customer;
-            return this;
-        }
-
-        // Add this method to support your test code
         public Builder copy(Cart cart) {
-            this.id = cart.getId();
-            this.customerId = cart.getCustomerId();
-            this.items = cart.getItems();
-            this.customer = cart.getCustomer();
+            this.cartID = cartID;
+            this.customerID = customerID;
+            this.cartItemID = cartItemID;
             return this;
+
         }
 
         public Cart build() {
             return new Cart(this);
         }
+
+
+
     }
-
-
-    public Cart copy() {
-        return new Builder()
-                .id(this.id)
-                .customerId(this.customerId)
-                .items(this.items)
-                .customer(this.customer)
-                .build();
-    }
-
-    // Getters and setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
-    public List<CartItem> getItems() { return items; }
-    public void setItems(List<CartItem> items) { this.items = items; }
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
 }

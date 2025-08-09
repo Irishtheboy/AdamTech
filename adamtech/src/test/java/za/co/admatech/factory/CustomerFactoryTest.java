@@ -1,45 +1,50 @@
 package za.co.admatech.factory;
+/**
+ * CustomerFactoryTest.java
+ * CustomerFactoryTest Factory Test class
+ *
+ * Author: Rorisang Makgana(230602363)
+ */
 
-import org.springframework.core.annotation.Order;
-import za.co.admatech.domain.*;
-import za.co.admatech.factory.CustomerFactory;
-
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.ClassOrderer;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CustomerFactoryTest {
+class CustomerFactoryTest {
+    private CustomerFactory customerFactory;
+    private AddressFactory addressFactory;
+    private static Cart cart;
+    private Address address = addressFactory.createAddress(
+            (short)07111,
 
-    private static Address address = new Address.Builder().addressId(1L).build();
+            "Bakersdraft",
+            "Kuils River",
+            "Cape Town",
+            "Western Cape",
+            (short) 7440);
 
-    private static Customer c1 = CustomerFactory.createCustomer("1", "John", "Doe", "john.doe@example.com", address);
-    private static Customer c2 = CustomerFactory.createCustomer("2", "Jane", "Smith", "jane.smith@example.com", address);
-    private static Customer c3 = CustomerFactory.createCustomer("3", "Bob", "Jones", "bob.jones@example.com", address);
-
+    private Customer customer = customerFactory.createCustomer(
+            "222AABB1792",
+            "Dennis",
+            "Estrange",
+            "estranged@commons.net",
+            //cart,
+            address
+    );
     @Test
     @Order(1)
-    public void testCreateCustomer1() {
-        assertNotNull(c1);
-        assertNotNull(c1.getCustomerId());
-        System.out.println(c1.toString());
+    void testCreatedCustomer(){
+        assertNotNull(customer);
+        System.out.println(customer);
     }
 
-    @Test
-    @Order(2)
-    public void testCreateCustomer2() {
-        assertNotNull(c2);
-        assertNotNull(c2.getCustomerId());
-        System.out.println(c2.toString());
-    }
-
-    @Test
-    @Order(3)
-    public void testCreateCustomer3() {
-        assertNotNull(c3);
-        assertNotNull(c3.getCustomerId());
-        System.out.println(c3.toString());
-    }
 }

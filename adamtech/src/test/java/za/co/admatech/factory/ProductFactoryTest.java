@@ -1,30 +1,31 @@
 package za.co.admatech.factory;
 
-import org.springframework.core.annotation.Order;
-import za.co.admatech.domain.*;
-import za.co.admatech.domain.enums.ProductType;
-import za.co.admatech.factory.ProductFactory;
+import static org.junit.jupiter.api.Assertions.*;
 
+import za.co.admatech.domain.Money;
+import za.co.admatech.domain.Product;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ProductFactoryTest {
+class ProductFactoryTest {
 
-    private static Money price1 = new Money.Builder().amount(new BigDecimal("1000")).currency("ZAR").build();
-    private static Money price2 = new Money.Builder().amount(new BigDecimal("750")).currency("ZAR").build();
-    private static Money price3 = new Money.Builder().amount(new BigDecimal("0")).currency("ZAR").build();
+    private static Money price1 = new Money.Builder().setAmount(1000).setCurrency("ZAR").build();
+    private static Money price2 = new Money.Builder().setAmount(750).setCurrency("ZAR").build();
+    private static Money price3 = new Money.Builder().setAmount(0).setCurrency("ZAR").build();
 
-    private static Category category = new Category.Builder().categoryId("1").name("Components").build();
+    private static Product p1 = ProductFactory.createProduct(
+             "Sneakers", "White running shoes", "SKU123", price1, "cat001"
+    );
 
-    private static Product p1 = ProductFactory.createProduct("1", "Sneakers", "White running shoes", "SKU001", price1, category, ProductType.PERIPHERAL);
-    private static Product p2 = ProductFactory.createProduct("2", "Boots", "Leather boots", "SKU002", price2, category, ProductType.DESKTOP);
-    private static Product p3 = ProductFactory.createProduct("3", "Sandals", "Beach sandals", "SKU003", price3, category, ProductType.DESKTOP);
+    private static Product p2 = ProductFactory.createProduct(
+             "Boots", "Leather boots", "SKU456", price2, "cat002"
+    );
+
+    private static Product p3 = ProductFactory.createProduct(
+             "Sandals", "Beach sandals", "SKU789", price3, "cat003"
+    );
 
     @Test
     @Order(1)

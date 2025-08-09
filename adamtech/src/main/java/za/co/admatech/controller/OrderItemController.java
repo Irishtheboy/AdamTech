@@ -1,54 +1,51 @@
-/*
-OrderItemController.java
-Author: Naqeebah Khan (219099073)
-Date: 03 June 2025 */
+/*OrderItemController.java
+  Order Item Controller Class
+  Author: Naqeebah Khan (219099073)
+  Date: 03 June 2025
+ */
 package za.co.admatech.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.OrderItem;
-import za.co.admatech.service.order_item_domain_service.OrderItemService;
+import za.co.admatech.service.OrderItemService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/order-items")
-@CrossOrigin(origins = "*") // Adjust origins as needed for production
+@RequestMapping("/orderItem")
 public class OrderItemController {
-    private final OrderItemService orderItemService;
 
-    public OrderItemController(OrderItemService orderItemService) {
-        this.orderItemService = orderItemService;
+    private OrderItemService service;
+
+    @Autowired
+    public OrderItemController(OrderItemService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<OrderItem> create(@Valid @RequestBody OrderItem orderItem) {
-        OrderItem created = orderItemService.create(orderItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @PostMapping("/create")
+    public OrderItem create(@RequestBody OrderItem orderItem) {
+        return service.create(orderItem);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderItem> read(@PathVariable String id) {
-        OrderItem orderItem = orderItemService.read(id);
-        return ResponseEntity.ok(orderItem);
+    @GetMapping("/read/{orderItemID}")
+    public OrderItem read(@PathVariable Long orderItemID) {
+        return service.read(orderItemID);
     }
 
-    @PutMapping
-    public ResponseEntity<OrderItem> update(@Valid @RequestBody OrderItem orderItem) {
-        OrderItem updated = orderItemService.update(orderItem);
-        return ResponseEntity.ok(updated);
+    @PutMapping("/update")
+    public OrderItem update(@RequestBody OrderItem orderItem) {
+        return service.update(orderItem);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean deleted = orderItemService.delete(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    @DeleteMapping("/delete/{orderItemID}")
+    public boolean delete(@PathVariable Long orderItemID) {
+        return service.delete(orderItemID);
     }
 
-    @GetMapping
-    public ResponseEntity<List<OrderItem>> getAll() {
-        return ResponseEntity.ok(orderItemService.getAll());
+    @GetMapping("/getAll")
+    public List<OrderItem> getAll() {
+        return service.getAll();
     }
 }
