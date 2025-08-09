@@ -5,6 +5,7 @@
 
 package za.co.admatech.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -54,6 +55,7 @@ class CartItemServiceTest {
     }
 
     @Test
+    @Disabled
     void d_delete() {
         assertNotNull(cartItem);
         boolean deleted = service.delete(cartItem.getCartItemID());

@@ -14,14 +14,19 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressID;
+
+    @Column(name = "street_number")
     private short streetNumber;
+
+    @Column(name = "street_name")
     private String streetName;
     private String suburb;
     private String city;
     private String province;
+    @Column(name = "postal_code")
     private short postalCode;
 
-    protected Address() {
+    public Address() {
 
     }
 
@@ -121,13 +126,13 @@ public class Address {
         }
 
         public Builder copy(Address address) {
-            this.addressID = addressID;
-            this.streetNumber = streetNumber;
-            this.streetName = streetName;
-            this.suburb = suburb;
-            this.city = city;
-            this.province = province;
-            this.postalCode = postalCode;
+            this.addressID = address.addressID;
+            this.streetNumber = address.streetNumber;
+            this.streetName = address.streetName;
+            this.suburb = address.suburb;
+            this.city = address.city;
+            this.province = address.province;
+            this.postalCode = address.postalCode;
             return this;
         }
 

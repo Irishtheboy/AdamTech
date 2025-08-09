@@ -5,9 +5,8 @@ import za.co.admatech.domain.Product;
 
 public class ProductFactory {
 
-    public static Product createProduct(String productId, String name, String description, String sku, Money price, String categoryId) {
+    public static Product createProduct( String name, String description, String sku, Money price, String categoryId) {
         return new Product.Builder()
-                .setProductId(productId)
                 .setName(name)
                 .setDescription(description)
                 .setSku(sku)

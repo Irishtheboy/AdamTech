@@ -7,13 +7,16 @@
 package za.co.admatech.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Product {
 
     @Id
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long productId;
     private String name;
     private String description;
     private String sku;
@@ -34,7 +37,7 @@ public class Product {
         this.categoryId = builder.categoryId;
     }
 
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -74,14 +77,14 @@ public class Product {
     }
 
     public static class Builder {
-        private String productId;
+        private Long productId;
         private String name;
         private String description;
         private String sku;
         private Money price;
         private String categoryId;
 
-        public Builder setProductId(String productId) {
+        public Builder setProductId(Long productId) {
             this.productId = productId;
             return this;
         }

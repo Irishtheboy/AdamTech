@@ -9,6 +9,6 @@ package za.co.admatech.service;
 import za.co.admatech.domain.Inventory;
 import java.util.List;
 
-public interface IInventoryService extends IService<Inventory, String> {
+public interface IInventoryService extends IService<Inventory, Long> {
     List<Inventory> getAll();
 }

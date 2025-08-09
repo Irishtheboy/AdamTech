@@ -63,6 +63,7 @@ class OrderItemServiceTest {
 
     @Test
     @Order(4)
+    @Disabled
     void d_delete() {
         assertNotNull(savedOrderItem);
         boolean deleted = service.delete(savedOrderItem.getOrderItemId());

@@ -6,11 +6,7 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import za.co.admatech.domain.enums.InventoryStatus;
 
 @Entity
@@ -18,7 +14,8 @@ import za.co.admatech.domain.enums.InventoryStatus;
 public class Inventory {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String productId;
     private int quantity;
 
@@ -35,7 +32,7 @@ public class Inventory {
         this.inventoryStatus = builder.inventoryStatus;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -62,12 +59,12 @@ public class Inventory {
     }
 
     public static class Builder {
-        private String id;
+        private Long id;
         private String productId;
         private int quantity;
         private InventoryStatus inventoryStatus;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }

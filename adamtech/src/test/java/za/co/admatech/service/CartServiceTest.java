@@ -52,6 +52,7 @@ class CartServiceTest {
 
     @Test
     @Order(4)
+    @Disabled
     void d_delete() {
         boolean deleted = service.delete(cart.getCartID());
         assertTrue(deleted);

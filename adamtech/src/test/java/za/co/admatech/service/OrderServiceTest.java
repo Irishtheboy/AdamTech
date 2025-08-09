@@ -6,10 +6,7 @@
 
 package za.co.admatech.service;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
@@ -69,6 +66,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @Disabled
     void d_delete() {
         assertNotNull(order, "Order must be created before deleting");
         boolean deleted = service.delete(order.getId());

@@ -12,15 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class InventoryFactoryTest {
 
     private static Inventory i1 = InventoryFactory.createInventory(
-            "inv001", "prod001", 100, InventoryStatus.IN_STOCK
+             "prod001", 100, InventoryStatus.IN_STOCK
     );
 
     private static Inventory i2 = InventoryFactory.createInventory(
-            "inv002", "prod002", 5, InventoryStatus.LOW_STOCK
+             "prod002", 5, InventoryStatus.LOW_STOCK
     );
 
     private static Inventory i3 = InventoryFactory.createInventory(
-            "inv003", "prod003", 0, InventoryStatus.OUT_OF_STOCK
+             "prod003", 0, InventoryStatus.OUT_OF_STOCK
     );
 
     @Test

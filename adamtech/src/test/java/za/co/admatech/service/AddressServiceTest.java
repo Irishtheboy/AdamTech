@@ -60,6 +60,7 @@ class AddressServiceTest {
         Address updated = new Address.Builder()
                 .copy(address)
                 .setCity("Stellenbosch")
+                .setPostalCode((short)7580)
                 .build();
 
         Address result = service.update(updated);

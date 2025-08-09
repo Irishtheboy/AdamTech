@@ -22,7 +22,7 @@ public class Customer{
     @JoinColumn(name = "cart_cart_id")
     private Cart cart;
      */
-    @ManyToOne
+    @ManyToOne(cascade = jakarta.persistence.CascadeType.ALL)
     @JoinColumn(name = "address_address_id")
     private Address address;
     private String phoneNumber;
