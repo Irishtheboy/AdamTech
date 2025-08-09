@@ -20,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)  // Keep order instance across tests
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderServiceTest {
 
     @Autowired
     private IOrderService service;
 
-    private Order order;  // will hold the saved order with generated ID
+    private Order order;
 
     @Test
     void a_create() {
