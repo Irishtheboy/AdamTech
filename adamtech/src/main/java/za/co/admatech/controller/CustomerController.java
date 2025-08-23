@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Customer;
+
+import za.co.admatech.service.CustomerService;
+@CrossOrigin(origins = "http://localhost:3000")
+
 import za.co.admatech.service.customer_domain_service.CustomerService;
 
 import java.util.List;

@@ -13,9 +13,7 @@ public class AddressService implements IAddressService {
     private final AddressRepository addressRepository;
 
     @Autowired
-    public AddressService(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
+    public AddressService(AddressRepository addressRepository) {this.addressRepository = addressRepository;}
 
     @Override
     public Address create(Address address) {

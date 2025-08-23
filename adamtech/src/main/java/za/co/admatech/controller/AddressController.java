@@ -1,16 +1,18 @@
-
-
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import za.co.admatech.domain.Address;
 import za.co.admatech.service.AddressService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/address")
 public class AddressController {
-    private AddressService service;
+    private final AddressService service;
 
     @Autowired
     public AddressController(AddressService service) {
@@ -35,5 +37,10 @@ public class AddressController {
     @DeleteMapping("/delete/{addressID}")
     public boolean delete(@PathVariable Long addressID) {
         return service.delete(addressID);
+    }
+
+    @GetMapping("/getAll")
+    public Iterable<Address> getAll() {
+        return service.getAll();
     }
 }

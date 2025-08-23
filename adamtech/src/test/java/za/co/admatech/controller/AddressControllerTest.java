@@ -1,9 +1,15 @@
 package za.co.admatech.controller;
 
-import org.junit.jupiter.api.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import za.co.admatech.domain.Address;
 import za.co.admatech.factory.AddressFactory;
@@ -12,13 +18,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-
 class AddressControllerTest {
+
     private static Address address;
+
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String BASE_URL = "http://localhost:8080/address";
+    @LocalServerPort
+    private int port;
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private String getBaseUrl() {
+        return "http://localhost:" + port + "/address";
+    }
 
     @BeforeAll
     public static void setup() {
@@ -33,54 +47,80 @@ class AddressControllerTest {
     }
 
     @Test
-    @Order(1)
-    void create() {
-        String url = BASE_URL + "/create";
-        ResponseEntity<Address> response = this.restTemplate.postForEntity(url, address, Address.class);
-        System.out.println(response);
-        assertNotNull(response);
-        assertEquals(address.getAddressID(), response.getBody().getAddressID());
-        System.out.println("Created_address: " + response.getBody());
+    void a_create() throws Exception {
+        String url = getBaseUrl() + "/create";
+        ResponseEntity<String> response = restTemplate.postForEntity(url, address, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Address createdAddress = mapper.readValue(response.getBody(), Address.class);
+        assertNotNull(createdAddress);
+        assertEquals(address.getAddressID(), createdAddress.getAddressID());
+
+        System.out.println("Created_address: " + createdAddress);
     }
 
     @Test
-    @Order(2)
-    void read() {
-        String url = BASE_URL + "/read/" + address.getAddressID();
-        ResponseEntity<Address> response = this.restTemplate.getForEntity(url, Address.class);
-        System.out.println(response);
-        assertNotNull(response);
-        assertEquals(address.getAddressID(), response.getBody().getAddressID());
-        System.out.println("Read_address: " + response.getBody());
+    void b_read() throws Exception {
+        String url = getBaseUrl() + "/read/" + address.getAddressID();
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Address readAddress = mapper.readValue(response.getBody(), Address.class);
+        assertNotNull(readAddress);
+        assertEquals(address.getAddressID(), readAddress.getAddressID());
+
+        System.out.println("Read_address: " + readAddress);
     }
 
     @Test
-    @Order(3)
-    void update() {
+    void c_update() throws Exception {
         Address updatedAddress = new Address.Builder()
                 .copy(address)
                 .setStreetName("Updated Devin's Chapman")
                 .setSuburb("Updated Cravenwood")
                 .build();
-        String url = BASE_URL + "/update";
-        ResponseEntity<Address> response = this.restTemplate.postForEntity(url, updatedAddress, Address.class);
-        System.out.println(response);
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(updatedAddress.getAddressID(), response.getBody().getAddressID());
-        assertEquals("Updated Devin's Chapman", response.getBody().getStreetName());
-        assertEquals("Updated Cravenwood", response.getBody().getSuburb());
-        System.out.println("Updated_address: " + response.getBody());
+
+        String url = getBaseUrl() + "/update";
+        restTemplate.put(url, updatedAddress);
+
+        // Fetch updated
+        ResponseEntity<String> response = restTemplate.getForEntity(getBaseUrl() + "/read/" + address.getAddressID(), String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Address body = mapper.readValue(response.getBody(), Address.class);
+        assertEquals("Updated Devin's Chapman", body.getStreetName());
+        assertEquals("Updated Cravenwood", body.getSuburb());
+
+        System.out.println("Updated_address: " + body);
     }
 
     @Test
-    @Order(4)
-    void delete() {
-        String url = BASE_URL + "/delete/" + address.getAddressID();
-        this.restTemplate.delete(url);
-        ResponseEntity<Address> response = this.restTemplate.getForEntity(BASE_URL + "/read/" + address.getAddressID(), Address.class);
-        assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
-        System.out.println("Deleted_address: " + response.getBody());
+    void d_delete() {
+        String url = getBaseUrl() + "/delete/" + address.getAddressID();
+        restTemplate.delete(url);
+
+        // Check deleted
+        ResponseEntity<String> response = restTemplate.getForEntity(getBaseUrl() + "/read/" + address.getAddressID(), String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        System.out.println("Deleted_address check response: " + response.getStatusCode());
+    }
+
+    @Test
+    void e_getAll() throws Exception {
+        String url = getBaseUrl() + "/getAll";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Address[] addresses = mapper.readValue(response.getBody(), Address[].class);
+        assertNotNull(addresses);
+
+        System.out.println("Get All Addresses:");
+        for (Address a : addresses) {
+            System.out.println(a);
+        }
     }
 }
