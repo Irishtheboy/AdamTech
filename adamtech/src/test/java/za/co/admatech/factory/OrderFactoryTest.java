@@ -1,91 +1,50 @@
-/*OrderFactory Test Class
-  Naqeebah Khan 219099073
-  17 May 2025*/
 package za.co.admatech.factory;
 
-import org.junit.jupiter.api.MethodOrderer;
-//import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import za.co.admatech.domain.Money;
+import za.co.admatech.domain.*;
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Order;
-import za.co.admatech.domain.enums.OrderStatus;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class OrderFactoryTest {
 
-class OrderFactoryTest {
+    private static Money totalAmount = new Money.Builder().amount(new BigDecimal("2000")).currency("ZAR").build();
+    private static Customer customer = new Customer.Builder().customerId("1").build();
+    private static List<OrderItem> items = new ArrayList<>();
 
-    private static Order order1 = OrderFactory.createOrder(
-            "CUSTORD1001",
-            LocalDate.of(2025, 05, 05),
-            OrderStatus.PENDING,
-            new Money.Builder()
-                    .setAmount(450)
-                    .build()
-
-    );
-
-    public static Order order2 = OrderFactory.createOrder(
-            "CUSTORD1002",
-            LocalDate.of(2025,06,06),
-            OrderStatus.CONFIRMED,
-            new Money.Builder()
-                    .setAmount(850)
-                    .build()
-    );
-
-    private static Order updatedOrder;
+    private static Order o1 = OrderFactory.createOrder("1", LocalDateTime.of(2025, 7, 29, 13, 35), totalAmount, customer, items);
+    private static Order o2 = OrderFactory.createOrder("2", LocalDateTime.of(2025, 7, 29, 13, 35), totalAmount, customer, items);
+    private static Order o3 = OrderFactory.createOrder("3", LocalDateTime.of(2025, 7, 29, 13, 35), totalAmount, customer, items);
 
     @Test
-//    @Order(1)
-    public void createOrder1(){
-        assertNotNull(order1);
-        System.out.println(order1.toString());
+    @org.junit.jupiter.api.Order(1)
+    public void testCreateOrder1() {
+        assertNotNull(o1);
+        assertNotNull(o1.getId());
+        System.out.println(o1.toString());
     }
 
     @Test
-//    @Order(2)
-    void createOrder2(){
-        assertNotNull(order2);
-        System.out.println(order2.toString());
+    @org.junit.jupiter.api.Order(2)
+    public void testCreateOrder2() {
+        assertNotNull(o2);
+        assertNotNull(o2.getId());
+        System.out.println(o2.toString());
     }
 
     @Test
-//    @Order(3)
-    void read(){
-        Order read = order1;
-        assertNotNull(read);
-        System.out.println(read);
+    @org.junit.jupiter.api.Order(3)
+    public void testCreateOrder3() {
+        assertNotNull(o3);
+        assertNotNull(o3.getId());
+        System.out.println(o3.toString());
     }
-
-
-
-    @Test
-//    @Order(4)
-    void update(){
-        updatedOrder =  new Order.Builder()
-                .copy(order1)
-                .setOrderStatus(OrderStatus.SHIPPED)
-                .build();
-        assertNotNull(updatedOrder);
-        assertEquals(OrderStatus.SHIPPED, updatedOrder.getOrderStatus());
-        System.out.println(updatedOrder);
-    }
-
-    @Test
-//    @Order(5)
-    void delete(){
-        order1 = null;
-        assertNull(order1);
-        System.out.println("Order deleted successfully");
-    }
-
-
-    }
-
-
-  
+}

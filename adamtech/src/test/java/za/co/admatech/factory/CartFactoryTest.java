@@ -1,55 +1,46 @@
-/*Cart.java
-  Cart Class
-  Author: Teyana Raubenheimer (230237622)
-  Date: 18 May 2025
- */
-
 package za.co.admatech.factory;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.CartItem;
-import za.co.admatech.domain.Customer;
-import za.co.admatech.domain.Product;
-import za.co.admatech.util.Helper;
+import org.springframework.core.annotation.Order;
+import za.co.admatech.domain.*;
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CartFactoryTest {
 
-class CartFactoryTest {
-//    private static CartItem validCartItem = new CartItem.Builder()
-//            .setCartItemID("1")
-//           // .setProductID()
-//            .setQuantity(2)
-//            .setCartID(null) // Assuming cartID is optional
-//            .build();
-//
-//    private static Customer validCustomer = new Customer.Builder()
-//            .setCustomerID("101")
-//            .setFirstName("Teyana")
-//            .setLastName("Raubenheimer")
-//            .build();
+    private static Customer customer = new Customer.Builder().customerId("1").build();
+    private static List<CartItem> items = new ArrayList<>();
 
-
-    private static Cart c = CartFactory.createCart("101", "1");
+    private static Cart c1 = CartFactory.createCart("1", "cust001", items, customer);
+    private static Cart c2 = CartFactory.createCart("2", "cust002", items, customer);
+    private static Cart c3 = CartFactory.createCart("3", "cust003", items, customer);
 
     @Test
     @Order(1)
-    public void testCreateCart() {
-        assertNotNull(c);
-        System.out.println(c.toString());
+    public void testCreateCart1() {
+        assertNotNull(c1);
+        assertNotNull(c1.getId());
+        System.out.println(c1.toString());
     }
 
     @Test
     @Order(2)
-    public void testCreateCartThatFails() {
-        Cart invalidCart = CartFactory.createCart(null, null);
-        assertNull(invalidCart);
+    public void testCreateCart2() {
+        assertNotNull(c2);
+        assertNotNull(c2.getId());
+        System.out.println(c2.toString());
     }
 
-
+    @Test
+    @Order(3)
+    public void testCreateCart3() {
+        assertNotNull(c3);
+        assertNotNull(c3.getId());
+        System.out.println(c3.toString());
+    }
 }

@@ -1,38 +1,58 @@
+/*
+CustomerController.java
+Author: Rorisang Makgana (230602363)
+Date: 11 May 2025 */
 package za.co.admatech.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Customer;
+
 import za.co.admatech.service.CustomerService;
 @CrossOrigin(origins = "http://localhost:3000")
+
+import za.co.admatech.service.customer_domain_service.CustomerService;
+
+import java.util.List;
+
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
+@CrossOrigin(origins = "*") // Adjust origins as needed for production
 public class CustomerController {
     private final CustomerService customerService;
 
-    @Autowired
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    @PostMapping("/create")
-    public Customer create(@RequestBody Customer customer){
-        return customerService.create(customer);
+    @PostMapping
+    public ResponseEntity<Customer> create(@Valid @RequestBody Customer customer) {
+        Customer created = customerService.create(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/read/{customerID}")
-    public Customer read(@PathVariable String customerID){
-        return customerService.read(customerID);
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> read(@PathVariable String id) {
+        Customer customer = customerService.read(id);
+        return ResponseEntity.ok(customer);
     }
 
-    @PutMapping("/update")
-    public Customer update(@RequestBody Customer customer){
-        return customerService.update(customer);
+    @PutMapping
+    public ResponseEntity<Customer> update(@Valid @RequestBody Customer customer) {
+        Customer updated = customerService.update(customer);
+        return ResponseEntity.ok(updated);
     }
 
-    @RequestMapping(value = "/delete/{customerID}", method = RequestMethod.DELETE)
-    public boolean delete(@PathVariable String customerID){
-        return customerService.delete(customerID);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = customerService.delete(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAll() {
+        return ResponseEntity.ok(customerService.getAll());
     }
 }
