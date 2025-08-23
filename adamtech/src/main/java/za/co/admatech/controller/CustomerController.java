@@ -5,7 +5,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.service.CustomerService;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {

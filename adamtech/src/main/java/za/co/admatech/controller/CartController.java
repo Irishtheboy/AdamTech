@@ -6,6 +6,7 @@
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.service.CartService;
@@ -15,7 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/cart")
 public class CartController {
-    private CartService service;
+
+    private final CartService service;
 
     @Autowired
     public CartController(CartService service) {
@@ -23,32 +25,29 @@ public class CartController {
     }
 
     @PostMapping("/create")
-    public Cart create(@RequestBody Cart cart) {
-
-        return service.create(cart);
+    public ResponseEntity<Cart> create(@RequestBody Cart cart) {
+        return ResponseEntity.ok(service.create(cart));
     }
 
     @GetMapping("/read/{cartID}")
-    public Cart read(@PathVariable Long cartID) {
-
-        return service.read(cartID);
+    public ResponseEntity<Cart> read(@PathVariable Long cartID) {
+        Cart cart = service.read(cartID);
+        return cart != null ? ResponseEntity.ok(cart) : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/update")
-    public Cart update(@RequestBody Cart cart) {
-
-        return service.update(cart);
+    public ResponseEntity<Cart> update(@RequestBody Cart cart) {
+        return ResponseEntity.ok(service.update(cart));
     }
 
     @DeleteMapping("/delete/{cartID}")
-    public boolean delete(@PathVariable Long cartID) {
-
-        return service.delete(cartID);
+    public ResponseEntity<Void> delete(@PathVariable Long cartID) {
+        boolean deleted = service.delete(cartID);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/getAll")
-    public List<Cart> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<Cart>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
-
 }

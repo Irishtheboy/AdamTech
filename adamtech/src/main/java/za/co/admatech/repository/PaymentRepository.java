@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import za.co.admatech.domain.Payment;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    // Additional query methods can be defined here if needed
+
 }
