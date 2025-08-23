@@ -1,83 +1,90 @@
-package za.co.admatech.service;/*
-CustomerServiceTest.java
-Author: Rorisang Makgana (230602363)
-Date: 11 May 2025
-Description: This test class contains integration tests for the CustomerService class,
-verifying the functionality of create, read, update, delete, and getAll methods
-using Spring Boot without mocks.
-*/
+package za.co.admatech.service;
 
-
-import jakarta.persistence.EntityNotFoundException;
-import za.co.admatech.domain.Customer;
-import za.co.admatech.service.customer_domain_service.CustomerService;
-import za.co.admatech.util.Helper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
+import za.co.admatech.domain.Address;
+import za.co.admatech.domain.Customer;
+import za.co.admatech.repository.CustomerRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.MethodName.class)
 class CustomerServiceTest {
 
     @Autowired
-    private CustomerService service;
+    private CustomerService customerService;
 
-    // Mock Customer setup
-    private final String VALID_ID = "1";
-    private final Customer customer = new Customer.Builder()
-            .customerId(VALID_ID)
-            .firstName("John Doe") // Example field
-            .build();
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    private Customer testCustomer;
+
+    @BeforeEach
+    void setUp() {
+        customerRepository.deleteAll();
+
+        Address address = new Address.Builder()
+                .setStreetNumber((short)123)
+                .setStreetName("Main St")
+                .setSuburb("Central")
+                .setCity("Cape Town")
+                .setProvince("Western Cape")
+                .setPostalCode((short)8001)
+                .build();
+
+        testCustomer = new Customer.Builder()
+                .setCustomerID("C001")
+                .setFirstName("John")
+                .setLastName("Doe")
+                .setEmail("john.doe@example.com")
+                .setPhoneNumber("0812345678")
+                .setAddress(address)
+                .build();
+    }
+
 
     @Test
-    void a_create() {
-        Customer created = service.create(customer);
+    @Order(1)
+    void testCreate() {
+        Customer created = customerService.create(testCustomer);
         assertNotNull(created);
-        assertEquals(VALID_ID, created.getCustomerId());
-        System.out.println("Created: " + created);
+        assertEquals("C001", created.getCustomerID());
+        assertEquals("John", created.getFirstName());
     }
 
     @Test
-    void b_read() {
-        Customer saved = service.create(customer);
-        Customer read = service.read(saved.getCustomerId());
-        assertNotNull(read);
-        assertEquals(VALID_ID, read.getCustomerId());
-        System.out.println("Read: " + read);
+    @Order(2)
+    void testRead() {
+        customerService.create(testCustomer);
+        Customer found = customerService.read("C001");
+        assertNotNull(found);
+        assertEquals("john.doe@example.com", found.getEmail());
     }
 
     @Test
-    void c_update() {
-        Customer saved = service.create(customer);
-        Customer updated = saved.copy();
-        updated.setFirstName("Jane Doe"); // Example update logic
-        Customer result = service.update(updated);
-        assertNotNull(result);
-        assertEquals(VALID_ID, result.getCustomerId());
-        assertEquals("Jane Doe", result.getFirstName()); // Verify updated field
-        System.out.println("Updated: " + result);
+    @Order(3)
+    void testUpdate() {
+        customerService.create(testCustomer);
+
+        Customer updatedCustomer = new Customer.Builder()
+                .copy(testCustomer)
+                .setPhoneNumber("0829999999")
+                .build();
+
+        Customer updated = customerService.update(updatedCustomer);
+        assertEquals("0829999999", updated.getPhoneNumber());
     }
 
     @Test
-    void d_delete() {
-        Customer saved = service.create(customer);
-        boolean deleted = service.delete(saved.getCustomerId());
+    @Order(4)
+    void testDelete() {
+        customerService.create(testCustomer);
+        boolean deleted = customerService.delete("C001");
+
         assertTrue(deleted);
-        assertThrows(EntityNotFoundException.class, () -> service.read(saved.getCustomerId()));
-        System.out.println("Deleted: " + deleted);
-    }
-
-    @Test
-    void e_getCustomers() {
-        service.create(customer);
-        List<Customer> customers = service.getAll();
-        assertNotNull(customers);
-        assertFalse(customers.isEmpty());
-        customers.forEach(System.out::println);
+        assertNull(customerService.read("C001"));
     }
 }

@@ -1,30 +1,45 @@
+/*OrderFactory.java
+  OrderFactory Class
+  Author: Naqeebah Khan (219099073)
+  Date: 17 May 2025
+ */
 package za.co.admatech.factory;
 
-
-import za.co.admatech.domain.Customer;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
-import za.co.admatech.domain.OrderItem;
+import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.util.Helper;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 public class OrderFactory {
-    public static Order createOrder(String id, LocalDateTime orderDate, Money totalAmount, Customer customer, List<OrderItem> orderItems) {
-        if (Helper.isNullOrEmpty(id) || !Helper.isValidLocalDate(orderDate.toLocalDate()) || totalAmount == null || customer == null || orderItems == null) {
+
+    public static Order createOrder(String customerId, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
+
+
+        if(Helper.isNullOrEmpty(customerId)){
             return null;
         }
-        return new Order.Builder()
-                .id(id)
-                .orderDate(orderDate)
-                .totalAmount(totalAmount)
-                .customer(customer)
-                .orderItems(orderItems)
-                .build();
-    }
 
-    public static Order createOrder(LocalDateTime orderDate, Money totalAmount, Customer customer, List<OrderItem> orderItems) {
-        return createOrder(Helper.generateId(), orderDate, totalAmount, customer, orderItems);
+        if (orderDate == null || !Helper.isValidLocalDate(orderDate)) {
+            return null;
+        }
+
+        if(orderStatus == null || !Helper.isValidOrderStatus(orderStatus.getStatus())) {
+            return null;
+        }
+
+        if(totalAmount == null) {
+            return null;
+        }
+
+
+        return new Order.Builder()
+
+                .setCustomerId(customerId)
+                .setOrderDate(orderDate)
+                .setOrderStatus(orderStatus)
+                .setTotalAmount(totalAmount)
+                .build();
     }
 }

@@ -1,38 +1,60 @@
 package za.co.admatech.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 
-import java.math.BigDecimal;
+/* Money.java
 
+     Money POJO class
+
+     Author: FN Lukhele (221075127)
+
+     Date: 10 May 2025 */
 @Embeddable
 public class Money {
-    @Column(nullable = false)
-    private BigDecimal amount;
-
-    @Column(nullable = false)
+    private int amount;
     private String currency;
 
-    // Public no-arg constructor
-    public Money() {}
+    public Money() {
+    }
 
-
-
-    private Money(Builder builder) {
+    public Money(Builder builder) {
         this.amount = builder.amount;
         this.currency = builder.currency;
     }
 
+    public Money(double amount, String currency) {
+        this.amount = (int) amount; // Convert double to int
+        this.currency = currency;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "amount=" + amount +
+                ", currency='" + currency + '\'' +
+                '}';
+    }
+
     public static class Builder {
-        private BigDecimal amount;
+        private int amount;
         private String currency;
 
-        public Builder amount(BigDecimal amount) {
+        public Builder setAmount(int amount) {
             this.amount = amount;
             return this;
         }
 
-        public Builder currency(String currency) {
+        public Builder setCurrency(String currency) {
             this.currency = currency;
             return this;
         }
@@ -40,18 +62,11 @@ public class Money {
         public Money build() {
             return new Money(this);
         }
-    }
 
-    public Money copy() {
-        return new Builder()
-                .amount(this.amount)
-                .currency(this.currency)
-                .build();
+        public Builder copy(Money money) {
+            this.amount = money.amount;
+            this.currency = money.currency;
+            return this;
+        }
     }
-
-    // Getters and setters
-    public BigDecimal getAmount() { return amount; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-    public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
 }

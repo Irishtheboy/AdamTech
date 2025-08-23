@@ -1,99 +1,137 @@
+/*Order.java
+  Order Class
+  Author: Naqeebah Khan (219099073)
+  Date: 10 May 2025
+ */
+
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
+import za.co.admatech.domain.enums.OrderStatus;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table (name = "orders")
 public class Order {
-    @Id
-    @Column(nullable = false)
-    private String id;
 
-    @Column(nullable = false)
-    private LocalDateTime orderDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String customerId;
+
+    private LocalDate orderDate;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Embedded
-    @Column(nullable = false)
     private Money totalAmount;
 
-    @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "customerId")
-    private Customer customer;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany
+    @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
-    // Public no-arg constructor
-    public Order() {}
+    public Order() {
+    }
 
-
-    private Order(Builder builder) {
+    public Order(Builder builder) {
         this.id = builder.id;
+        this.customerId = builder.customerId;
         this.orderDate = builder.orderDate;
+        this.orderStatus = builder.orderStatus;
         this.totalAmount = builder.totalAmount;
-        this.customer = builder.customer;
         this.orderItems = builder.orderItems;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public Money getTotalAmount() {
+        return totalAmount;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", orderDate=" + orderDate +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                '}';
+    }
+
     public static class Builder {
-        private String id;
-        private LocalDateTime orderDate;
+        private Long id;
+        private String customerId;
+        private LocalDate orderDate;
+        private OrderStatus orderStatus;
         private Money totalAmount;
-        private Customer customer;
         private List<OrderItem> orderItems;
 
-        public Builder id(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder orderDate(LocalDateTime orderDate) {
+        public Builder setCustomerId(String customerId) {
+            this.customerId = customerId;
+            return this;
+        }
+
+        public Builder setOrderDate(LocalDate orderDate) {
             this.orderDate = orderDate;
             return this;
         }
 
-        public Builder totalAmount(Money totalAmount) {
+        public Builder setOrderStatus(OrderStatus orderStatus) {
+            this.orderStatus = orderStatus;
+            return this;
+        }
+
+        public Builder setTotalAmount(Money totalAmount) {
             this.totalAmount = totalAmount;
             return this;
         }
 
-        public Builder customer(Customer customer) {
-            this.customer = customer;
-            return this;
-        }
-
-        public Builder orderItems(List<OrderItem> orderItems) {
+        public Builder setOrderItems(List<OrderItem> orderItems) {
             this.orderItems = orderItems;
             return this;
         }
 
+        public Builder copy(Order order) {
+            this.id = order.id;
+            this.customerId = order.customerId;
+            this.orderDate = order.orderDate;
+            this.orderStatus = order.orderStatus;
+            this.totalAmount = order.totalAmount;
+            this.orderItems = order.orderItems;
+            return this;
+        }
         public Order build() {
             return new Order(this);
         }
-    }
 
-    public Order copy() {
-        return new Builder()
-                .id(this.id)
-                .orderDate(this.orderDate)
-                .totalAmount(this.totalAmount)
-                .customer(this.customer)
-                .orderItems(this.orderItems)
-                .build();
     }
-
-    // Getters and setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public LocalDateTime getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
-    public Money getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(Money totalAmount) { this.totalAmount = totalAmount; }
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
-    public List<OrderItem> getOrderItems() { return orderItems; }
-    public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
 }
+
+

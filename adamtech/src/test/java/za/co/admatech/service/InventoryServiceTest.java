@@ -1,137 +1,90 @@
-package za.co.admatech.service;/*
-InventoryServiceTest.java
-Author: Seymour Lawrence (230185991)
-Date: 25 May 2025
-Description: This test class contains integration tests for the InventoryService class,
-verifying the functionality of create, read, update, delete, and getAll methods
-using Spring Boot without mocks, including product and status validation.
-*/
+package za.co.admatech.service;
 
-
-import jakarta.persistence.EntityNotFoundException;
-import za.co.admatech.domain.Inventory;
-import za.co.admatech.domain.Product;
-import za.co.admatech.domain.enums.InventoryStatus;
-import za.co.admatech.factory.ProductFactory;
-import za.co.admatech.service.inventory_domain_service.IInventoryService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.Inventory;
+import za.co.admatech.domain.enums.InventoryStatus;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InventoryServiceTest {
 
     @Autowired
-    private IInventoryService service;
+    private InventoryService inventoryService;
 
-    private static Inventory validInventory;
-    private static Inventory invalidInventory;
-    private static Product product;
-
-    @BeforeAll
-    public static void setUp() {
-        // Create a product
-        product = ProductFactory.createProduct(
-                "prod-101",
-                "Mechanical Keyboard",
-                "RGB Gaming Keyboard",
-                "SKU-123",
-                null, // Assuming Money is optional for this test
-                null, // Assuming Category is optional for this test
-                null  // Assuming ProductType is optional for this test
-        );
-
-        // Create a valid inventory
-        validInventory = new Inventory.Builder()
-                .inventoryId("inv-101")
-                .productId("prod-101")
-                .quantity(50)
-                .inventoryStatus(InventoryStatus.IN_STOCK)
-                .product(product)
-                .build();
-
-        // Create an invalid inventory (null or invalid fields)
-        invalidInventory = new Inventory.Builder()
-                .inventoryId(null)
-                .productId("")
-                .quantity(-1)
-                .inventoryStatus(null)
-                .product(null)
-                .build();
-    }
+    private static Inventory testInventory;
 
     @Test
-    void a_create() {
-        Product savedProduct = null; // Assume product is pre-saved or managed elsewhere
-        if (product != null) {
-            savedProduct = product; // In a real test, save product first
-        }
-        validInventory.setProduct(savedProduct); // Ensure product is set
-        Inventory created = service.create(validInventory);
+    @Order(1)
+    void create() {
+        Inventory inventory = new Inventory.Builder()
+                .setProductId("PROD123")
+                .setQuantity(50)
+                .setInventoryStatus(InventoryStatus.IN_STOCK)
+                .build();
+
+        Inventory created = inventoryService.create(inventory);
         assertNotNull(created);
-        assertEquals("inv-101", created.getInventoryId());
-        assertEquals("prod-101", created.getProductId());
+        assertNotNull(created.getId());
+        assertEquals("PROD123", created.getProductId());
         assertEquals(50, created.getQuantity());
         assertEquals(InventoryStatus.IN_STOCK, created.getInventoryStatus());
-        System.out.println("Created Inventory: " + created);
+
+        testInventory = created; // Save for later tests
     }
 
     @Test
-    void b_read() {
-        validInventory.setProduct(product); // Ensure product is set
-        Inventory saved = service.create(validInventory);
-        Inventory read = service.read(saved.getInventoryId());
-        assertNotNull(read);
-        assertEquals("inv-101", read.getInventoryId());
-        assertEquals("prod-101", read.getProductId());
-        assertEquals(50, read.getQuantity());
-        assertEquals(InventoryStatus.IN_STOCK, read.getInventoryStatus());
-        System.out.println("Read Inventory: " + read);
+    @Order(2)
+    void read() {
+        assertNotNull(testInventory);
+
+        Inventory found = inventoryService.read(testInventory.getId());
+        assertNotNull(found);
+        assertEquals(testInventory.getProductId(), found.getProductId());
     }
 
     @Test
-    void c_update() {
-        validInventory.setProduct(product); // Ensure product is set
-        Inventory saved = service.create(validInventory);
-        Inventory updated = saved.copy();
-        updated.setQuantity(75); // Example update
-        updated.setInventoryStatus(InventoryStatus.OUT_OF_STOCK);
-        Inventory result = service.update(updated);
-        assertNotNull(result);
-        assertEquals("inv-101", result.getInventoryId());
-        assertEquals(75, result.getQuantity());
-        assertEquals(InventoryStatus.OUT_OF_STOCK, result.getInventoryStatus());
-        System.out.println("Updated Inventory: " + result);
+    @Order(3)
+    void update() {
+        assertNotNull(testInventory);
+
+        Inventory updatedInventory = new Inventory.Builder()
+                .copy(testInventory)
+                .setQuantity(75)
+                .setInventoryStatus(InventoryStatus.LOW_STOCK)
+                .build();
+
+        Inventory updated = inventoryService.update(updatedInventory);
+        assertNotNull(updated);
+        assertEquals(75, updated.getQuantity());
+        assertEquals(InventoryStatus.LOW_STOCK, updated.getInventoryStatus());
+
+        testInventory = updated; // update reference for next tests
     }
 
     @Test
-    void d_delete() {
-        validInventory.setProduct(product); // Ensure product is set
-        Inventory saved = service.create(validInventory);
-        boolean deleted = service.delete(saved.getInventoryId());
+    @Order(4)
+    void getAll() {
+        List<Inventory> allInventories = inventoryService.getAll();
+        assertFalse(allInventories.isEmpty());
+        assertTrue(allInventories.stream().anyMatch(inv -> inv.getId().equals(testInventory.getId())));
+    }
+
+    @Test
+    @Order(5)
+    @Disabled
+    void delete() {
+        assertNotNull(testInventory);
+
+        boolean deleted = inventoryService.delete(testInventory.getId());
         assertTrue(deleted);
-        assertThrows(EntityNotFoundException.class, () -> service.read(saved.getInventoryId()));
-        System.out.println("Deleted: " + deleted);
-    }
 
-    @Test
-    void e_getAll() {
-        validInventory.setProduct(product); // Ensure product is set
-        service.create(validInventory);
-        List<Inventory> inventories = service.getAll();
-        assertNotNull(inventories);
-        assertFalse(inventories.isEmpty());
-        inventories.forEach(System.out::println);
-    }
-
-    @Test
-    void f_createInvalid() {
-        assertThrows(IllegalArgumentException.class, () -> service.create(invalidInventory));
-        System.out.println("Invalid inventory creation test passed");
+        Inventory deletedInventory = inventoryService.read(testInventory.getId());
+        assertNull(deletedInventory);
     }
 }

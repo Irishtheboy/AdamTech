@@ -1,109 +1,101 @@
-/*
-CartItem.java
-Author: Rorisang Makgana (230602363)
-Date: 11 May 2025 */
+/*CartItem.java
+  CartItem Class
+  Author: Teyana Raubenheimer (230237622)
+  Date: 11 May 2025
+ */
+
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "cart_item")
 public class CartItem {
     @Id
-    @Column(nullable = false)
-    private String id;
-
-    @Column(nullable = false)
-    private String productId;
-
-    @Column(nullable = false)
+    @GeneratedValue
+    private Long cartItemID;
+    private String  productID;
     private int quantity;
+    private String cartID;
 
     @ManyToOne
-    @JoinColumn(name = "cartId", referencedColumnName = "id")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne
-    @JoinColumn(name = "productId", referencedColumnName = "productId", insertable = false, updatable = false)
-    private Product product;
+    public CartItem() {
 
-    // Public no-arg constructor
-    public CartItem() {}
+    }
 
-    private CartItem(Builder builder) {
-        this.id = builder.id;
-        this.productId = builder.productId;
+    public CartItem (Builder builder) {
+        this.cartItemID = builder.cartItemID;
+        this.productID = builder.productID;
         this.quantity = builder.quantity;
-        this.cart = builder.cart;
-        this.product = builder.product;
+        this.cartID = builder.cartID;
+    }
+
+
+    public Long getCartItemID() {
+        return cartItemID;
+    }
+
+    public String getProductID() {
+        return productID;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCartID() {
+        return cartID;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "cartItemID='" + cartItemID + '\'' +
+                ", productID='" + productID + '\'' +
+                ", quantity=" + quantity +
+                ", cartID=" + cartID +
+                '}';
     }
 
     public static class Builder {
-        private String id;
-        private String productId;
+        private Long cartItemID;
+        private String productID;
         private int quantity;
-        private Cart cart;
-        private Product product;
+        private String cartID;
 
-        public Builder id(String id) {
-            this.id = id;
+        public Builder setCartItemID(Long cartItemID) {
+            this.cartItemID = cartItemID;
             return this;
         }
 
-        public Builder productId(String productId) {
-            this.productId = productId;
+        public Builder setProductID(String productID) {
+            this.productID = productID;
             return this;
         }
 
-        public Builder quantity(int quantity) {
+        public Builder setQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder cart(Cart cart) {
-            this.cart = cart;
+        public Builder setCartID(String cartID) {
+            this.cartID = cartID;
             return this;
         }
 
-        public Builder product(Product product) {
-            this.product = product;
+        public Builder copy (CartItem cartItem) {
+            this.cartItemID = cartItem.getCartItemID();
+            this.productID = cartItem.getProductID();
+            this.quantity = cartItem.getQuantity();
+            this.cartID = cartItem.getCartID();
             return this;
         }
 
         public CartItem build() {
-            return new CartItem(this);
+            return new CartItem (this);
         }
-    }
 
-    public CartItem copy() {
-        return new Builder()
-                .id(this.id)
-                .productId(this.productId)
-                .quantity(this.quantity)
-                .cart(this.cart)
-                .product(this.product)
-                .build();
     }
-
-    // New method to get a Builder with current values
-    public Builder getBuilder() {
-        return new Builder()
-                .id(this.id)
-                .productId(this.productId)
-                .quantity(this.quantity)
-                .cart(this.cart)
-                .product(this.product);
-    }
-
-    // Getters and setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public Cart getCart() { return cart; }
-    public void setCart(Cart cart) { this.cart = cart; }
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
 }

@@ -1,34 +1,39 @@
-/*
-AddressController.java
-Author: Rorisang Makgana (230602363)
-Date: 11 May 2025 */
+
+
 package za.co.admatech.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*; import za.co.admatech.domain.Address; import za.co.admatech.service.address_domain_service.AddressService;
+import org.springframework.web.bind.annotation.*;
+import za.co.admatech.domain.Address;
+import za.co.admatech.service.AddressService;
 
-import java.util.List;
-    @RestController
-    @RequestMapping("/api/address")
-    public class AddressController {
+@RestController
+@RequestMapping("/address")
+public class AddressController {
+    private AddressService service;
 
-        @Autowired
-        private AddressService addressService;
-
-        @PostMapping("/create")
-        public ResponseEntity<Address> create(@RequestBody Address address) {
-            return ResponseEntity.ok(addressService.create(address));
-        }
-
-        @GetMapping("/{id}")
-        public ResponseEntity<Address> read(@PathVariable Long id) {
-            return ResponseEntity.ok(addressService.read(id));
-        }
-
-        @DeleteMapping("/delete/{id}")
-        public ResponseEntity<Void> delete(@PathVariable Long id) {
-            addressService.delete(id);
-            return ResponseEntity.ok().build();
-        }
+    @Autowired
+    public AddressController(AddressService service) {
+        this.service = service;
     }
+
+    @PostMapping("/create")
+    public Address create(@RequestBody Address address) {
+        return service.create(address);
+    }
+
+    @GetMapping("/read/{addressID}")
+    public Address read(@PathVariable Long addressID) {
+        return service.read(addressID);
+    }
+
+    @PutMapping("/update")
+    public Address update(@RequestBody Address address) {
+        return service.update(address);
+    }
+
+    @DeleteMapping("/delete/{addressID}")
+    public boolean delete(@PathVariable Long addressID) {
+        return service.delete(addressID);
+    }
+}

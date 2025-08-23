@@ -1,3 +1,9 @@
+/*
+ * Inventory.java
+ * Inventory Class
+ * Author: Seymour Lawrence (230185991)
+ * Date: 11 May 2025
+ */
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
@@ -6,66 +12,83 @@ import za.co.admatech.domain.enums.InventoryStatus;
 @Entity
 @Table(name = "inventory")
 public class Inventory {
+
     @Id
-    @Column(nullable = false)
-    private String inventoryId;
-
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String productId;
-
-    @Column(nullable = false)
     private int quantity;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private InventoryStatus inventoryStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "productId", referencedColumnName = "productId", insertable = false, updatable = false)
-    private Product product;
-
-    // Public no-arg constructor
-    public Inventory() {}
-
-
+    public Inventory() {
+    }
 
     private Inventory(Builder builder) {
-        this.inventoryId = builder.inventoryId;
+        this.id = builder.id;
         this.productId = builder.productId;
         this.quantity = builder.quantity;
         this.inventoryStatus = builder.inventoryStatus;
-        this.product = builder.product;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public InventoryStatus getInventoryStatus() {
+        return inventoryStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "id='" + id + '\'' +
+                ", productId='" + productId + '\'' +
+                ", quantity=" + quantity +
+                ", inventoryStatus=" + inventoryStatus +
+                '}';
     }
 
     public static class Builder {
-        private String inventoryId;
+        private Long id;
         private String productId;
         private int quantity;
         private InventoryStatus inventoryStatus;
-        private Product product;
 
-        public Builder inventoryId(String inventoryId) {
-            this.inventoryId = inventoryId;
+        public Builder setId(Long id) {
+            this.id = id;
             return this;
         }
 
-        public Builder productId(String productId) {
+        public Builder setProductId(String productId) {
             this.productId = productId;
             return this;
         }
 
-        public Builder quantity(int quantity) {
+        public Builder setQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder inventoryStatus(InventoryStatus inventoryStatus) {
+        public Builder setInventoryStatus(InventoryStatus inventoryStatus) {
             this.inventoryStatus = inventoryStatus;
             return this;
         }
 
-        public Builder product(Product product) {
-            this.product = product;
+        public Builder copy(Inventory inventory) {
+            this.id = inventory.id;
+            this.productId = inventory.productId;
+            this.quantity = inventory.quantity;
+            this.inventoryStatus = inventory.inventoryStatus;
             return this;
         }
 
@@ -73,26 +96,4 @@ public class Inventory {
             return new Inventory(this);
         }
     }
-
-    public Inventory copy() {
-        return new Builder()
-                .inventoryId(this.inventoryId)
-                .productId(this.productId)
-                .quantity(this.quantity)
-                .inventoryStatus(this.inventoryStatus)
-                .product(this.product)
-                .build();
-    }
-
-    // Getters and setters
-    public String getInventoryId() { return inventoryId; }
-    public void setInventoryId(String inventoryId) { this.inventoryId = inventoryId; }
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public InventoryStatus getInventoryStatus() { return inventoryStatus; }
-    public void setInventoryStatus(InventoryStatus inventoryStatus) { this.inventoryStatus = inventoryStatus; }
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
 }
