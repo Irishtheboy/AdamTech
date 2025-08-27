@@ -1,11 +1,6 @@
-/* OrderItemControllerTest.java
-   Order Item Controller Test Class
-   Author: Naqeebah Khan (219099073)
-   Date: 03 June 2025
- */
 package za.co.admatech.controller;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -13,33 +8,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.OrderItem;
 import za.co.admatech.domain.Product;
+import za.co.admatech.repository.OrderRepository;
+import za.co.admatech.repository.ProductRepository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.MethodName.class)
+@Transactional
 class OrderItemControllerTest {
 
-    private static OrderItem orderItem;
-    private static Product product;
-    private static Order order;
+    private OrderItem orderItem;
+    private Product product;
+    private Order order;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
     private static final String BASE_URL = "/orderItem";
 
-    @BeforeAll
-    public static void setUp() {
-        // Initialize dependencies
+    @BeforeEach
+    public void setUp() {
         Money unitPrice = new Money.Builder()
                 .setAmount(29)
                 .setCurrency("USD")
@@ -53,10 +62,18 @@ class OrderItemControllerTest {
                 .setCategoryId("CAT1")
                 .build();
 
-        order = new Order.Builder() // Assuming Order has a Builder
+        product = productRepository.save(product);
+        System.out.println("Saved product: " + product);
+        assertNotNull(product.getProductId(), "Persisted product should have an ID");
+
+        order = new Order.Builder()
                 .setOrderDate(LocalDate.parse("2025-08-27"))
                 .setOrderStatus(za.co.admatech.domain.enums.OrderStatus.PENDING)
                 .build();
+
+        order = orderRepository.save(order);
+        System.out.println("Saved order: " + order);
+        assertNotNull(order.getId(), "Persisted order should have an ID");
 
         orderItem = new OrderItem.Builder()
                 .setProduct(product)
@@ -69,29 +86,44 @@ class OrderItemControllerTest {
     @Test
     void a_create() {
         String url = BASE_URL + "/create";
-        ResponseEntity<OrderItem> postResponse = this.restTemplate.postForEntity(url, orderItem, OrderItem.class);
-        assertNotNull(postResponse, "Response should not be null");
-        assertEquals(200, postResponse.getStatusCodeValue(), "Should return 200 OK");
-        OrderItem createdOrderItem = postResponse.getBody();
-        assertNotNull(createdOrderItem, "Created order item should not be null");
-        assertNotNull(createdOrderItem.getId(), "Order item ID should be generated");
-        assertEquals(orderItem.getQuantity(), createdOrderItem.getQuantity(), "Quantity should match");
-        assertEquals(orderItem.getUnitPrice().getAmount(), createdOrderItem.getUnitPrice().getAmount(), "Unit price should match");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<OrderItem> request = new HttpEntity<>(orderItem, headers);
+        try {
+            ResponseEntity<OrderItem> postResponse = restTemplate.postForEntity(url, request, OrderItem.class);
+            assertNotNull(postResponse, "Response should not be null");
+            assertEquals(200, postResponse.getStatusCodeValue(), "Should return 200 OK");
+            OrderItem createdOrderItem = postResponse.getBody();
+            assertNotNull(createdOrderItem, "Created order item should not be null");
+            assertNotNull(createdOrderItem.getId(), "Order item ID should be generated");
+            assertEquals(orderItem.getQuantity(), createdOrderItem.getQuantity(), "Quantity should match");
+            assertEquals(orderItem.getUnitPrice().getAmount(), createdOrderItem.getUnitPrice().getAmount(), "Unit price should match");
 
-        // Save generated ID for later tests
-        orderItem = new OrderItem.Builder().copy(createdOrderItem).build();
-
-        System.out.println("Created: " + createdOrderItem);
+            orderItem = new OrderItem.Builder().copy(createdOrderItem).build();
+            System.out.println("Created: " + createdOrderItem);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.err.println("Error response: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 
     @Test
     void b_read() {
         String url = BASE_URL + "/read/" + orderItem.getId();
-        ResponseEntity<OrderItem> response = this.restTemplate.getForEntity(url, OrderItem.class);
-        assertNotNull(response.getBody(), "Response body should not be null");
-        assertEquals(orderItem.getId(), response.getBody().getId(), "Order item ID should match");
-        assertEquals(orderItem.getQuantity(), response.getBody().getQuantity(), "Quantity should match");
-        System.out.println("Read: " + response.getBody());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<OrderItem> response = restTemplate.exchange(url, HttpMethod.GET, request, OrderItem.class);
+            assertNotNull(response.getBody(), "Response body should not be null");
+            assertEquals(orderItem.getId(), response.getBody().getId(), "Order item ID should match");
+            assertEquals(orderItem.getQuantity(), response.getBody().getQuantity(), "Quantity should match");
+            System.out.println("Read: " + response.getBody());
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.err.println("Error response: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 
     @Test
@@ -108,35 +140,46 @@ class OrderItemControllerTest {
                 .build();
 
         String url = BASE_URL + "/update";
-        HttpEntity<OrderItem> request = new HttpEntity<>(updatedOrderItem);
-        ResponseEntity<OrderItem> response = restTemplate.exchange(url, HttpMethod.PUT, request, OrderItem.class);
-
-        assertNotNull(response.getBody(), "Response body should not be null");
-        assertEquals(orderItem.getId(), response.getBody().getId(), "Order item ID should match");
-        assertEquals(3, response.getBody().getQuantity(), "Updated quantity should be 3");
-        assertEquals(39.99, response.getBody().getUnitPrice().getAmount(), "Updated unit price should be 39.99");
-        System.out.println("Updated: " + response.getBody());
-
-        // Update local reference for later tests
-        orderItem = response.getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<OrderItem> request = new HttpEntity<>(updatedOrderItem, headers);
+        try {
+            ResponseEntity<OrderItem> response = restTemplate.exchange(url, HttpMethod.PUT, request, OrderItem.class);
+            assertNotNull(response.getBody(), "Response body should not be null");
+            assertEquals(orderItem.getId(), response.getBody().getId(), "Order item ID should match");
+            assertEquals(3, response.getBody().getQuantity(), "Updated quantity should be 3");
+            assertEquals(39, response.getBody().getUnitPrice().getAmount(), "Updated unit price should be 39");
+            System.out.println("Updated: " + response.getBody());
+            orderItem = response.getBody();
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.err.println("Error response: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 
     @Test
     void d_delete() {
         String url = BASE_URL + "/delete/" + orderItem.getId();
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Boolean.class);
-        assertNotNull(response.getBody(), "Response body should not be null");
-        assertTrue(response.getBody(), "Delete should return true");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.DELETE, request, Boolean.class);
+            assertNotNull(response.getBody(), "Response body should not be null");
+            assertTrue(response.getBody(), "Delete should return true");
 
-        // Verify deletion by attempting to read
-        ResponseEntity<OrderItem> readResponse = this.restTemplate.getForEntity(BASE_URL + "/read/" + orderItem.getId(), OrderItem.class);
-        assertNull(readResponse.getBody(), "Order item should not exist after deletion");
-        System.out.println("Deleted: true");
+            ResponseEntity<OrderItem> readResponse = restTemplate.getForEntity(BASE_URL + "/read/" + orderItem.getId(), OrderItem.class);
+            assertEquals(404, readResponse.getStatusCodeValue(), "Order item should not exist after deletion");
+            System.out.println("Deleted: true");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.err.println("Error response: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 
     @Test
     void e_getAll() {
-        // Create a new order item to ensure there's at least one
         Money unitPrice = new Money.Builder()
                 .setAmount(49)
                 .setCurrency("USD")
@@ -149,15 +192,26 @@ class OrderItemControllerTest {
                 .setUnitPrice(unitPrice)
                 .build();
 
-        restTemplate.postForEntity(BASE_URL + "/create", newOrderItem, OrderItem.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<OrderItem> createRequest = new HttpEntity<>(newOrderItem, headers);
+        ResponseEntity<OrderItem> createResponse = restTemplate.postForEntity(BASE_URL + "/create", createRequest, OrderItem.class);
+        assertEquals(200, createResponse.getStatusCodeValue(), "Create should return 200 OK");
 
         String url = BASE_URL + "/getAll";
-        ResponseEntity<OrderItem[]> response = this.restTemplate.getForEntity(url, OrderItem[].class);
-        assertNotNull(response.getBody(), "Response body should not be null");
-        assertTrue(response.getBody().length > 0, "Should return at least one order item");
-        System.out.println("Get All:");
-        for (OrderItem oi : response.getBody()) {
-            System.out.println(oi);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<OrderItem[]> response = restTemplate.exchange(url, HttpMethod.GET, request, OrderItem[].class);
+            assertNotNull(response.getBody(), "Response body should not be null");
+            assertTrue(response.getBody().length > 0, "Should return at least one order item");
+            System.out.println("Get All:");
+            for (OrderItem oi : response.getBody()) {
+                System.out.println(oi);
+            }
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.err.println("Error response: " + e.getResponseBodyAsString());
+            throw e;
         }
     }
 }

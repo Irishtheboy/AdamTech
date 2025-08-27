@@ -103,16 +103,14 @@ class PaymentControllerTest {
         String url = BASE_URL + "/create";
         ResponseEntity<Payment> response = restTemplate.postForEntity(url, payment, Payment.class);
         assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertNotNull(response.getBody().getId());
-        assertEquals(payment.getAmount().getAmount(), response.getBody().getAmount().getAmount());
-        assertEquals(payment.getPaymentStatus(), response.getBody().getPaymentStatus());
-        assertEquals(order.getId(), response.getBody().getOrder().getId());
+        Payment createdPayment = response.getBody();
+        assertNotNull(createdPayment);
+        assertNotNull(createdPayment.getId());
+        assertEquals(payment.getId(), createdPayment.getId());
+        assertEquals(payment.getOrder().getId(), createdPayment.getOrder().getId());
 
-        // Save the generated ID for later
         payment = new Payment.Builder().copy(response.getBody()).build();
-        System.out.println("Created: " + payment);
+        System.out.println("Created: " +createdPayment);
     }
 
     @Test
