@@ -22,7 +22,7 @@ public class CustomerController {
     }
 
     @GetMapping("/read/{customerID}")
-    public Customer read(@PathVariable String customerID){
+    public Customer read(@PathVariable Long customerID){
         return customerService.read(customerID);
     }
 
@@ -32,7 +32,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/delete/{customerID}", method = RequestMethod.DELETE)
-    public boolean delete(@PathVariable String customerID){
+    public boolean delete(@PathVariable Long customerID){
         return customerService.delete(customerID);
     }
 }

@@ -14,7 +14,7 @@ import za.co.admatech.repository.OrderItemRepository;
 import java.util.List;
 
 @Service
-public class OrderItemService implements IService <OrderItem, Long>{
+public class OrderItemService implements IOrderItemService{
 
     @Autowired
     private OrderItemRepository repository;
@@ -40,7 +40,9 @@ public class OrderItemService implements IService <OrderItem, Long>{
         return true;
     }
 
+    @Override
     public List<OrderItem> getAll(){
         return this.repository.findAll();
     }
+
 }

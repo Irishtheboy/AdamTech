@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import za.co.admatech.domain.Customer;
 import java.util.Optional;
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, String> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 }

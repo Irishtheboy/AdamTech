@@ -3,7 +3,6 @@
  * Author: Rorisang Makgana (230602363)
  * Date: 08 August 2025
  */
-
 package za.co.admatech.service;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Address;
-import za.co.admatech.factory.AddressFactory;
 
 import java.util.List;
 
@@ -26,31 +24,34 @@ class AddressServiceTest {
     @Autowired
     private IAddressService service;
 
-    private static Address address = AddressFactory.createAddress(
-            (short) 12,
-            "Oak Street",
-            "Parklands",
-            "Cape Town",
-            "Western Cape",
-            (short) 7441
-    );
+    private static Address address = new Address.Builder()
+            .setStreetNumber((short) 12)
+            .setStreetName("Oak Street")
+            .setSuburb("Parklands")
+            .setCity("Cape Town")
+            .setProvince("Western Cape")
+            .setPostalCode((short) 7441)
+            .build();
 
     @Test
     @Order(1)
     void create() {
         Address created = service.create(address);
         assertNotNull(created);
-        assertNotNull(created.getAddressID());
-        address = created; // save the auto-generated ID
+        assertNotNull(created.getAddressId());
+        assertEquals(address.getStreetName(), created.getStreetName());
+        assertEquals(address.getPostalCode(), created.getPostalCode());
+        address = created; // Update with generated ID
         System.out.println("Created: " + created);
     }
 
     @Test
     @Order(2)
     void read() {
-        Address read = service.read(address.getAddressID());
+        Address read = service.read(address.getAddressId());
         assertNotNull(read);
-        assertEquals(address.getAddressID(), read.getAddressID());
+        assertEquals(address.getAddressId(), read.getAddressId());
+        assertEquals(address.getCity(), read.getCity());
         System.out.println("Read: " + read);
     }
 
@@ -60,21 +61,27 @@ class AddressServiceTest {
         Address updated = new Address.Builder()
                 .copy(address)
                 .setCity("Stellenbosch")
-                .setPostalCode((short)7580)
+                .setPostalCode((short) 7580)
                 .build();
 
         Address result = service.update(updated);
         assertNotNull(result);
+        assertEquals(address.getAddressId(), result.getAddressId());
         assertEquals("Stellenbosch", result.getCity());
+        assertEquals((short) 7580, result.getPostalCode());
         System.out.println("Updated: " + result);
     }
 
     @Test
     @Order(4)
     void delete() {
-        boolean success = service.delete(address.getAddressID());
+        boolean success = service.delete(address.getAddressId());
         assertTrue(success);
-        System.out.println("Deleted address with ID: " + address.getAddressID());
+
+        // Verify deletion
+        Address read = service.read(address.getAddressId());
+        assertNull(read);
+        System.out.println("Deleted address with ID: " + address.getAddressId());
     }
 
     @Test

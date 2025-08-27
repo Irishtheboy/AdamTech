@@ -7,49 +7,29 @@ import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Helper {
     public static boolean isNullOrEmpty(String s) {
-        if (s.isEmpty() || s == null)
-            return true;
-        return false;
-
-
+        return s == null || s.isEmpty();
     }
 
     public static String generateId() {
         return UUID.randomUUID().toString();
-
     }
-//    public static String generateId() {
-//        return java.util.UUID.randomUUID().toString();
-//    }
-
 
     public static boolean isValidEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
-        if (validator.isValid(email)) {
-            return true;
-        }else {
-            return false;
-        }
-    }
-    // Todo: isValidPostalCode method - 4 digits with range 1000 to 9999
-    public static boolean isValidPostalCode(short postalCode) {
-        if (postalCode < 1000 || postalCode > 9999) {
-            return false;
-        }
-        return true;
+        return validator.isValid(email);
     }
 
-    // Todo: isValidStreetNumber method - 1 to 5 digits with range 1 to 99999
+    public static boolean isValidPostalCode(short postalCode) {
+        return postalCode >= 1000 && postalCode <= 9999;
+    }
+
     public static boolean isValidStreetNumber(short streetNumber) {
-        if (streetNumber < 1 || streetNumber > 99999) {
-            return false;
-        }
-        return true;
+        return streetNumber >= 1 && streetNumber <= 99999;
     }
 
     public static boolean isValidLocalDate(LocalDate date) {
@@ -57,9 +37,16 @@ public class Helper {
             return false;
         }
         LocalDate today = LocalDate.now();
-        return (!date.isAfter(today)) && date.getYear() >= 1900;
+        return !date.isAfter(today) && date.getYear() >= 1900;
     }
 
+    public static boolean isValidLocalDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return false;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        return !dateTime.isAfter(now) && dateTime.getYear() >= 1900;
+    }
 
     public static boolean isValidPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || !phoneNumber.matches("\\d{10}")) {
@@ -68,11 +55,9 @@ public class Helper {
         return true;
     }
 
-    // PaymentStatus
     public static boolean isValidPaymentStatus(PaymentStatus status) {
         return status != null;
     }
-
 
     public static PaymentStatus getPaymentStatusFromString(String input) {
         if (input == null) return null;
@@ -82,7 +67,6 @@ public class Helper {
         return null;
     }
 
-    // OrderStatus
     public static boolean isValidOrderStatus(String input) {
         if (input == null || input.isEmpty()) return false;
         for (OrderStatus status : OrderStatus.values()) {
@@ -99,7 +83,6 @@ public class Helper {
         return null;
     }
 
-    // InventoryStatus
     public static boolean isValidInventoryStatus(String input) {
         if (input == null || input.isEmpty()) return false;
         for (InventoryStatus status : InventoryStatus.values()) {
@@ -116,34 +99,15 @@ public class Helper {
         return null;
     }
 
-    // inventoryStatus
     public static boolean isValidInventoryStatus(InventoryStatus inventoryStatus) {
-        if (inventoryStatus == null) return false;
-        for (InventoryStatus status : InventoryStatus.values()) {
-            if (status.equals(inventoryStatus)) return true;
-        }
-        return false;
+        return inventoryStatus != null;
     }
+
     public static InventoryStatus getInventoryStatusFromString(InventoryStatus inventoryStatus) {
-        if (inventoryStatus == null) return null;
-        for (InventoryStatus status : InventoryStatus.values()) {
-            if (status.equals(inventoryStatus)) return status;
-        }
-        return null;
+        return inventoryStatus;
     }
 
-
-    //Validation methods to validate the customer fields: the customer address
-    //1. Validating whether the customer's cart ID matches the initial card ID issued
-    public static Cart isValidCartID(Cart cartID){
-        if(cartID == null){
-            return null;
-        }
-
-        return cartID;
+    public static Cart isValidCartID(Cart cartID) {
+        return cartID; // Simplified; assumes cart is valid if not null
     }
-    //Validating the 
 }
-
-
-

@@ -30,8 +30,14 @@ public class PaymentService implements IPaymentService {
         paymentRepository.deleteById(id);
         return true;
     }
+    @Override
+    public List<Payment> getAll(){
+        return paymentRepository.findAll();
+    }
+
 
     public List<Payment> getPayments() {
         return paymentRepository.findAll();
     }
+
 }

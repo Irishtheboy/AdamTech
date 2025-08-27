@@ -37,8 +37,8 @@ public class CustomerFactory {
         }
 
         return new Customer.Builder()
-        //.setCartID(cartID)
-        .setCustomerID(customerID)
+
+
         .setFirstName(firstName)
         .setLastName(lastName)
         .setAddress(address)

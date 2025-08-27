@@ -1,25 +1,23 @@
-/*Order.java
-  Order Class
-  Author: Naqeebah Khan (219099073)
-  Date: 10 May 2025
- */
-
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
 import za.co.admatech.domain.enums.OrderStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table (name = "orders")
+@Table(name = "orders") // 'order' is reserved in SQL
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String customerId;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     private LocalDate orderDate;
 
@@ -29,28 +27,29 @@ public class Order {
     @Embedded
     private Money totalAmount;
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(Builder builder) {
+    protected Order(Builder builder) {
         this.id = builder.id;
-        this.customerId = builder.customerId;
+        this.customer = builder.customer;
         this.orderDate = builder.orderDate;
         this.orderStatus = builder.orderStatus;
         this.totalAmount = builder.totalAmount;
-        this.orderItems = builder.orderItems;
+        this.orderItems = builder.orderItems != null ? builder.orderItems : new ArrayList<>();
+        // Link each OrderItem back to this Order
+        this.orderItems.forEach(item -> item.setOrder(this));
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public LocalDate getOrderDate() {
@@ -72,29 +71,30 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "id='" + id + '\'' +
-                ", customerId='" + customerId + '\'' +
+                "id=" + id +
+                ", customer=" + customer +
                 ", orderDate=" + orderDate +
-                ", orderStatus='" + orderStatus + '\'' +
-                ", totalAmount='" + totalAmount + '\'' +
+                ", orderStatus=" + orderStatus +
+                ", totalAmount=" + totalAmount +
+                ", orderItems=" + orderItems +
                 '}';
     }
 
     public static class Builder {
         private Long id;
-        private String customerId;
+        private Customer customer;
         private LocalDate orderDate;
         private OrderStatus orderStatus;
         private Money totalAmount;
-        private List<OrderItem> orderItems;
+        private List<OrderItem> orderItems = new ArrayList<>();
 
         public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
@@ -120,18 +120,16 @@ public class Order {
 
         public Builder copy(Order order) {
             this.id = order.id;
-            this.customerId = order.customerId;
+            this.customer = order.customer;
             this.orderDate = order.orderDate;
             this.orderStatus = order.orderStatus;
             this.totalAmount = order.totalAmount;
             this.orderItems = order.orderItems;
             return this;
         }
+
         public Order build() {
             return new Order(this);
         }
-
     }
 }
-
-

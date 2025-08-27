@@ -6,22 +6,25 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "product")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+
     private String name;
+
     private String description;
+
     private String sku;
-    private int priceAmount;
-    private String priceCurrency;
+
+    @Embedded
+    private Money price;
+
     private String categoryId;
 
     public Product() {
@@ -32,8 +35,7 @@ public class Product {
         this.name = builder.name;
         this.description = builder.description;
         this.sku = builder.sku;
-        this.priceAmount = builder.price != null ? builder.price.getAmount() : 0;
-        this.priceCurrency = builder.price != null ? builder.price.getCurrency() : null;
+        this.price = builder.price;
         this.categoryId = builder.categoryId;
     }
 
@@ -54,10 +56,7 @@ public class Product {
     }
 
     public Money getPrice() {
-        return new Money.Builder()
-                .setAmount(priceAmount)
-                .setCurrency(priceCurrency)
-                .build();
+        return price;
     }
 
     public String getCategoryId() {
@@ -67,11 +66,11 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "productId='" + productId + '\'' +
+                "productId=" + productId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", sku='" + sku + '\'' +
-                ", price=" + getPrice() +
+                ", price=" + price +
                 ", categoryId='" + categoryId + '\'' +
                 '}';
     }
@@ -119,7 +118,7 @@ public class Product {
             this.name = product.name;
             this.description = product.description;
             this.sku = product.sku;
-            this.price = product.getPrice();
+            this.price = product.price;
             this.categoryId = product.categoryId;
             return this;
         }
