@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PaymentFactoryTest {
 
-    static Money amount = new Money(100.00, "ZAR");
+    static Money amount = new Money(10000, "ZAR");
     private static Payment p = PaymentFactory.createPayment(LocalDate.now(), "ORDER123", amount, PaymentStatus.PENDING);
 
     @Test

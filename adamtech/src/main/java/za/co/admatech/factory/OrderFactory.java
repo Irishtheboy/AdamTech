@@ -23,7 +23,7 @@ public class OrderFactory {
             return null;
         }
 
-        if(orderStatus == null || !Helper.isValidOrderStatus(orderStatus.getStatus())) {
+        if(orderStatus == null || !Helper.isValidOrderStatus(orderStatus)) {
             return null;
         }
 

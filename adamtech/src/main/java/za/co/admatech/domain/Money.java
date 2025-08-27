@@ -1,8 +1,6 @@
 package za.co.admatech.domain;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
 
 /* Money.java
 

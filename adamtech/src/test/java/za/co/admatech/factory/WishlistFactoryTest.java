@@ -38,7 +38,7 @@ class WishlistFactoryTest {
     );
 
     private static Customer customer1 = CustomerFactory.createCustomer(
-            "1", "Franco", "Lukhele", "Francolukhele14@gmail.com",address1
+            "Franco", "Lukhele", "Francolukhele14@gmail.com", address1
     );
 
     private static Wishlist w1 = WishlistFactory.createWishlist(customer1, product1,LocalDateTime.now());

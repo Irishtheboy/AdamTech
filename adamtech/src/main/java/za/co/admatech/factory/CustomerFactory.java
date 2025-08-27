@@ -10,39 +10,46 @@ import za.co.admatech.util.Helper;
 
 public class CustomerFactory {
     public static Customer createCustomer(
-            String customerID,
             String firstName,
             String lastName,
             String email,
-            //Cart cartID,
             Address address) {
 
         //Validating the fields inside the Customer domain
-        //Validating the customerID
-        if (Helper.isNullOrEmpty(lastName)) {
-
+        if (Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName)) {
+            return null;
         }
 
-        //Validating the customers first name
-        if (Helper.isNullOrEmpty(firstName)) {
-
-        }
-        //Validating the customer last name
-        if (Helper.isNullOrEmpty(lastName)) {
-
-        }
         //Validating the customers email address using regex
-        if(Helper.isValidEmail(email)){
+        if(!Helper.isValidEmail(email)){
             return null;
         }
 
         return new Customer.Builder()
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)
+                .setAddress(address)
+                .build();
+    }
 
+    public static Customer buildCustomer(
+            Long customerId,
+            String firstName,
+            String lastName,
+            String email,
+            Address address,
+            Cart cart,
+            String phoneNumber) {
 
-        .setFirstName(firstName)
-        .setLastName(lastName)
-        .setAddress(address)
-        .build();
-
+        return new Customer.Builder()
+                .setCustomerId(customerId)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)
+                .setAddress(address)
+                .setCart(cart)
+                .setPhoneNumber(phoneNumber)
+                .build();
     }
 }

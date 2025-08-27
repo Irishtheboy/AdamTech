@@ -2,6 +2,7 @@ package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.service.CustomerService;
@@ -17,6 +18,7 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
     public Customer create(@RequestBody Customer customer){
         return customerService.create(customer);
     }
@@ -32,7 +34,13 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/delete/{customerID}", method = RequestMethod.DELETE)
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean delete(@PathVariable Long customerID){
         return customerService.delete(customerID);
+    }
+
+    @GetMapping("/getall")
+    public java.util.List<Customer> getAll(){
+        return customerService.getAll();
     }
 }

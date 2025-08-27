@@ -62,7 +62,7 @@ public class Helper {
     public static PaymentStatus getPaymentStatusFromString(String input) {
         if (input == null) return null;
         for (PaymentStatus status : PaymentStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return status;
+            if (status.name().equalsIgnoreCase(input)) return status;
         }
         return null;
     }
@@ -70,15 +70,19 @@ public class Helper {
     public static boolean isValidOrderStatus(String input) {
         if (input == null || input.isEmpty()) return false;
         for (OrderStatus status : OrderStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return true;
+            if (status.name().equalsIgnoreCase(input)) return true;
         }
         return false;
+    }
+
+    public static boolean isValidOrderStatus(OrderStatus status) {
+        return status != null;
     }
 
     public static OrderStatus getOrderStatusFromString(String input) {
         if (input == null) return null;
         for (OrderStatus status : OrderStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return status;
+            if (status.name().equalsIgnoreCase(input)) return status;
         }
         return null;
     }
@@ -86,7 +90,7 @@ public class Helper {
     public static boolean isValidInventoryStatus(String input) {
         if (input == null || input.isEmpty()) return false;
         for (InventoryStatus status : InventoryStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return true;
+            if (status.name().equalsIgnoreCase(input)) return true;
         }
         return false;
     }
@@ -94,7 +98,7 @@ public class Helper {
     public static InventoryStatus getInventoryStatusFromString(String input) {
         if (input == null) return null;
         for (InventoryStatus status : InventoryStatus.values()) {
-            if (status.getStatus().equalsIgnoreCase(input)) return status;
+            if (status.name().equalsIgnoreCase(input)) return status;
         }
         return null;
     }

@@ -14,4 +14,15 @@ public class ProductFactory {
                 .setCategoryId(categoryId)
                 .build();
     }
+
+    public static Product buildProduct(Long productId, String name, String description, String sku, Money price, String categoryId) {
+        return new Product.Builder()
+                .setProductId(productId)
+                .setName(name)
+                .setDescription(description)
+                .setSku(sku)
+                .setPrice(price)
+                .setCategoryId(categoryId)
+                .build();
+    }
 }
