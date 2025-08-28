@@ -1,18 +1,17 @@
-/*
- * Cart.java
- * Cart Class
- * Author: Teyana Raubenheimer (230237622)
- * Date: 11 May 2025
- */
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "cart")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "cartId")
 public class Cart {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
@@ -21,15 +20,18 @@ public class Cart {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<CartItem> cartItems = new ArrayList<>();
 
-    public Cart() {}
+    public Cart() {
+        this.cartItems = new ArrayList<>();
+    }
 
     public Cart(Builder builder) {
         this.cartId = builder.cartId;
         this.customer = builder.customer;
-        this.cartItems = builder.cartItems;
+        this.cartItems = builder.cartItems != null ? builder.cartItems : new ArrayList<>();
     }
 
     public Long getCartId() {
@@ -44,15 +46,16 @@ public class Cart {
         return cartItems;
     }
 
-    // ✅ NEW: return products directly from cart items
-    public List<Product> getProducts() {
-        List<Product> products = new ArrayList<>();
-        if (cartItems != null) {
-            for (CartItem item : cartItems) {
-                products.add(item.getProduct());
-            }
-        }
-        return products;
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 
     @Override
@@ -67,7 +70,7 @@ public class Cart {
     public static class Builder {
         private Long cartId;
         private Customer customer;
-        private List<CartItem> cartItems;
+        private List<CartItem> cartItems = new ArrayList<>();
 
         public Builder setCartId(Long cartId) {
             this.cartId = cartId;
@@ -80,11 +83,10 @@ public class Cart {
         }
 
         public Builder setCartItems(List<CartItem> cartItems) {
-            this.cartItems = cartItems;
+            this.cartItems = cartItems != null ? cartItems : new ArrayList<>();
             return this;
         }
 
-        // NEW: add a single product as a CartItem
         public Builder addProduct(Product product) {
             if (this.cartItems == null) {
                 this.cartItems = new ArrayList<>();
@@ -100,12 +102,21 @@ public class Cart {
         public Builder copy(Cart cart) {
             this.cartId = cart.cartId;
             this.customer = cart.customer;
-            this.cartItems = cart.cartItems != null ? new ArrayList<>(cart.cartItems) : null;
+            this.cartItems = cart.cartItems;
             return this;
         }
 
         public Cart build() {
-            return new Cart(this);
+            Cart cart = new Cart(this);
+
+            // 🔹 Automatically link each CartItem back to this Cart
+            if (cart.getCartItems() != null) {
+                for (CartItem item : cart.getCartItems()) {
+                    item.setCart(cart);
+                }
+            }
+
+            return cart;
         }
     }
 }

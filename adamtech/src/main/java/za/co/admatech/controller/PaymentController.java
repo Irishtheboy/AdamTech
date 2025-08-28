@@ -7,6 +7,7 @@ import za.co.admatech.domain.Payment;
 import za.co.admatech.service.PaymentService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/payments")
@@ -19,40 +20,37 @@ public class PaymentController {
         this.service = service;
     }
 
-    // Create a new payment
     @PostMapping("/create")
     public ResponseEntity<Payment> create(@RequestBody Payment payment) {
-        return ResponseEntity.ok(service.create(payment));
+        Payment created = service.create(payment);
+        return ResponseEntity.ok(created);
     }
 
-    // Read a payment by ID
     @GetMapping("/read/{id}")
     public ResponseEntity<Payment> read(@PathVariable Long id) {
-        Payment payment = service.read(id);
-        return payment != null ? ResponseEntity.ok(payment) : ResponseEntity.notFound().build();
+        Optional<Payment> payment = Optional.ofNullable(service.read(id));
+        return payment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update a payment
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Payment> update(@PathVariable Long id, @RequestBody Payment payment) {
-        Payment updatedPayment = new Payment.Builder()
-                .copy(payment)
-                .setId(id)
-                .build();
-        Payment updated = service.update(updatedPayment);
-        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+    @PutMapping("/update")
+    public ResponseEntity<Payment> update(@RequestBody Payment payment) {
+        Payment updated = service.update(payment);
+        return ResponseEntity.ok(updated);
     }
 
-    // Delete a payment
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = service.delete(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 204 NO_CONTENT
+        } else {
+            return ResponseEntity.notFound().build(); // 404 NOT_FOUND
+        }
     }
 
-    // Get all payments
     @GetMapping("/getAll")
-    public ResponseEntity<List<Payment>> getAll() {
-        return ResponseEntity.ok(service.getPayments());
+    public ResponseEntity<Iterable<Payment>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }

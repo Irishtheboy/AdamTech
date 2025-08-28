@@ -1,16 +1,15 @@
-/*
- * CartItem.java
- * CartItem Class
- * Author: Teyana Raubenheimer (230237622)
- * Date: 11 May 2025
- */
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "cart_item")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "cartItemId")
 public class CartItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
@@ -23,10 +22,10 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
+    @JsonBackReference
     private Cart cart;
 
-    public CartItem() {
-    }
+    public CartItem() {}
 
     public CartItem(Builder builder) {
         this.cartItemId = builder.cartItemId;
@@ -51,13 +50,16 @@ public class CartItem {
         return cart;
     }
 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     @Override
     public String toString() {
         return "CartItem{" +
                 "cartItemId=" + cartItemId +
                 ", product=" + product +
                 ", quantity=" + quantity +
-                ", cart=" + cart +
                 '}';
     }
 

@@ -1,5 +1,8 @@
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,8 +22,9 @@ public class OrderItem {
     @Embedded
     private Money unitPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 
     public OrderItem() {

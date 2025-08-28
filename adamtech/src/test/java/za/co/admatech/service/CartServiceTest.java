@@ -80,7 +80,7 @@ class CartServiceTest {
         assertNotNull(created);
         assertNotNull(created.getCartId());
         assertEquals("Alice", created.getCustomer().getFirstName());
-        assertEquals(1, created.getProducts().size());
+        assertEquals(1, created.getCartItems().size());
     }
 
     @Test
@@ -113,7 +113,7 @@ class CartServiceTest {
                 .build();
 
         Cart updated = cartService.update(updatedCart);
-        assertEquals(2, updated.getProducts().size());
+        assertEquals(2, updated.getCartItems().size());
     }
 
     @Test
