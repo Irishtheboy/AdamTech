@@ -14,6 +14,7 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_id")
     private Long cartId;
 
     @OneToOne
@@ -21,7 +22,10 @@ public class Cart {
     private Customer customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    //@JsonManagedReference
+    /*Removed the @JsonManagedReference as we already have the @JsonIdentityInfo which handles 
+     * the serialization and deserialization of the Cart and CartItem relationship.
+     */    
     private List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {
@@ -45,19 +49,7 @@ public class Cart {
     public List<CartItem> getCartItems() {
         return cartItems;
     }
-
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
-    }
-
+    
     @Override
     public String toString() {
         return "Cart{" +
@@ -71,11 +63,6 @@ public class Cart {
         private Long cartId;
         private Customer customer;
         private List<CartItem> cartItems = new ArrayList<>();
-
-        public Builder setCartId(Long cartId) {
-            this.cartId = cartId;
-            return this;
-        }
 
         public Builder setCustomer(Customer customer) {
             this.customer = customer;

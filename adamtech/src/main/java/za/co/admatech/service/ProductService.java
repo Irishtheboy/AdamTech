@@ -14,12 +14,12 @@ import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
-
-    private static IProductService service;
-
+    private final ProductRepository repository;
     @Autowired
-    private ProductRepository repository;
-
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
+    }
+    
     @Override
     public Product create(Product product) {
         return this.repository.save(product);

@@ -50,7 +50,16 @@ public class Wishlist {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
+    
+    @Override
+    public String toString() {
+        return "Wishlist{" +
+                "wishlistId=" + wishlistId +
+                ", customer=" + (customer != null ? customer.getEmail() : "null") +
+                ", product=" + (product != null ? product.getName() : "null") +
+                ", createdAt=" + createdAt +
+                '}';
+    }
     // ================
     // Builder Pattern
     // ================
@@ -94,13 +103,5 @@ public class Wishlist {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Wishlist{" +
-                "wishlistId=" + wishlistId +
-                ", customer=" + (customer != null ? customer.getEmail() : "null") +
-                ", product=" + (product != null ? product.getName() : "null") +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+
 }

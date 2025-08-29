@@ -1,6 +1,7 @@
 package za.co.admatech.factory;
 
 import za.co.admatech.domain.Money;
+import za.co.admatech.domain.Order;
 import za.co.admatech.domain.Payment;
 import za.co.admatech.domain.enums.PaymentStatus;
 import za.co.admatech.util.Helper;
@@ -10,10 +11,11 @@ import java.time.LocalDate;
 import static za.co.admatech.util.Helper.generateId;
 
 public class PaymentFactory {
-    public static Payment createPayment(LocalDate paymentDate, String orderId, Money amount, PaymentStatus paymentStatus) {
-
-
-
+    public static Payment createPayment(
+        Order order,
+        LocalDate paymentDate,
+        Money amount,
+        PaymentStatus paymentStatus) {
         if (!Helper.isValidLocalDate(paymentDate)) {
             return null;
         }
@@ -26,13 +28,11 @@ public class PaymentFactory {
             return null;
         }
 
-
-
         return new Payment.Builder()
-
-                .setPaymentDate(paymentDate)
-                .setAmount(amount)
-                .setPaymentStatus(paymentStatus)
-                .build();
+            .setOrder(order)
+            .setPaymentDate(paymentDate)
+            .setAmount(amount)
+            .setPaymentStatus(paymentStatus)
+            .build();
     }
 }

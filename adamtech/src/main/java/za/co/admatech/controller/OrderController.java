@@ -7,6 +7,7 @@
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Order;
 import za.co.admatech.service.OrderService;
@@ -24,28 +25,36 @@ public class OrderController {
     }
 
     @PostMapping ("/create")
-    public Order create(@RequestBody Order order) {
-        return service.create(order);
+    public ResponseEntity<Order> create(@RequestBody Order order) {
+        return ResponseEntity.ok(service.create(order));
     }
 
     @GetMapping("/read/{orderID}")
-    public Order read(@PathVariable Long orderID) {
-        return service.read(orderID);
+    public ResponseEntity<Order> read(@PathVariable Long orderID) {
+        Order order = service.read(orderID);
+        return order != null ? ResponseEntity.ok(order) : ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/update")
-    public Order update(@RequestBody Order order) {
-        return service.update(order);
+    @PutMapping("/update/{orderID}")
+    public ResponseEntity<Order> update(@PathVariable Long orderId, @RequestBody Order order) {
+        Order orderWithId = new Order.Builder()
+                .copy(order)
+                .setOrderId(orderId)
+                .build();
+
+        Order updatedOrder = service.update(orderWithId);
+        return updatedOrder != null ? ResponseEntity.ok(updatedOrder) : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/delete/{orderID}")
-    public boolean delete(@PathVariable Long orderID) {
-        return service.delete(orderID);
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<Void> delete(@PathVariable Long orderId) {
+        boolean deleted = service.delete(orderId);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/getAll")
-    public List<Order> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<Order>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
 }

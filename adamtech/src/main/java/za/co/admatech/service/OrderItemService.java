@@ -16,10 +16,13 @@ import java.util.List;
 
 @Service
 public class OrderItemService implements IOrderItemService {
+    private final OrderItemRepository repository;
 
     @Autowired
-    private OrderItemRepository repository;
-
+    public OrderItemService(OrderItemRepository repository) {
+        this.repository = repository;
+    }
+    
     @Override
     public OrderItem create(OrderItem orderItem) {
         return repository.saveAndFlush(orderItem); // save and flush in one call

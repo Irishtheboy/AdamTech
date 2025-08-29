@@ -15,8 +15,12 @@ import java.util.List;
 
 @Service
 public class OrderService implements IOrderService {
+    private final OrderRepository repository;
+    
     @Autowired
-    private OrderRepository repository;
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }   
 
     @Override
     public Order create(Order order) {

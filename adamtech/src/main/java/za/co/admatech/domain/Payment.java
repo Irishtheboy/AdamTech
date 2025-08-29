@@ -16,33 +16,37 @@ import java.time.LocalDate;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "payment_id")
+    private Long paymentId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Column(name = "payment_date")
     private LocalDate paymentDate;
 
     @Embedded
+    @Column(name = "amount")
     private Money amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
     public Payment() {
     }
 
     private Payment(Builder builder) {
-        this.id = builder.id;
+        this.paymentId = builder.paymentId;
         this.order = builder.order;
         this.paymentDate = builder.paymentDate;
         this.amount = builder.amount;
         this.paymentStatus = builder.paymentStatus;
     }
 
-    public Long getId() {
-        return id;
+    public Long getPaymentId() {
+        return paymentId;
     }
 
     public Order getOrder() {
@@ -64,7 +68,7 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "id=" + id +
+                "id=" + paymentId +
                 ", order=" + order +
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
@@ -73,14 +77,14 @@ public class Payment {
     }
 
     public static class Builder {
-        private Long id;
+        private Long paymentId;
         private Order order;
         private LocalDate paymentDate;
         private Money amount;
         private PaymentStatus paymentStatus;
 
-        public Builder setId(Long id) {
-            this.id = id;
+        public Builder setPaymentId(Long paymentId) {
+            this.paymentId = paymentId;
             return this;
         }
 
@@ -105,7 +109,7 @@ public class Payment {
         }
 
         public Builder copy(Payment payment) {
-            this.id = payment.id;
+            this.paymentId = payment.paymentId;
             this.order = payment.order;
             this.paymentDate = payment.paymentDate;
             this.amount = payment.amount;

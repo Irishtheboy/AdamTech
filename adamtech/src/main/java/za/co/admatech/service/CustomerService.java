@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class CustomerService implements ICustomerService {
-
     private final CustomerRepository customerRepository;
 
     @Autowired
@@ -32,11 +31,11 @@ public class CustomerService implements ICustomerService {
     public Customer update(Customer customer) {
         return customerRepository.save(customer);
     }
+
     @Override
     public List<Customer> getAll() {
         return customerRepository.findAll();
     }
-
 
     @Override
     public boolean delete(Long customerId) {

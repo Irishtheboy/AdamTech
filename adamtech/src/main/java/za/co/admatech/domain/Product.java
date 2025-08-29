@@ -14,17 +14,23 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "sku")
     private String sku;
 
     @Embedded
+    @Column(name = "price")
     private Money price;
 
+    @Column(name = "category_id")
     private String categoryId;
 
     public Product() {

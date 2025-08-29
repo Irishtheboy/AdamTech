@@ -13,11 +13,11 @@ import za.co.admatech.repository.CartItemRepository;
 import java.util.List;
 
 @Service
-public class CartItemService implements ICartItemService{
+public class CartItemService implements ICartItemService {
+    private final CartItemRepository repository;
 
-    private CartItemRepository repository;
-
-    @Autowired CartItemService(CartItemRepository repository) {
+    @Autowired
+    CartItemService(CartItemRepository repository) {
         this.repository = repository;
     }
 

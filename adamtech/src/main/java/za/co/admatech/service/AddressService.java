@@ -9,7 +9,6 @@ import java.util.List;
 
 @Service
 public class AddressService implements IAddressService {
-
     private final AddressRepository addressRepository;
 
     @Autowired

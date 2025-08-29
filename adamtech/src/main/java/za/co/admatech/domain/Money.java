@@ -1,5 +1,6 @@
 package za.co.admatech.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -13,7 +14,9 @@ import jakarta.persistence.Entity;
      Date: 10 May 2025 */
 @Embeddable
 public class Money {
+    @Column(name = "amount")
     private int amount;
+    @Column(name = "currency")
     private String currency;
 
     public Money() {

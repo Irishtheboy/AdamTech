@@ -9,32 +9,37 @@ import java.util.List;
 
 @Service
 public class WishlistService implements IWishlistService {
-
+    public final WishlistRepository WishlistRepository;
 
     @Autowired
-    public WishlistRepository WishlistRepository;
+    public WishlistService(WishlistRepository WishlistRepository) {
+        this.WishlistRepository = WishlistRepository;
+    }
 
     @Override
     public Wishlist create(Wishlist wishlist) {
         return this.WishlistRepository.save(wishlist);
     }
+
     @Override
     public Wishlist read(Long id) {
         return this.WishlistRepository.findById(id).orElse(null);
     }
+
     @Override
     public Wishlist update(Wishlist wishlist) {
         return this.WishlistRepository.save(wishlist);
     }
+
     @Override
     public boolean delete(Long id) {
         this.WishlistRepository.deleteById(id);
         return true;
     }
+
     @Override
     public List<Wishlist> getAll() {
         return this.WishlistRepository.findAll();
     }
-
 
 }

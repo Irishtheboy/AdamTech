@@ -1,6 +1,5 @@
 package za.co.admatech.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -12,17 +11,22 @@ public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
     private Long cartItemId;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Column(name = "quantity")
     private int quantity;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
-    @JsonBackReference
+    //@JsonBackReference
+    /*Removed the @JsonBackReference as we already have the @JsonIdentityInfo which handles 
+     * the serialization and deserialization of the Cart and CartItem relationship.
+     */
     private Cart cart;
 
     public CartItem() {}

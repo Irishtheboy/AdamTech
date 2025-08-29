@@ -13,16 +13,21 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "customer")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+ property = "cartItemId")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long customerId;
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -30,9 +35,14 @@ public class Customer {
     private Address address;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JoinColumn(name = "cart_id")
+    //@JsonIgnore
+    /*Removed the @JsonIgnore annotation as we have to persist the information of the cart to our customer
+     * details, this ensures that when we fetch a customer, we also get their associated cart(its been serialized properly).
+     */
     private Cart cart;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Customer() {

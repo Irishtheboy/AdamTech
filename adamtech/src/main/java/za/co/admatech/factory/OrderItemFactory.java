@@ -9,14 +9,16 @@ package za.co.admatech.factory;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.OrderItem;
+import za.co.admatech.domain.Product;
 import za.co.admatech.util.Helper;
 
 public class OrderItemFactory {
 
-    public static OrderItem createOrderItem( int quantity, Money unitPrice) {
-
-
-
+    public static OrderItem createOrderItem( 
+        Product product,
+        int quantity,
+        Money unitPrice, 
+        Order order) {
         if (quantity <= 0){
             return null;
         }
@@ -26,9 +28,10 @@ public class OrderItemFactory {
         }
 
         return new OrderItem.Builder()
-
-                .setQuantity(quantity)
-                .setUnitPrice(unitPrice)
-                .build();
+            .setProduct(product)
+            .setQuantity(quantity)
+            .setUnitPrice(unitPrice)
+            .setOrder(order)
+            .build();
     }
 }

@@ -1,7 +1,6 @@
 package za.co.admatech.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import za.co.admatech.domain.enums.OrderStatus;
@@ -14,35 +13,42 @@ import java.util.List;
 @Table(name = "orders") // 'order' is reserved in SQL
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
+        property = "orderId"
 )
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "order_id")
+    private Long orderId;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Column(name = "order_date")
     private LocalDate orderDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
     private OrderStatus orderStatus;
 
     @Embedded
+    @Column(name = "total_amount")
     private Money totalAmount;
 
+    //@JsonManagedReference
+    /*Removed the @JsonManagedReference as we already have the @JsonIdentityInfo which handles 
+     * the serialization and deserialization of the Cart and CartItem relationship.
+     */    
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
     }
 
     protected Order(Builder builder) {
-        this.id = builder.id;
+        this.orderId = builder.orderId;
         this.customer = builder.customer;
         this.orderDate = builder.orderDate;
         this.orderStatus = builder.orderStatus;
@@ -52,8 +58,8 @@ public class Order {
         this.orderItems.forEach(item -> item.setOrder(this));
     }
 
-    public Long getId() {
-        return id;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Customer getCustomer() {
@@ -79,7 +85,7 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
+                "id=" + orderId +
                 ", customer=" + customer +
                 ", orderDate=" + orderDate +
                 ", orderStatus=" + orderStatus +
@@ -89,15 +95,15 @@ public class Order {
     }
 
     public static class Builder {
-        private Long id;
+        private Long orderId;
         private Customer customer;
         private LocalDate orderDate;
         private OrderStatus orderStatus;
         private Money totalAmount;
         private List<OrderItem> orderItems = new ArrayList<>();
 
-        public Builder setId(Long id) {
-            this.id = id;
+        public Builder setOrderId(Long orderId) {
+            this.orderId = orderId;
             return this;
         }
 
@@ -127,7 +133,7 @@ public class Order {
         }
 
         public Builder copy(Order order) {
-            this.id = order.id;
+            this.orderId = order.orderId;
             this.customer = order.customer;
             this.orderDate = order.orderDate;
             this.orderStatus = order.orderStatus;

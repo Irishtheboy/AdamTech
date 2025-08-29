@@ -15,17 +15,16 @@ import za.co.admatech.util.Helper;
 import java.time.LocalDateTime;
 
 public class WishlistFactory {
-
-    public static Wishlist createWishlist(Customer customer, Product product, LocalDateTime createdAt) {
-
+    public static Wishlist createWishlist(
+        Customer customer,
+        Product product,
+        LocalDateTime createdAt) {
         if (!Helper.isValidLocalDateTime(createdAt)) {
             return null;
         }
-
         if (customer == null) {
             return null;
         }
-
         if (product == null) {
             return null;
         }

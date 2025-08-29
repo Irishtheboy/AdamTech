@@ -6,6 +6,8 @@
  */
 package za.co.admatech.domain;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import za.co.admatech.domain.enums.InventoryStatus;
 
@@ -15,33 +17,39 @@ public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "inventory_id")
+    private Long inventoryId;
 
+    /*Updated the relationship of the Products within the Inventory as we have to stored 
+    * multiple products within the inventory.
+    */
     @OneToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private List<Product> products;
 
+    @Column(name = "quantity")
     private int quantity;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "inventory_status")
     private InventoryStatus inventoryStatus;
 
     public Inventory() {
     }
 
     private Inventory(Builder builder) {
-        this.id = builder.id;
-        this.product = builder.product;
+        this.inventoryId = builder.inventoryId;
+        this.products = builder.products;
         this.quantity = builder.quantity;
         this.inventoryStatus = builder.inventoryStatus;
     }
 
-    public Long getId() {
-        return id;
+    public Long getInventoryId() {
+        return inventoryId;
     }
 
-    public Product getProduct() {
-        return product;
+    public List<Product> getProduct() {
+        return products;
     }
 
     public int getQuantity() {
@@ -55,26 +63,26 @@ public class Inventory {
     @Override
     public String toString() {
         return "Inventory{" +
-                "id=" + id +
-                ", product=" + product +
+                "id=" + inventoryId +
+                ", product=" + products +
                 ", quantity=" + quantity +
                 ", inventoryStatus=" + inventoryStatus +
                 '}';
     }
 
     public static class Builder {
-        private Long id;
-        private Product product;
+        private Long inventoryId;
+        private List<Product> products;
         private int quantity;
         private InventoryStatus inventoryStatus;
 
-        public Builder setId(Long id) {
-            this.id = id;
+        public Builder setInventoryId(Long inventoryId) {
+            this.inventoryId = inventoryId;
             return this;
         }
 
-        public Builder setProduct(Product product) {
-            this.product = product;
+        public Builder setProduct(List <Product> products) {
+            this.products = products;
             return this;
         }
 
@@ -89,8 +97,8 @@ public class Inventory {
         }
 
         public Builder copy(Inventory inventory) {
-            this.id = inventory.id;
-            this.product = inventory.product;
+            this.inventoryId = inventory.inventoryId;
+            this.products = inventory.products;
             this.quantity = inventory.quantity;
             this.inventoryStatus = inventory.inventoryStatus;
             return this;

@@ -15,13 +15,12 @@ import java.util.List;
 
 @Service
 public class CartService implements ICartService {
+    private final CartRepository repository;
 
-    private CartRepository repository;
-
-    @Autowired CartService(CartRepository repository) {
+    @Autowired
+    CartService(CartRepository repository) {
         this.repository = repository;
     }
-
 
     @Override
     public Cart create(Cart cart) {
@@ -43,12 +42,12 @@ public class CartService implements ICartService {
         this.repository.deleteById(id);
         return true;
     }
+
     @Override
     public Cart getCartByCustomer(Customer customer) {
         return repository.findByCustomer(customer)
                 .orElseThrow(() -> new RuntimeException("Cart not found for customer: " + customer.getCustomerId()));
     }
-
 
     @Override
     public List<Cart> getAll() {

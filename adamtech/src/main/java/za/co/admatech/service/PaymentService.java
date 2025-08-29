@@ -9,9 +9,12 @@ import java.util.List;
 
 @Service
 public class PaymentService implements IPaymentService {
+    private final PaymentRepository paymentRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    public PaymentService(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
 
     @Override
     public Payment create(Payment payment) {
@@ -24,19 +27,21 @@ public class PaymentService implements IPaymentService {
     public Payment read(Long id) {
         return paymentRepository.findById(id).orElse(null);
     }
+
     @Override
     public Payment update(Payment payment) {
         return paymentRepository.save(payment);
     }
+
     @Override
     public boolean delete(Long id) {
         paymentRepository.deleteById(id);
         return true;
     }
+
     @Override
-    public List<Payment> getAll(){
+    public List<Payment> getAll() {
         return paymentRepository.findAll();
     }
-
 
 }

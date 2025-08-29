@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Payment;
 import za.co.admatech.service.PaymentService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -42,11 +41,7 @@ public class PaymentController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = service.delete(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 204 NO_CONTENT
-        } else {
-            return ResponseEntity.notFound().build(); // 404 NOT_FOUND
-        }
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/getAll")
