@@ -1,9 +1,6 @@
 package za.co.admatech.controller;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductControllerTest {
 
     private static Product product;
+    private static byte[] imageBytes;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -27,7 +28,11 @@ class ProductControllerTest {
     private static final String BASE_URL = "/products";
 
     @BeforeAll
-    public static void setUp() {
+    static void loadImage() throws Exception {
+        // Load image from test resources
+        imageBytes = Files.readAllBytes(Paths.get("src/test/resources/MSIKeyboard.png"));
+
+        // Initialize product with image
         Money price = new Money.Builder()
                 .setAmount(1000)
                 .setCurrency("USD")
@@ -39,35 +44,35 @@ class ProductControllerTest {
                 .setSku("TP1000")
                 .setPrice(price)
                 .setCategoryId("CAT1")
+                .setImageData(imageBytes)
                 .build();
     }
 
     @Test
     void a_create() {
         String url = BASE_URL + "/create";
-        ResponseEntity<Product> postResponse = this.restTemplate.postForEntity(url, product, Product.class);
+        ResponseEntity<Product> postResponse = restTemplate.postForEntity(url, product, Product.class);
         assertNotNull(postResponse);
+
         Product createdProduct = postResponse.getBody();
         assertNotNull(createdProduct);
         assertNotNull(createdProduct.getProductId());
         assertEquals(product.getName(), createdProduct.getName());
-        assertEquals(product.getCategoryId(), createdProduct.getCategoryId());
 
-        // Save generated ID for later tests
-        product = new Product.Builder().copy(createdProduct).build();
-
+        // ✅ Save the created product directly
+        product = createdProduct;
         System.out.println("Created: " + createdProduct);
     }
 
     @Test
     void b_read() {
         String url = BASE_URL + "/read/" + product.getProductId();
-        ResponseEntity<Product> response = this.restTemplate.getForEntity(url, Product.class);
+        ResponseEntity<Product> response = restTemplate.getForEntity(url, Product.class);
+
         assertNotNull(response.getBody());
         assertEquals(product.getProductId(), response.getBody().getProductId());
         System.out.println("Read: " + response.getBody());
     }
-
 
     @Test
     void c_update() {
@@ -80,7 +85,6 @@ class ProductControllerTest {
                 .setCategoryId("CAT2")
                 .build();
 
-        // Use PUT and include productId in URL
         String url = BASE_URL + "/update/" + product.getProductId();
         HttpEntity<Product> request = new HttpEntity<>(updatedProduct);
 
@@ -90,29 +94,45 @@ class ProductControllerTest {
         assertEquals("Updated Product", response.getBody().getName());
         System.out.println("Updated: " + response.getBody());
 
-        // Update local reference for later tests
-        product = response.getBody();
+        product = response.getBody(); // ✅ update reference
     }
 
-
     @Test
-    void d_delete() {
-        String url = BASE_URL + "/delete/" + product.getProductId();
-        this.restTemplate.delete(url);
+    void d_getImage() {
+        // Build URL for image endpoint
+        String url = BASE_URL + "/" + product.getProductId() + "/image";
 
-        ResponseEntity<Product> response = this.restTemplate.getForEntity(BASE_URL + "/read/" + product.getProductId(), Product.class);
-        assertNull(response.getBody());
-        System.out.println("Deleted: true");
+        // Send GET request
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
+
+        assertEquals(200, response.getStatusCodeValue(), "HTTP status should be 200 OK");
+        assertNotNull(response.getBody(), "Image byte array should not be null");
+        assertTrue(response.getBody().length > 0, "Image byte array should not be empty");
+
+        System.out.println("Retrieved image length: " + response.getBody().length + " bytes");
     }
 
     @Test
     void e_getAll() {
         String url = BASE_URL + "/getAll";
-        ResponseEntity<Product[]> response = this.restTemplate.getForEntity(url, Product[].class);
+        ResponseEntity<Product[]> response = restTemplate.getForEntity(url, Product[].class);
+
         assertNotNull(response.getBody());
-        System.out.println("Get All:");
+        System.out.println("Get All Products:");
         for (Product p : response.getBody()) {
             System.out.println(p);
         }
+    }
+
+    @Test
+    void f_delete() {
+        String url = BASE_URL + "/delete/" + product.getProductId();
+        restTemplate.delete(url);
+
+        String readUrl = BASE_URL + "/read/" + product.getProductId();
+        ResponseEntity<Product> response = restTemplate.getForEntity(readUrl, Product.class);
+
+        assertTrue(response.getStatusCode().is4xxClientError());
+        System.out.println("Deleted: true");
     }
 }

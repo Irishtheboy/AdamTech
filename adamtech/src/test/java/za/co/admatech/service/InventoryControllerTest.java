@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class InventoryServiceTest {
+class InventoryControllerTest {
 
     @Autowired
     private InventoryService inventoryService;

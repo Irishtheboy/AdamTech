@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +20,12 @@ class ProductServiceTest {
     private ProductService productService;
 
     private static Product testProduct;
+    private static byte[] imageBytes;
+
+    @BeforeAll
+    static void loadImage() throws Exception {
+        imageBytes = Files.readAllBytes(Paths.get("src/test/resources/MSIKeyboard.png"));
+    }
 
     @Test
     @Order(1)
@@ -33,6 +41,7 @@ class ProductServiceTest {
                 .setSku("TP1000")
                 .setPrice(price)
                 .setCategoryId("CAT1")
+                .setImageData(imageBytes)
                 .build();
 
         Product created = productService.create(product);

@@ -9,9 +9,9 @@ import za.co.admatech.service.CustomerService;
 
 import java.util.List; // <-- correct import
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/customer")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
 
     private final CustomerService customerService;

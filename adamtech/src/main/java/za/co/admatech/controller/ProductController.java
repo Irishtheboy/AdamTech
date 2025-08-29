@@ -1,13 +1,15 @@
 package za.co.admatech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Product;
 import za.co.admatech.service.ProductService;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -59,4 +61,20 @@ public class ProductController {
     public ResponseEntity<List<Product>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
+
+
+    @GetMapping("/{productId}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long productId) {
+        Product product = service.read(productId);
+        if (product == null || product.getImageData() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Set the content type for the image
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE) // or IMAGE_JPEG_VALUE
+                .body(product.getImageData());
+    }
+
+
 }
