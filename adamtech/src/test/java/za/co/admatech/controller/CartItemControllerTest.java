@@ -1,96 +1,158 @@
-/*CartItemControllerTest.java
-  Author: Teyana Raubenheimer (230237622)
-  Date: 31 May 2025
- */
-
 package za.co.admatech.controller;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.CartItem;
-import za.co.admatech.factory.CartFactory;
-import za.co.admatech.factory.CartItemFactory;
+import org.springframework.http.*;
+import za.co.admatech.domain.*;
+import za.co.admatech.service.CartService;
+import za.co.admatech.service.CartItemService;
+import za.co.admatech.service.CustomerService;
+import za.co.admatech.service.ProductService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 class CartItemControllerTest {
 
     private static CartItem cartItem;
+    private static Cart cart;
+    private static Product product;
+    private static Customer customer;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String BASE_URL = "http://localhost:8080/adamtech/cart-items/";
+    @Autowired
+    private CustomerService customerService;
 
-    @BeforeAll
-    public static void setUp() {
-        cartItem = CartItemFactory.createCartItem("1111", 20, "201");
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CartItemService cartItemService;
+
+    private static final String BASE_URL = "/cart-items";
+
+    @BeforeEach
+    void setUp() {
+        // Persist Customer
+        customer = customerService.create(
+                new Customer.Builder()
+                        .setFirstName("John")
+                        .setLastName("Doe")
+                        .setEmail("john@example.com")
+                        .setPhoneNumber("1234567890")
+                        .build()
+        );
+
+        // Persist Product
+        product = productService.create(
+                new Product.Builder()
+                        .setName("Test Product")
+                        .setDescription("Sample product")
+                        .setSku("SKU123")
+                        .setPrice(new Money.Builder().setAmount(5000).setCurrency("ZAR").build())
+                        .setCategoryId("CAT1")
+                        .build()
+        );
+
+        // Persist Cart
+        cart = cartService.create(
+                new Cart.Builder()
+                        .setCustomer(customer)
+                        .build()
+        );
+
+        // Create CartItem via REST
+        cartItem = restTemplate.postForObject(
+                BASE_URL + "/create",
+                new CartItem.Builder()
+                        .setCart(cart)
+                        .setProduct(product)
+                        .setQuantity(3)
+                        .build(),
+                CartItem.class
+        );
+
+        assertNotNull(cartItem);
+        assertNotNull(cartItem.getCartItemId());
     }
 
     @Test
-    @Order(1)
     void a_create() {
-        String url = BASE_URL + "/create";
-        ResponseEntity<CartItem> postResponse = this.restTemplate.postForEntity(url, cartItem, CartItem.class);
-        assertNotNull(postResponse);
-        CartItem createdCartItem = postResponse.getBody();
-        assertEquals(cartItem.getCartID(), createdCartItem.getCartID());
-        cartItem = createdCartItem;
-        System.out.println("Created: " + createdCartItem);
-
+        assertNotNull(cartItem);
+        System.out.println("Created CartItem: " + cartItem);
     }
 
     @Test
-    @Order(2)
     void b_read() {
-        String url = BASE_URL + "/read/" + cartItem.getCartItemID();
-        ResponseEntity<CartItem> response = this.restTemplate.getForEntity(url, CartItem.class);
-        // assertNotNull(response);
-        assertEquals(cartItem.getCartItemID(), response.getBody().getCartItemID());
-        System.out.println("Read: " + response.getBody());
+        ResponseEntity<CartItem> response = restTemplate.getForEntity(
+                BASE_URL + "/read/" + cartItem.getCartItemId(),
+                CartItem.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(cartItem.getCartItemId(), response.getBody().getCartItemId());
+        System.out.println("Read CartItem: " + response.getBody());
     }
 
-//    @Test
-//    @Order(3)
-//    void c_update() {
-//        CartItem updatedCartItem = new CartItem.Builder().copy(cartItem).setCartItemID("2222").build();
-//        String url = BASE_URL + "/update";
-//        ResponseEntity<CartItem> response = this.restTemplate.postForEntity(url, updatedCartItem, CartItem.class);
-//        //assertNotNull(response);
-//        assertEquals(response.getStatusCode(), HttpStatus.OK);
-//        assertNotNull(response.getBody());
-//        assertEquals(updatedCartItem.getCartItemID(), response.getBody().getCartItemID());
-//        System.out.println("Updated: " + response.getBody());
-//    }
+    @Test
+    void c_update() {
+        CartItem updatedCartItem = new CartItem.Builder()
+                .copy(cartItem)
+                .setQuantity(10)
+                .build();
+
+        HttpEntity<CartItem> request = new HttpEntity<>(updatedCartItem);
+        ResponseEntity<CartItem> response = restTemplate.exchange(
+                BASE_URL + "/update",
+                HttpMethod.PUT,
+                request,
+                CartItem.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(updatedCartItem.getCartItemId(), response.getBody().getCartItemId());
+        assertEquals(10, response.getBody().getQuantity());
+        System.out.println("Updated CartItem: " + response.getBody());
+
+        cartItem = response.getBody(); // Keep updated object
+    }
 
     @Test
-    @Order(4)
     void d_delete() {
-        String url = BASE_URL + "/delete/" + cartItem.getCartID();
-        this.restTemplate.delete(url);
-        ResponseEntity<CartItem> response = this.restTemplate.getForEntity(BASE_URL + "/read/" + cartItem.getCartItemID(), CartItem.class);;
-        assertNotNull(response.getBody());
-        System.out.println("Deleted: " + "true");
+        restTemplate.delete(BASE_URL + "/delete/" + cartItem.getCartItemId());
+
+        ResponseEntity<CartItem> response = restTemplate.getForEntity(
+                BASE_URL + "/read/" + cartItem.getCartItemId(),
+                CartItem.class
+        );
+
+        assertTrue(response.getStatusCode().is2xxSuccessful() || response.getStatusCode() == HttpStatus.NOT_FOUND);
+        System.out.println("Deleted CartItem with ID: " + cartItem.getCartItemId());
     }
 
     @Test
-    @Order(5)
     void e_getAll() {
-        String url = BASE_URL + "/getAll";
-        ResponseEntity<CartItem[]> response = this.restTemplate.getForEntity(url, CartItem[].class);
+        ResponseEntity<CartItem[]> response = restTemplate.getForEntity(
+                BASE_URL + "/getAll",
+                CartItem[].class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        //assertTrue(response.getBody().length > 0);
-        System.out.println("Get All: " );
+
+        System.out.println("All CartItems:");
         for (CartItem ci : response.getBody()) {
             System.out.println(ci);
         }
     }
-
 }

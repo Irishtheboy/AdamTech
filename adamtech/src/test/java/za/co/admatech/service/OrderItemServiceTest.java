@@ -1,17 +1,16 @@
-/*
-  OrderItemServiceTest.java
-  Author: Naqeebah Khan (219099073)
-  Date: 24 May 2025
-*/
-
 package za.co.admatech.service;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
+import za.co.admatech.domain.Order;
 import za.co.admatech.domain.OrderItem;
-import za.co.admatech.factory.OrderItemFactory;
+import za.co.admatech.domain.Product;
+import za.co.admatech.domain.enums.OrderStatus;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,58 +21,120 @@ class OrderItemServiceTest {
     @Autowired
     private OrderItemService service;
 
-    // Store the created OrderItem to reuse in read, update, and delete
-    private static OrderItem savedOrderItem;
+    @Autowired
+    private OrderService orderService;
 
-    @Test
-    @Order(1)
-    void a_create() {
-        OrderItem orderItem = OrderItemFactory.createOrderItem(
-                "987",
-                1,
-                new Money(100.00, "ZAR")
-        );
-        savedOrderItem = service.create(orderItem);
-        assertNotNull(savedOrderItem);
-        assertNotNull(savedOrderItem.getOrderItemId()); // Make sure ID is not null
-        System.out.println("Created: " + savedOrderItem);
+    @Autowired
+    private ProductService productService;
+
+    private static OrderItem savedOrderItem;
+    private static Order order;
+    private static Product product;
+
+    @BeforeAll
+    static void setup() {
+        // Initialize Product
+        product = new Product.Builder()
+                .setName("Test Product")
+                .setDescription("A test product")
+                .setSku("TEST123")
+                .setPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setCategoryId("CAT1")
+                .build();
+
+        // Initialize Order
+        order = new Order.Builder()
+                .setOrderDate(LocalDate.now())
+                .setOrderStatus(OrderStatus.PENDING)
+                .setTotalAmount(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .build();
     }
 
     @Test
-    @Order(2)
+    @org.junit.jupiter.api.Order(1)
+    void a_create() {
+        product = productService.create(product);
+        order = orderService.create(order);
+
+        OrderItem orderItem = new OrderItem.Builder()
+                .setProduct(product)
+                .setQuantity(1)
+                .setUnitPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setOrder(order)
+                .build();
+
+        savedOrderItem = service.create(orderItem);
+
+        assertNotNull(savedOrderItem);
+        assertNotNull(savedOrderItem.getId());
+        assertEquals(1, savedOrderItem.getQuantity());
+        assertEquals(product.getProductId(), savedOrderItem.getProduct().getProductId());
+        assertEquals(order.getId(), savedOrderItem.getOrder().getId());
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(2)
     void b_read() {
         assertNotNull(savedOrderItem);
-        OrderItem readItem = service.read(savedOrderItem.getOrderItemId());
+
+        OrderItem readItem = service.read(savedOrderItem.getId());
         assertNotNull(readItem);
-        System.out.println("Read: " + readItem);
+        assertEquals(savedOrderItem.getId(), readItem.getId());
+        assertEquals(savedOrderItem.getQuantity(), readItem.getQuantity());
+        assertEquals(savedOrderItem.getUnitPrice().getAmount(), readItem.getUnitPrice().getAmount());
     }
 
     @Test
-    @Order(3)
+    @org.junit.jupiter.api.Order(3)
     void c_update() {
-        assertNotNull(savedOrderItem);
+        // Recreate dependencies
+        product = productService.create(product);
+        order = orderService.create(order);
+
+        // Create the OrderItem for this test
+        OrderItem orderItem = new OrderItem.Builder()
+                .setProduct(product)
+                .setQuantity(1)
+                .setUnitPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setOrder(order)
+                .build();
+        OrderItem saved = service.create(orderItem);
+
+        // Now update
         OrderItem updatedItem = new OrderItem.Builder()
-                .copy(savedOrderItem)
+                .copy(saved)
                 .setQuantity(2)
                 .build();
+
         OrderItem updated = service.update(updatedItem);
+
         assertNotNull(updated);
-        System.out.println("Updated: " + updated);
+        assertEquals(2, updated.getQuantity());
     }
 
-    @Test
-    @Order(4)
-    @Disabled
-    void d_delete() {
-        assertNotNull(savedOrderItem);
-        boolean deleted = service.delete(savedOrderItem.getOrderItemId());
-        assertTrue(deleted);
-        System.out.println("Deleted: " + deleted);
-    }
 
     @Test
-    @Order(5)
+    @org.junit.jupiter.api.Order(4)
     void e_getAll() {
-        System.out.println("All OrderItems: " + service.getAll());
+        // Add one more OrderItem
+        OrderItem newOrderItem = new OrderItem.Builder()
+                .setProduct(product)
+                .setQuantity(3)
+                .setUnitPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setOrder(order)
+                .build();
+        service.create(newOrderItem);
+
+        List<OrderItem> all = service.getAll();
+        assertNotNull(all);
+        assertTrue(all.size() >= 2);
+
+        // Print safely without triggering lazy loading
+        all.forEach(item -> System.out.println(
+                "OrderItem ID: " + item.getId() +
+                        ", Product Name: " + item.getProduct().getName() +
+                        ", Quantity: " + item.getQuantity() +
+                        ", UnitPrice: " + item.getUnitPrice().getAmount()
+        ));
     }
 }

@@ -1,26 +1,33 @@
+/*
+ * Payment.java
+ * Payment Class
+ * Author: [Assumed Author]
+ * Date: 10 May 2025
+ */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import za.co.admatech.domain.enums.PaymentStatus;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // use lowercase 'id' per Java convention
+    private Long id;
 
-    private String orderId;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     private LocalDate paymentDate;
 
     @Embedded
     private Money amount;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
     public Payment() {
@@ -28,7 +35,7 @@ public class Payment {
 
     private Payment(Builder builder) {
         this.id = builder.id;
-        this.orderId = builder.orderId;
+        this.order = builder.order;
         this.paymentDate = builder.paymentDate;
         this.amount = builder.amount;
         this.paymentStatus = builder.paymentStatus;
@@ -38,8 +45,8 @@ public class Payment {
         return id;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
     public LocalDate getPaymentDate() {
@@ -58,7 +65,7 @@ public class Payment {
     public String toString() {
         return "Payment{" +
                 "id=" + id +
-                ", orderId='" + orderId + '\'' +
+                ", order=" + order +
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
                 ", paymentStatus=" + paymentStatus +
@@ -67,7 +74,7 @@ public class Payment {
 
     public static class Builder {
         private Long id;
-        private String orderId;
+        private Order order;
         private LocalDate paymentDate;
         private Money amount;
         private PaymentStatus paymentStatus;
@@ -77,8 +84,8 @@ public class Payment {
             return this;
         }
 
-        public Builder setOrderId(String orderId) {
-            this.orderId = orderId;
+        public Builder setOrder(Order order) {
+            this.order = order;
             return this;
         }
 
@@ -99,7 +106,7 @@ public class Payment {
 
         public Builder copy(Payment payment) {
             this.id = payment.id;
-            this.orderId = payment.orderId;
+            this.order = payment.order;
             this.paymentDate = payment.paymentDate;
             this.amount = payment.amount;
             this.paymentStatus = payment.paymentStatus;

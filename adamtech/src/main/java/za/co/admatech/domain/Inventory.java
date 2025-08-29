@@ -14,9 +14,13 @@ import za.co.admatech.domain.enums.InventoryStatus;
 public class Inventory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String productId;
+
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private int quantity;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +31,7 @@ public class Inventory {
 
     private Inventory(Builder builder) {
         this.id = builder.id;
-        this.productId = builder.productId;
+        this.product = builder.product;
         this.quantity = builder.quantity;
         this.inventoryStatus = builder.inventoryStatus;
     }
@@ -36,8 +40,8 @@ public class Inventory {
         return id;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
@@ -51,8 +55,8 @@ public class Inventory {
     @Override
     public String toString() {
         return "Inventory{" +
-                "id='" + id + '\'' +
-                ", productId='" + productId + '\'' +
+                "id=" + id +
+                ", product=" + product +
                 ", quantity=" + quantity +
                 ", inventoryStatus=" + inventoryStatus +
                 '}';
@@ -60,7 +64,7 @@ public class Inventory {
 
     public static class Builder {
         private Long id;
-        private String productId;
+        private Product product;
         private int quantity;
         private InventoryStatus inventoryStatus;
 
@@ -69,8 +73,8 @@ public class Inventory {
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -86,7 +90,7 @@ public class Inventory {
 
         public Builder copy(Inventory inventory) {
             this.id = inventory.id;
-            this.productId = inventory.productId;
+            this.product = inventory.product;
             this.quantity = inventory.quantity;
             this.inventoryStatus = inventory.inventoryStatus;
             return this;

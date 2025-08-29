@@ -15,8 +15,11 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public Payment create(Payment payment) {
-        return paymentRepository.save(payment);
+        Payment saved = paymentRepository.save(payment);
+        paymentRepository.flush(); // force JPA to hit the DB and generate ID
+        return saved;
     }
+
     @Override
     public Payment read(Long id) {
         return paymentRepository.findById(id).orElse(null);
@@ -30,8 +33,10 @@ public class PaymentService implements IPaymentService {
         paymentRepository.deleteById(id);
         return true;
     }
-
-    public List<Payment> getPayments() {
+    @Override
+    public List<Payment> getAll(){
         return paymentRepository.findAll();
     }
+
+
 }

@@ -1,81 +1,126 @@
-/*OrderServiceTest.java
-  Order Service Test class
-  Author: Naqeebah Khan (219099073)
-  Date: 24 May 2025
-*/
-
 package za.co.admatech.service;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import za.co.admatech.domain.Money;
+import za.co.admatech.domain.*;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
-import za.co.admatech.factory.OrderFactory;
+import za.co.admatech.repository.CustomerRepository;
+import za.co.admatech.repository.OrderRepository;
+import za.co.admatech.repository.ProductRepository;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.MethodName.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrderServiceTest {
 
     @Autowired
-    private IOrderService service;
+    private OrderService orderService;
 
-    private Order order;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-    @Test
-    void a_create() {
-        Order newOrder = OrderFactory.createOrder(
-                "456",
-                LocalDate.now(),
-                OrderStatus.PENDING,
-                new Money(500.00, "ZAR")
-        );
+    @Autowired
+    private OrderRepository orderRepository;
 
-        order = service.create(newOrder);
-        assertNotNull(order);
-        assertNotNull(order.getId(), "Order ID should not be null after save");
-        System.out.println("Created order: " + order);
+    @Autowired
+    private ProductRepository productRepository; // needed to save product
+
+    private Customer testCustomer;
+    private Product testProduct;
+    private Order testOrder;
+
+    @BeforeEach
+    void setUp() {
+        // Only clean orders and customers, not products
+        orderRepository.deleteAll();
+        customerRepository.deleteAll();
+
+        // Create a test customer
+        testCustomer = new Customer.Builder()
+                .setFirstName("Jane")
+                .setLastName("Doe")
+                .setEmail("jane.doe@example.com")
+                .setPhoneNumber("0821234567")
+                .setAddress(
+                        new Address.Builder()
+                                .setStreetNumber((short)12)
+                                .setStreetName("High St")
+                                .setSuburb("Central")
+                                .setCity("Johannesburg")
+                                .setProvince("Gauteng")
+                                .setPostalCode((short)2000)
+                                .build()
+                )
+                .build();
+        customerRepository.save(testCustomer);
+
+        // Create a test product (save it to avoid transient FK issues)
+        testProduct = new Product.Builder()
+                .setName("Laptop")
+                .setDescription("Gaming Laptop")
+                .setSku("LAP123")
+                .setPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setCategoryId("ELEC")
+                .build();
+        productRepository.save(testProduct);
+
+        // Create order items
+        OrderItem orderItem = new OrderItem.Builder()
+                .setProduct(testProduct)
+                .setQuantity(2)
+                .setUnitPrice(testProduct.getPrice())
+                .build();
+
+        // Create a test order
+        testOrder = new Order.Builder()
+                .setCustomer(testCustomer)
+                .setOrderDate(LocalDate.now())
+                .setOrderStatus(OrderStatus.PENDING)
+                .setTotalAmount(testProduct.getPrice()) // or sum of order items
+                .setOrderItems(Arrays.asList(orderItem))
+                .build();
     }
 
     @Test
-    void b_read() {
-        assertNotNull(order, "Order must be created before reading");
-        Order readOrder = service.read(order.getId());
-        assertNotNull(readOrder);
-        System.out.println("Read order: " + readOrder);
+    void testCreate() {
+        Order created = orderService.create(testOrder);
+        assertNotNull(created);
+        assertNotNull(created.getId());
+        assertEquals(OrderStatus.PENDING, created.getOrderStatus());
     }
 
     @Test
-    void c_update() {
-        assertNotNull(order, "Order must be created before updating");
-        Order updateOrder = new Order.Builder().copy(order)
+    void testRead() {
+        Order created = orderService.create(testOrder);
+        Order found = orderService.read(created.getId());
+        assertNotNull(found);
+        assertEquals(testCustomer.getEmail(), found.getCustomer().getEmail());
+    }
+
+    @Test
+    void testUpdate() {
+        Order created = orderService.create(testOrder);
+
+        Order updatedOrder = new Order.Builder()
+                .copy(created)
                 .setOrderStatus(OrderStatus.COMPLETED)
                 .build();
 
-        Order updatedOrder = service.update(updateOrder);
-        assertNotNull(updatedOrder);
-        System.out.println("Updated order: " + updatedOrder);
-
-        order = updatedOrder;  // update the order reference
+        Order updated = orderService.update(updatedOrder);
+        assertEquals(OrderStatus.COMPLETED, updated.getOrderStatus());
     }
 
     @Test
-    @Disabled
-    void d_delete() {
-        assertNotNull(order, "Order must be created before deleting");
-        boolean deleted = service.delete(order.getId());
+    void testDelete() {
+        Order created = orderService.create(testOrder);
+        boolean deleted = orderService.delete(created.getId());
         assertTrue(deleted);
-        System.out.println("Order successfully deleted");
-    }
-
-    @Test
-    void e_getOrders() {
-        System.out.println(service.getAll());
+        assertNull(orderService.read(created.getId()));
     }
 }

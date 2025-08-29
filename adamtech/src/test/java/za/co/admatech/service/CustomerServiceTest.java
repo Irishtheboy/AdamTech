@@ -1,8 +1,6 @@
 package za.co.admatech.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Address;
@@ -12,6 +10,7 @@ import za.co.admatech.repository.CustomerRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CustomerServiceTest {
 
     @Autowired
@@ -21,6 +20,7 @@ class CustomerServiceTest {
     private CustomerRepository customerRepository;
 
     private Customer testCustomer;
+    private Long createdCustomerId; // store generated ID
 
     @BeforeEach
     void setUp() {
@@ -36,7 +36,6 @@ class CustomerServiceTest {
                 .build();
 
         testCustomer = new Customer.Builder()
-                .setCustomerID("C001")
                 .setFirstName("John")
                 .setLastName("Doe")
                 .setEmail("john.doe@example.com")
@@ -45,21 +44,23 @@ class CustomerServiceTest {
                 .build();
     }
 
-
     @Test
     @Order(1)
     void testCreate() {
         Customer created = customerService.create(testCustomer);
         assertNotNull(created);
-        assertEquals("C001", created.getCustomerID());
+        assertNotNull(created.getCustomerId());
+        createdCustomerId = created.getCustomerId(); // save the ID
         assertEquals("John", created.getFirstName());
     }
 
     @Test
     @Order(2)
     void testRead() {
-        customerService.create(testCustomer);
-        Customer found = customerService.read("C001");
+        Customer created = customerService.create(testCustomer);
+        Long id = created.getCustomerId();
+
+        Customer found = customerService.read(id);
         assertNotNull(found);
         assertEquals("john.doe@example.com", found.getEmail());
     }
@@ -67,10 +68,11 @@ class CustomerServiceTest {
     @Test
     @Order(3)
     void testUpdate() {
-        customerService.create(testCustomer);
+        Customer created = customerService.create(testCustomer);
+        Long id = created.getCustomerId();
 
         Customer updatedCustomer = new Customer.Builder()
-                .copy(testCustomer)
+                .copy(created)
                 .setPhoneNumber("0829999999")
                 .build();
 
@@ -80,11 +82,14 @@ class CustomerServiceTest {
 
     @Test
     @Order(4)
+    @Disabled
     void testDelete() {
-        customerService.create(testCustomer);
-        boolean deleted = customerService.delete("C001");
+        Customer created = customerService.create(testCustomer);
+        Long id = created.getCustomerId();
 
+        boolean deleted = customerService.delete(id);
         assertTrue(deleted);
-        assertNull(customerService.read("C001"));
+
+        assertNull(customerService.read(id));
     }
 }

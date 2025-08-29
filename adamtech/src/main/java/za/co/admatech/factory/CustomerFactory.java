@@ -1,25 +1,48 @@
 package za.co.admatech.factory;
-
-
-import za.co.admatech.domain.Address;
-import za.co.admatech.domain.Customer;
+/**
+ * CustomerFactory.java
+ * CustomerFactory Factory class
+ *
+ * Author: Rorisang Makgana(230602363)
+ */
+import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
 public class CustomerFactory {
-    public static Customer createCustomer(String customerId, String firstName, String lastName, String email, Address address) {
-        if (Helper.isNullOrEmpty(customerId) || Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName) || !Helper.isValidEmail(email) || address == null) {
+    public static Customer createCustomer(
+            String customerID,
+            String firstName,
+            String lastName,
+            String email,
+            //Cart cartID,
+            Address address) {
+
+        //Validating the fields inside the Customer domain
+        //Validating the customerID
+        if (Helper.isNullOrEmpty(lastName)) {
+
+        }
+
+        //Validating the customers first name
+        if (Helper.isNullOrEmpty(firstName)) {
+
+        }
+        //Validating the customer last name
+        if (Helper.isNullOrEmpty(lastName)) {
+
+        }
+        //Validating the customers email address using regex
+        if(Helper.isValidEmail(email)){
             return null;
         }
-        return new Customer.Builder()
-                .customerId(customerId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .address(address)
-                .build();
-    }
 
-    public static Customer createCustomer(String firstName, String lastName, String email, Address address) {
-        return createCustomer(Helper.generateId(), firstName, lastName, email, address);
+        return new Customer.Builder()
+
+
+        .setFirstName(firstName)
+        .setLastName(lastName)
+        .setAddress(address)
+        .build();
+
     }
 }

@@ -17,9 +17,7 @@ public class PaymentFactory {
         if (!Helper.isValidLocalDate(paymentDate)) {
             return null;
         }
-        if (Helper.isNullOrEmpty(orderId)) {
-            return null;
-        }
+
         if (!Helper.isValidPaymentStatus(paymentStatus)) {
             return null;
         }
@@ -31,7 +29,7 @@ public class PaymentFactory {
 
 
         return new Payment.Builder()
-                .setOrderId(orderId)
+
                 .setPaymentDate(paymentDate)
                 .setAmount(amount)
                 .setPaymentStatus(paymentStatus)

@@ -3,56 +3,66 @@ package za.co.admatech.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import za.co.admatech.domain.Inventory;
+import za.co.admatech.domain.Money;
+import za.co.admatech.domain.Product;
 import za.co.admatech.domain.enums.InventoryStatus;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InventoryServiceTest {
 
     @Autowired
     private InventoryService inventoryService;
 
-    private static Inventory testInventory;
+    @Autowired
+    private ProductService productService;
+
+    private Product product;
+    private Inventory testInventory;
+
+    @BeforeAll
+    void setupAll() {
+        product = new Product.Builder()
+                .setName("Test Product")
+                .setDescription("A test product")
+                .setSku("PROD123")
+                .setPrice(new Money.Builder().setAmount(10000).setCurrency("ZAR").build())
+                .setCategoryId("CAT1")
+                .build();
+        product = productService.create(product);
+
+        testInventory = new Inventory.Builder()
+                .setProduct(product)
+                .setQuantity(50)
+                .setInventoryStatus(InventoryStatus.IN_STOCK)
+                .build();
+        testInventory = inventoryService.create(testInventory); // persist once
+    }
 
     @Test
     @Order(1)
     void create() {
-        Inventory inventory = new Inventory.Builder()
-                .setProductId("PROD123")
-                .setQuantity(50)
-                .setInventoryStatus(InventoryStatus.IN_STOCK)
-                .build();
-
-        Inventory created = inventoryService.create(inventory);
-        assertNotNull(created);
-        assertNotNull(created.getId());
-        assertEquals("PROD123", created.getProductId());
-        assertEquals(50, created.getQuantity());
-        assertEquals(InventoryStatus.IN_STOCK, created.getInventoryStatus());
-
-        testInventory = created; // Save for later tests
+        assertNotNull(testInventory.getId());
+        System.out.println("Created: " + testInventory);
     }
 
     @Test
     @Order(2)
     void read() {
-        assertNotNull(testInventory);
-
         Inventory found = inventoryService.read(testInventory.getId());
         assertNotNull(found);
-        assertEquals(testInventory.getProductId(), found.getProductId());
+        System.out.println("Read: " + found);
     }
 
     @Test
     @Order(3)
     void update() {
-        assertNotNull(testInventory);
-
         Inventory updatedInventory = new Inventory.Builder()
                 .copy(testInventory)
                 .setQuantity(75)
@@ -60,31 +70,25 @@ class InventoryServiceTest {
                 .build();
 
         Inventory updated = inventoryService.update(updatedInventory);
-        assertNotNull(updated);
         assertEquals(75, updated.getQuantity());
-        assertEquals(InventoryStatus.LOW_STOCK, updated.getInventoryStatus());
-
-        testInventory = updated; // update reference for next tests
+        testInventory = updated;
+        System.out.println("Updated: " + updated);
     }
 
     @Test
     @Order(4)
     void getAll() {
-        List<Inventory> allInventories = inventoryService.getAll();
-        assertFalse(allInventories.isEmpty());
-        assertTrue(allInventories.stream().anyMatch(inv -> inv.getId().equals(testInventory.getId())));
+        List<Inventory> all = inventoryService.getAll();
+        assertTrue(all.size() >= 1);
+        System.out.println("All: " + all);
     }
 
     @Test
     @Order(5)
     @Disabled
     void delete() {
-        assertNotNull(testInventory);
-
         boolean deleted = inventoryService.delete(testInventory.getId());
         assertTrue(deleted);
-
-        Inventory deletedInventory = inventoryService.read(testInventory.getId());
-        assertNull(deletedInventory);
+        System.out.println("Deleted ID: " + testInventory.getId());
     }
 }

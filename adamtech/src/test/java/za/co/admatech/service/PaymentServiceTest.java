@@ -76,7 +76,7 @@ class PaymentServiceTest {
 
     @Test
     void e_getPayments() {
-        List<Payment> payments = service.getPayments();
+        List<Payment> payments = service.getAll();
         assertNotNull(payments);
         System.out.println("All Payments: " + payments);
     }
