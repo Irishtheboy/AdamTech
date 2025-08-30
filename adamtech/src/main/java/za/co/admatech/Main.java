@@ -2,33 +2,27 @@ package za.co.admatech;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.event.EventListener;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import za.co.admatech.views.AdminProductSwing;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
+import javax.swing.*;
+import java.awt.*;
 
 @SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-    }
+        // Start Spring Boot in a separate thread
+        Thread springThread = new Thread(() -> SpringApplication.run(Main.class, args));
+        springThread.start();
 
-    // This will open the React frontend in the default browser after Spring Boot starts
-    @EventListener(ApplicationReadyEvent.class)
-    public void openFrontend() {
-        String url = "http://localhost:3000"; // React dev server URL
-        if(Desktop.isDesktopSupported()){
-            Desktop desktop = Desktop.getDesktop();
+        // Start Swing in the Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
             try {
-                desktop.browse(URI.create(url));
-            } catch (IOException e) {
+                new AdminProductSwing().setVisible(true);
+            } catch (HeadlessException e) {
+                System.err.println("GUI not supported in this environment.");
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("Desktop not supported. Please open " + url + " manually.");
-        }
+        });
     }
 }
