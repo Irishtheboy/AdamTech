@@ -7,6 +7,7 @@ import za.co.admatech.domain.Payment;
 import za.co.admatech.repository.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService implements ICustomerService {
@@ -35,6 +36,11 @@ public class CustomerService implements ICustomerService {
     @Override
     public List<Customer> getAll() {
         return customerRepository.findAll();
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return customerRepository.findByEmail(email);
     }
 
 

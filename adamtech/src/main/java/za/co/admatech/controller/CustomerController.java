@@ -4,14 +4,16 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import za.co.admatech.DTO.LoginRequest;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.service.CustomerService;
 
 import java.util.List; // <-- correct import
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/customer")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -73,5 +75,20 @@ public class CustomerController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Customer> login(@RequestBody LoginRequest request, HttpSession session) {
+        Optional<Customer> optionalCustomer = customerService.findByEmail(request.getEmail());
+
+        if(optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            session.setAttribute("customerId", customer.getCustomerId());
+            return ResponseEntity.ok(customer);
+        }
+
+        return ResponseEntity.status(401).build(); // Unauthorized
+    }
+
+
 
 }
