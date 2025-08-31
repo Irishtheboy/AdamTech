@@ -109,7 +109,7 @@ public class Cart {
         public Cart build() {
             Cart cart = new Cart(this);
 
-            // 🔹 Automatically link each CartItem back to this Cart
+
             if (cart.getCartItems() != null) {
                 for (CartItem item : cart.getCartItems()) {
                     item.setCart(cart);

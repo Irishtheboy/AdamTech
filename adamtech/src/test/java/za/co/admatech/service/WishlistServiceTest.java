@@ -95,7 +95,7 @@ class WishlistServiceTest {
                 .build();
         newProduct = productService.create(newProduct);
 
-        // Use Builder copy method to retain ID
+
         Wishlist updatedWishlist = new Wishlist.Builder()
                 .copy(wishlist)
                 .product(newProduct)
@@ -107,7 +107,7 @@ class WishlistServiceTest {
         assertEquals(wishlist.getWishlistId(), result.getWishlistId());
         assertEquals(newProduct.getProductId(), result.getProduct().getProductId());
 
-        wishlist = result; // update reference
+        wishlist = result;
         System.out.println("Updated: " + result);
     }
 

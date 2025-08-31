@@ -33,7 +33,7 @@ public class AdminProductSwing extends JFrame {
             .build();
 
     private final Gson gson = new Gson();
-    private final String BASE_URL = "http://localhost:8080/adamtech/products"; // adjust as needed
+    private final String BASE_URL = "http://localhost:8080/adamtech/products";
 
     private Long updateProductId = null; // null = add, otherwise update
 

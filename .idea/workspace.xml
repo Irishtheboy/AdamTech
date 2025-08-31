@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="083a7c92-4161-4942-833c-4c425d073582" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/config/CorsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adamtech/src/main/java/za/co/admatech/config/WebConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/adamtech/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/adamtech/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +40,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Backup-PasswordImplementation",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/franc/OneDrive/Documents/GitHub/AdamTech/AdamTech",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -70,6 +67,7 @@
       <updated>1756509104891</updated>
       <workItem from="1756509106007" duration="114000" />
       <workItem from="1756557999386" duration="438000" />
+      <workItem from="1756658002181" duration="35000" />
     </task>
     <servers />
   </component>

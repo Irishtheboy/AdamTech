@@ -23,10 +23,9 @@ public class Wishlist {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Default constructor
+
     public Wishlist() {}
 
-    // Constructor (used by Builder)
     private Wishlist(Builder builder) {
         this.wishlistId = builder.wishlistId;
         this.customer = builder.customer;
@@ -34,7 +33,7 @@ public class Wishlist {
         this.createdAt = builder.createdAt;
     }
 
-    // Getters
+
     public Long getWishlistId() {
         return wishlistId;
     }
@@ -51,9 +50,7 @@ public class Wishlist {
         return createdAt;
     }
 
-    // ================
-    // Builder Pattern
-    // ================
+
     public static class Builder {
         private Long wishlistId;
         private Customer customer;

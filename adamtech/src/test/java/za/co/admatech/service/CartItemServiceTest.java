@@ -28,13 +28,13 @@ class CartItemServiceTest {
     private ICartItemService service;
 
     @Autowired
-    private CartService cartService; // For creating Cart
+    private CartService cartService;
 
     @Autowired
-    private ProductService productService; // For creating Product
+    private ProductService productService;
 
     @Autowired
-    private CustomerService customerService; // For creating Customer
+    private CustomerService customerService;
 
     private static CartItem savedCartItem;
     private static Cart cart;

@@ -149,7 +149,7 @@ class AddressControllerTest {
             ResponseEntity<Void> deleteResponse = restTemplate.exchange(url, HttpMethod.DELETE, request, Void.class);
             assertEquals(HttpStatus.OK, deleteResponse.getStatusCode(), "Expected 200 OK for delete");
 
-            // Verify deletion directly in the database
+
             Optional<Address> dbAddress = addressRepository.findById(address.getAddressId());
             assertFalse(dbAddress.isPresent(), "Address should not exist in database after delete");
 

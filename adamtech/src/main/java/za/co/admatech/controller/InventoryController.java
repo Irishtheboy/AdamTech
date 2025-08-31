@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory")
-@CrossOrigin(origins = "http://localhost:8080") // adjust your frontend URL
+@CrossOrigin(origins = "http://localhost:8080")
 public class InventoryController {
 
     private final IInventoryService service;

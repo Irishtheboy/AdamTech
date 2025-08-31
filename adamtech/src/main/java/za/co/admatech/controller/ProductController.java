@@ -70,7 +70,7 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
 
-        // Set the content type for the image
+        // Image content type can be adjusted based on actual image type
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE) // or IMAGE_JPEG_VALUE
                 .body(product.getImageData());

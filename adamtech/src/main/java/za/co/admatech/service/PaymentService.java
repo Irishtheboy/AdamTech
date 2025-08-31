@@ -16,7 +16,7 @@ public class PaymentService implements IPaymentService {
     @Override
     public Payment create(Payment payment) {
         Payment saved = paymentRepository.save(payment);
-        paymentRepository.flush(); // force JPA to hit the DB and generate ID
+        paymentRepository.flush();
         return saved;
     }
 

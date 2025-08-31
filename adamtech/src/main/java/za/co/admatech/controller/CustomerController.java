@@ -51,7 +51,7 @@ public class CustomerController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Customer>> getAll() {
-        return ResponseEntity.ok(customerService.getAll()); // <-- use instance, not class
+        return ResponseEntity.ok(customerService.getAll());
     }
 
 

@@ -3,24 +3,24 @@ package za.co.admatech.DTO;
 import za.co.admatech.domain.OrderItem;
 import za.co.admatech.domain.Product;
 
-// This DTO is used to send order item details to the frontend
+
 public class OrderItemDTO {
 
-    private Long id;            // OrderItem ID
-    private String productName;  // Product name
-    private double unitPrice;    // Price per unit
-    private int quantity;        // Quantity ordered
+    private Long id;
+    private String productName;
+    private double unitPrice;
+    private int quantity;
 
-    // Optional: include product ID if needed for reference
+
     private Long productId;
 
-    // Constructor that maps OrderItem entity to DTO
+
     public OrderItemDTO(OrderItem item) {
         if (item != null) {
             this.id = item.getId();
             this.quantity = item.getQuantity();
 
-            // Extract product info safely
+
             Product product = item.getProduct();
             if (product != null) {
                 this.productId = product.getProductId();
@@ -33,7 +33,7 @@ public class OrderItemDTO {
         }
     }
 
-    // Getters
+
     public Long getId() {
         return id;
     }

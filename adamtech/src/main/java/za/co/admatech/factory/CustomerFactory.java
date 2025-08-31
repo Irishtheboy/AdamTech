@@ -17,21 +17,20 @@ public class CustomerFactory {
             //Cart cartID,
             Address address) {
 
-        //Validating the fields inside the Customer domain
-        //Validating the customerID
+
         if (Helper.isNullOrEmpty(lastName)) {
 
         }
 
-        //Validating the customers first name
+
         if (Helper.isNullOrEmpty(firstName)) {
 
         }
-        //Validating the customer last name
+
         if (Helper.isNullOrEmpty(lastName)) {
 
         }
-        //Validating the customers email address using regex
+
         if(Helper.isValidEmail(email)){
             return null;
         }

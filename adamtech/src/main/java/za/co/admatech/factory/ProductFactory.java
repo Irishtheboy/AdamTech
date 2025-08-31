@@ -11,7 +11,7 @@ public class ProductFactory {
             String sku,
             Money price,
             String categoryId,
-            byte[] imageData) { // added imageData parameter
+            byte[] imageData) {
 
         return new Product.Builder()
                 .setName(name)
@@ -19,11 +19,11 @@ public class ProductFactory {
                 .setSku(sku)
                 .setPrice(price)
                 .setCategoryId(categoryId)
-                .setImageData(imageData) // set the image
+                .setImageData(imageData)
                 .build();
     }
 
-    // Overload without image for backward compatibility
+
     public static Product createProduct(
             String name,
             String description,

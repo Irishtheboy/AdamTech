@@ -48,6 +48,6 @@ public class OrderItemController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<OrderItem>> getAll() {
-        return ResponseEntity.ok(service.getAll());  // service should return a List<OrderItem>
+        return ResponseEntity.ok(service.getAll());
     }
 }
