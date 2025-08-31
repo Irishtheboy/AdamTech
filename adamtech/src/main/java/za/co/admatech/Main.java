@@ -15,14 +15,14 @@ public class Main {
         Thread springThread = new Thread(() -> SpringApplication.run(Main.class, args));
         springThread.start();
 
-        // Start Swing in the Event Dispatch Thread
-        SwingUtilities.invokeLater(() -> {
-            try {
-                new AdminProductSwing().setVisible(true);
-            } catch (HeadlessException e) {
-                System.err.println("GUI not supported in this environment.");
-                e.printStackTrace();
-            }
-        });
+//        // Start Swing in the Event Dispatch Thread
+//        SwingUtilities.invokeLater(() -> {
+//            try {
+//                new AdminProductSwing().setVisible(true);
+//            } catch (HeadlessException e) {
+//                System.err.println("GUI not supported in this environment.");
+//                e.printStackTrace();
+//            }
+//        });
     }
 }

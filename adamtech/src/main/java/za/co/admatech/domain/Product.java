@@ -1,5 +1,6 @@
 package za.co.admatech.domain;
 
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,6 +9,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long productId;
 
     private String name;
