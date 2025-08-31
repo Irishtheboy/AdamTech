@@ -13,10 +13,12 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import okhttp3.*;
+import za.co.admatech.domain.enums.ProductType;
 
 public class AdminProductSwing extends JFrame {
 
-    private JTextField nameField, descriptionField, skuField, amountField, currencyField, categoryField;
+    private JTextField nameField, descriptionField, skuField, amountField, currencyField;
+    private JComboBox<ProductType> categoryCombo;
     private JLabel imageLabel;
     private File selectedImage;
     private JButton submitButton;
@@ -37,7 +39,7 @@ public class AdminProductSwing extends JFrame {
 
     public AdminProductSwing() {
         setTitle("Admin - Product Manager");
-        setSize(800, 600);
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTabbedPane tabs = new JTabbedPane();
@@ -57,7 +59,7 @@ public class AdminProductSwing extends JFrame {
         skuField = new JTextField();
         amountField = new JTextField();
         currencyField = new JTextField("USD");
-        categoryField = new JTextField();
+        categoryCombo = new JComboBox<>(ProductType.values());
         imageLabel = new JLabel("No image selected");
 
         JButton imageButton = new JButton("Choose Image");
@@ -74,7 +76,7 @@ public class AdminProductSwing extends JFrame {
         panel.add(new JLabel("SKU:")); panel.add(skuField);
         panel.add(new JLabel("Price:")); panel.add(amountField);
         panel.add(new JLabel("Currency:")); panel.add(currencyField);
-        panel.add(new JLabel("Category:")); panel.add(categoryField);
+        panel.add(new JLabel("Category:")); panel.add(categoryCombo);
         panel.add(imageButton); panel.add(imageLabel);
         panel.add(submitButton);
 
@@ -117,7 +119,7 @@ public class AdminProductSwing extends JFrame {
             @Override
             protected Void doInBackground() {
                 try {
-                    sendProductRequest("create", null);
+                    sendProductRequest("create");
                 } catch (IOException e) {
                     showError("Error adding product: " + e.getMessage());
                 }
@@ -138,7 +140,7 @@ public class AdminProductSwing extends JFrame {
             @Override
             protected Void doInBackground() {
                 try {
-                    sendProductRequest("update/" + id, id);
+                    sendProductRequest("update/" + id);
                 } catch (IOException e) {
                     showError("Error updating product: " + e.getMessage());
                 }
@@ -166,7 +168,6 @@ public class AdminProductSwing extends JFrame {
             @Override
             protected Void doInBackground() {
                 try {
-                    // Make sure the DELETE URL matches your backend mapping
                     String url = BASE_URL + "/delete/" + id;
                     System.out.println("➡ DELETE " + url);
 
@@ -194,8 +195,6 @@ public class AdminProductSwing extends JFrame {
         }.execute();
     }
 
-
-
     private void editSelected() {
         int row = productTable.getSelectedRow();
         if (row < 0) return;
@@ -208,7 +207,7 @@ public class AdminProductSwing extends JFrame {
         skuField.setText(selected.getSku());
         amountField.setText(String.valueOf(selected.getPrice().getAmount()));
         currencyField.setText(selected.getPrice().getCurrency());
-        categoryField.setText(selected.getCategoryId());
+        categoryCombo.setSelectedItem(ProductType.valueOf(selected.getCategoryId()));
         submitButton.setText("Update Product");
     }
 
@@ -218,7 +217,7 @@ public class AdminProductSwing extends JFrame {
         skuField.setText("");
         amountField.setText("");
         currencyField.setText("USD");
-        categoryField.setText("");
+        categoryCombo.setSelectedIndex(0);
         imageLabel.setText("No image selected");
         selectedImage = null;
     }
@@ -253,7 +252,7 @@ public class AdminProductSwing extends JFrame {
         }.execute();
     }
 
-    private void sendProductRequest(String endpoint, Long id) throws IOException {
+    private void sendProductRequest(String endpoint) throws IOException {
         String base64Image = null;
         if (selectedImage != null) {
             byte[] imageBytes = Files.readAllBytes(selectedImage.toPath());
@@ -265,7 +264,7 @@ public class AdminProductSwing extends JFrame {
         product.setDescription(descriptionField.getText());
         product.setSku(skuField.getText());
         product.setPrice(new Money(Double.parseDouble(amountField.getText()), currencyField.getText()));
-        product.setCategoryId(categoryField.getText());
+        product.setCategoryId(categoryCombo.getSelectedItem().toString());
         product.setImageData(base64Image);
 
         String json = gson.toJson(product);
@@ -325,7 +324,6 @@ public class AdminProductSwing extends JFrame {
 
         public Product getProductAt(int row) { return products.get(row); }
     }
-
 
     /** ------------------ Product & Money ------------------ */
     static class Product {
