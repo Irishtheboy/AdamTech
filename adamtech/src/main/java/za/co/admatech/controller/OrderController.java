@@ -3,7 +3,7 @@ package za.co.admatech.controller;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.DTO.OrderDTO;
 import za.co.admatech.domain.Order;
-import za.co.admatech.service.order_domain_service.OrderService;
+import za.co.admatech.service.OrderService;
 
 import java.util.List;
 import java.util.stream.Collectors;

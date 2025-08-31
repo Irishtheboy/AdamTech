@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Cart;
-import za.co.admatech.service.cart_domain_service.CartService;
+import za.co.admatech.service.CartService;
 
 import java.util.List;
 
