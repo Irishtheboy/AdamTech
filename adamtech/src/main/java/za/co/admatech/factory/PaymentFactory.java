@@ -12,8 +12,6 @@ import static za.co.admatech.util.Helper.generateId;
 public class PaymentFactory {
     public static Payment createPayment(LocalDate paymentDate, String orderId, Money amount, PaymentStatus paymentStatus) {
 
-
-
         if (!Helper.isValidLocalDate(paymentDate)) {
             return null;
         }
