@@ -33,6 +33,10 @@ public class Customer {
     private Cart cart;
 
     private String phoneNumber;
+    
+    @Column(name = "password_hash")
+    @JsonIgnore  // Never expose password in JSON responses
+    private String passwordHash;
 
     public Customer() {
     }
@@ -45,6 +49,7 @@ public class Customer {
         this.address = builder.address;
         this.cart = builder.cart;
         this.phoneNumber = builder.phoneNumber;
+        this.passwordHash = builder.passwordHash;
     }
 
     public Long getCustomerId() {
@@ -73,6 +78,10 @@ public class Customer {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+    
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     public void setAddress(Address address) {
@@ -104,6 +113,7 @@ public class Customer {
         private Address address;
         private Cart cart;
         private String phoneNumber;
+        private String passwordHash;
 
         public Builder setCustomerId(Long customerId) {
             this.customerId = customerId;
@@ -139,6 +149,11 @@ public class Customer {
             this.phoneNumber = phoneNumber;
             return this;
         }
+        
+        public Builder setPasswordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
+            return this;
+        }
 
         public Builder copy(Customer customer) {
             this.customerId = customer.customerId;
@@ -148,6 +163,7 @@ public class Customer {
             this.address = customer.address;
             this.cart = customer.cart;
             this.phoneNumber = customer.phoneNumber;
+            this.passwordHash = customer.passwordHash;
             return this;
         }
 

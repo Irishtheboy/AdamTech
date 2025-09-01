@@ -9,6 +9,7 @@ import za.co.admatech.domain.Payment;
 import za.co.admatech.factory.AddressFactory;
 import za.co.admatech.factory.CustomerFactory;
 import za.co.admatech.repository.CustomerRepository;
+import za.co.admatech.util.Helper;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +57,39 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer createFromRegistrationRequest(CustomerRegistrationRequest request) {
+        // Enhanced validation using Helper class
+        if (!Helper.isValidName(request.getFirstName())) {
+            throw new IllegalArgumentException("Invalid first name. Must be 2-50 characters with letters, spaces, hyphens, or apostrophes only.");
+        }
+        
+        if (!Helper.isValidName(request.getLastName())) {
+            throw new IllegalArgumentException("Invalid last name. Must be 2-50 characters with letters, spaces, hyphens, or apostrophes only.");
+        }
+        
+        if (!Helper.isValidEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address.");
+        }
+        
+        if (!Helper.isValidPhoneNumber(request.getPhoneNumber())) {
+            throw new IllegalArgumentException("Invalid phone number. Must be a valid international or local format.");
+        }
+        
+        if (!Helper.isValidPassword(request.getPassword())) {
+            throw new IllegalArgumentException("Invalid password. Must be at least 8 characters long.");
+        }
+        
+        // Validate address fields
+        if (!Helper.isValidStreetAddress(request.getAddress().getStreet())) {
+            throw new IllegalArgumentException("Invalid street address. Must be 5-100 characters long.");
+        }
+        
+        if (!Helper.isValidCity(request.getAddress().getCity())) {
+            throw new IllegalArgumentException("Invalid city name. Must be 2-50 characters with letters, spaces, hyphens, or apostrophes only.");
+        }
+        
+        // Hash the password for storage
+        String hashedPassword = Helper.hashPassword(request.getPassword());
+        
         // Parse address components from frontend "street" field
         String fullStreet = request.getAddress().getStreet();
         short streetNumber = 0;
@@ -78,9 +112,13 @@ public class CustomerService implements ICustomerService {
             String zipCode = request.getAddress().getZipCode();
             if (zipCode != null && zipCode.matches("\\d+")) {
                 postalCode = Short.parseShort(zipCode);
+                // Validate postal code range
+                if (!Helper.isValidPostalCode(postalCode)) {
+                    throw new IllegalArgumentException("Invalid postal code. Must be between 1000-9999.");
+                }
             }
         } catch (NumberFormatException e) {
-            // Keep default if parsing fails
+            throw new IllegalArgumentException("Invalid postal code format. Must be numeric.");
         }
 
         // Create Address using Builder directly (factory method has issues)
@@ -93,13 +131,14 @@ public class CustomerService implements ICustomerService {
                 .setPostalCode(postalCode)
                 .build();
 
-        // Create Customer using Builder directly (factory method is incomplete)
+        // Create Customer using Builder directly with hashed password
         return new Customer.Builder()
                 .setFirstName(request.getFirstName())
                 .setLastName(request.getLastName())
                 .setEmail(request.getEmail())
                 .setAddress(address)
                 .setPhoneNumber(request.getPhoneNumber())
+                .setPasswordHash(hashedPassword)
                 .build();
     }
 }
