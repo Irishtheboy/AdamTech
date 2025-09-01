@@ -13,7 +13,7 @@ import za.co.admatech.util.Helper;
 
 public class CartFactory {
     public static Cart createCart(String customerID, String cartItemID) {
-      String cartID =  Helper.generateId();
+
 
       if (Helper.isNullOrEmpty(customerID) || Helper.isNullOrEmpty(cartItemID)) {
           return null;

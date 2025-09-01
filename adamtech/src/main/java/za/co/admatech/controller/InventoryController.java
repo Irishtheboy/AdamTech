@@ -1,54 +1,64 @@
-/*
-InventoryController.java
-Author: Naqeebah Khan (219099073)
-Date: 03 June 2025 */
 package za.co.admatech.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Inventory;
-import za.co.admatech.service.inventory_domain_service.IInventoryService;
+import za.co.admatech.service.IInventoryService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventories")
-@CrossOrigin(origins = "*")
+@RequestMapping("/inventory")
+@CrossOrigin(origins = "http://localhost:8080")
 public class InventoryController {
-    private final IInventoryService inventoryService;
 
-    public InventoryController(IInventoryService inventoryService) {
-        this.inventoryService = inventoryService;
+    private final IInventoryService service;
+
+    @Autowired
+    public InventoryController(IInventoryService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<Inventory> create(@Valid @RequestBody Inventory inventory) {
-        Inventory created = inventoryService.create(inventory);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    // Create
+    @PostMapping("/create")
+    public ResponseEntity<Inventory> create(@RequestBody Inventory inventory) {
+        Inventory created = service.create(inventory);
+        return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Inventory> read(@PathVariable String id) {
-        Inventory inventory = inventoryService.read(id);
+    // Read by ID
+    @GetMapping("/read/{id}")
+    public ResponseEntity<Inventory> read(@PathVariable Long id) {
+        Inventory inventory = service.read(id);
+        if (inventory == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(inventory);
     }
 
-    @PutMapping
-    public ResponseEntity<Inventory> update(@Valid @RequestBody Inventory inventory) {
-        Inventory updated = inventoryService.update(inventory);
+    // Update
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Inventory> update(@PathVariable Long id, @RequestBody Inventory inventory) {
+        Inventory existing = service.read(id);
+        if (existing == null) return ResponseEntity.notFound().build();
+
+        Inventory updated = service.update(inventory);
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean deleted = inventoryService.delete(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    // Delete
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Inventory existing = service.read(id);
+        if (existing == null) return ResponseEntity.notFound().build();
+
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    // Get all
+    @GetMapping("/getAll")
     public ResponseEntity<List<Inventory>> getAll() {
-        return ResponseEntity.ok(inventoryService.getAll());
+        List<Inventory> list = service.getAll();
+        return ResponseEntity.ok(list);
     }
 }

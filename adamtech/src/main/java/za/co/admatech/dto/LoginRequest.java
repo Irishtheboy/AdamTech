@@ -1,38 +1,12 @@
-package za.co.admatech.dto;
-
-import jakarta.validation.constraints.NotBlank;
+package za.co.admatech.DTO;
 
 public class LoginRequest {
-    
-    @NotBlank(message = "Username is required")
-    private String username;
-    
-    @NotBlank(message = "Password is required")
+    private String email;
     private String password;
 
-    // Constructors
-    public LoginRequest() {
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public LoginRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    // Getters and Setters
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

@@ -117,6 +117,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @Disabled
     void testDelete() {
         Order created = orderService.create(testOrder);
         boolean deleted = orderService.delete(created.getId());

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="546464a4-ed65-40da-a8eb-253b62326214" name="Changes" comment="" />
+    <list default="true" id="083a7c92-4161-4942-833c-4c425d073582" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,57 +18,38 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;LeGoober&quot;
+    &quot;assignee&quot;: &quot;Irishtheboy&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Irishtheboy/AdamTech.git",
-    "accountId": "be65c8dc-6a4c-4035-84fb-7edb74213a6a"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Irishtheboy/AdamTech.git&quot;,
+    &quot;accountId&quot;: &quot;be65c8dc-6a4c-4035-84fb-7edb74213a6a&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2wtOyWbQfroK8MKHhAobOGRgDWk" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="31yvPhXvvy1OjxFKiuJJfs6R3qS" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;230602363&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/roris/Documents/NetBeansProjects/AdamTech_2/adamtech&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/roris/Documents/NetBeansProjects/AdamTech_2/adamtech",
+    "last_opened_file_path": "C:/Users/franc/OneDrive/Documents/GitHub/AdamTech/AdamTech",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
-
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -72,37 +58,20 @@
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="546464a4-ed65-40da-a8eb-253b62326214" name="Changes" comment="" />
-      <created>1746857660252</created>
+      <changelist id="083a7c92-4161-4942-833c-4c425d073582" name="Changes" comment="" />
+      <created>1756509104891</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1746857660252</updated>
-      <workItem from="1746857663231" duration="64000" />
-      <workItem from="1746970802936" duration="137000" />
-      <workItem from="1747590927420" duration="86000" />
-
-      <workItem from="1748192679849" duration="25000" />
-
-      <workItem from="1747916626944" duration="28000" />
-
+      <updated>1756509104891</updated>
+      <workItem from="1756509106007" duration="114000" />
+      <workItem from="1756557999386" duration="438000" />
+      <workItem from="1756658002181" duration="35000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>

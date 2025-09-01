@@ -1,29 +1,25 @@
-/*OrderController.java
-  Order controller Class
-  Author: Naqeebah Khan (219099073)
-  Date: 03 June 2025
- */
-
 package za.co.admatech.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import za.co.admatech.DTO.OrderDTO;
 import za.co.admatech.domain.Order;
 import za.co.admatech.service.OrderService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-    private OrderService service;
 
-    @Autowired
+    private final OrderService service;
+
+
     public OrderController(OrderService service) {
         this.service = service;
     }
 
-    @PostMapping ("/create")
+    @PostMapping("/create")
     public Order create(@RequestBody Order order) {
         return service.create(order);
     }
@@ -43,9 +39,12 @@ public class OrderController {
         return service.delete(orderID);
     }
 
+    // Get all orders as DTOs for frontend
     @GetMapping("/getAll")
-    public List<Order> getAll() {
-        return service.getAll();
+    public List<OrderDTO> getAllOrders() {
+        return service.getAll()
+                .stream()
+                .map(OrderDTO::new)
+                .collect(Collectors.toList());
     }
-
 }

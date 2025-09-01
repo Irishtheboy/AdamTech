@@ -1,11 +1,6 @@
-/*
- * Product.java
- * Product Class
- * Author: Seymour Lawrence (230185991)
- * Date: 11 May 2025
- */
 package za.co.admatech.domain;
 
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +9,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long productId;
 
     private String name;
@@ -27,6 +23,11 @@ public class Product {
 
     private String categoryId;
 
+    // ✅ Add this field for image
+    @Lob
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
     public Product() {
     }
 
@@ -37,6 +38,7 @@ public class Product {
         this.sku = builder.sku;
         this.price = builder.price;
         this.categoryId = builder.categoryId;
+        this.imageData = builder.imageData; // set image from builder
     }
 
     public Long getProductId() {
@@ -63,6 +65,14 @@ public class Product {
         return categoryId;
     }
 
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -72,6 +82,7 @@ public class Product {
                 ", sku='" + sku + '\'' +
                 ", price=" + price +
                 ", categoryId='" + categoryId + '\'' +
+                ", imageData=" + (imageData != null ? imageData.length + " bytes" : "null") +
                 '}';
     }
 
@@ -82,6 +93,7 @@ public class Product {
         private String sku;
         private Money price;
         private String categoryId;
+        private byte[] imageData; // add to builder
 
         public Builder setProductId(Long productId) {
             this.productId = productId;
@@ -113,6 +125,11 @@ public class Product {
             return this;
         }
 
+        public Builder setImageData(byte[] imageData) {
+            this.imageData = imageData;
+            return this;
+        }
+
         public Builder copy(Product product) {
             this.productId = product.productId;
             this.name = product.name;
@@ -120,6 +137,7 @@ public class Product {
             this.sku = product.sku;
             this.price = product.price;
             this.categoryId = product.categoryId;
+            this.imageData = product.imageData;
             return this;
         }
 

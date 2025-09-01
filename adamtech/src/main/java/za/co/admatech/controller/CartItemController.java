@@ -43,9 +43,9 @@ public class CartItemController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = service.delete(id);
         if (deleted) {
-            return ResponseEntity.noContent().build(); // 204 NO_CONTENT
+            return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build(); // 404 NOT_FOUND
+            return ResponseEntity.notFound().build();
         }
     }
 
