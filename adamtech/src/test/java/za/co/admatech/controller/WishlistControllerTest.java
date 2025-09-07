@@ -58,9 +58,9 @@ class WishlistControllerTest {
                 .build();
         product = productRepository.save(product);
 
-        assertNotNull(customer.getCustomerId());
+        assertNotNull(customer.getEmail());
         assertNotNull(product.getProductId());
-        System.out.println("Setup entities: Customer ID=" + customer.getCustomerId() +
+        System.out.println("Setup entities: Customer ID=" + customer.getEmail() +
                 ", Product ID=" + product.getProductId());
     }
 

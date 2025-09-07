@@ -2,8 +2,9 @@ package za.co.admatech.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
-import za.co.admatech.domain.Payment;
+import za.co.admatech.repository.CartRepository;
 import za.co.admatech.repository.CustomerRepository;
 
 import java.util.List;
@@ -13,26 +14,32 @@ import java.util.Optional;
 public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, CartRepository cartRepository) {
         this.customerRepository = customerRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
     public Customer create(Customer customer) {
+        Cart cart = new Cart();
+        cartRepository.save(cart);
+        customer.setCart(cart);
         return customerRepository.save(customer);
     }
 
     @Override
-    public Customer read(Long customerId) {
-        return customerRepository.findById(customerId).orElse(null);
+    public Customer read(String email) {
+        return customerRepository.findById(email).orElse(null);
     }
 
     @Override
     public Customer update(Customer customer) {
         return customerRepository.save(customer);
     }
+
     @Override
     public List<Customer> getAll() {
         return customerRepository.findAll();
@@ -43,10 +50,12 @@ public class CustomerService implements ICustomerService {
         return customerRepository.findByEmail(email);
     }
 
-
     @Override
-    public boolean delete(Long customerId) {
-        customerRepository.deleteById(customerId);
-        return true;
+    public boolean delete(String email) {
+        if (customerRepository.existsById(email)) {
+            customerRepository.deleteById(email);
+            return true;
+        }
+        return false;
     }
 }

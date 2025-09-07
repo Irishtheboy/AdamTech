@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Customer;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.repository.CustomerRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,59 +21,62 @@ class CustomerServiceTest {
     private CustomerRepository customerRepository;
 
     private Customer testCustomer;
-    private Long createdCustomerId; // store generated ID
 
     @BeforeEach
     void setUp() {
+        // Clear database before each test
         customerRepository.deleteAll();
 
         Address address = new Address.Builder()
-                .setStreetNumber((short)123)
+                .setStreetNumber((short) 123)
                 .setStreetName("Main St")
                 .setSuburb("Central")
                 .setCity("Cape Town")
                 .setProvince("Western Cape")
-                .setPostalCode((short)8001)
+                .setPostalCode((short) 8001)
                 .build();
 
         testCustomer = new Customer.Builder()
-                .setFirstName("John")
-                .setLastName("Doe")
-                .setEmail("john.doe@example.com")
+                .setFirstName("Franco")
+                .setLastName("Snake")
+                .setEmail("deltasnakeEater@example.com") // PK
                 .setPhoneNumber("0812345678")
+                .setPassword("123456")
                 .setAddress(address)
                 .build();
     }
 
     @Test
     @Order(1)
-    void testCreate() {
+    void testCreateCustomer() {
         Customer created = customerService.create(testCustomer);
         assertNotNull(created);
-        assertNotNull(created.getCustomerId());
-        createdCustomerId = created.getCustomerId(); // save the ID
-        assertEquals("John", created.getFirstName());
+        assertEquals("deltasnakeEater@example.com", created.getEmail());
+        assertEquals("Franco", created.getFirstName());
+
+        // ✅ Check automatic cart creation
+        Cart cart = created.getCart();
+        assertNotNull(cart, "Customer should have a cart automatically");
+        assertNotNull(cart.getCartId(), "Cart should have an ID");
     }
 
     @Test
     @Order(2)
-    void testRead() {
-        Customer created = customerService.create(testCustomer);
-        Long id = created.getCustomerId();
-
-        Customer found = customerService.read(id);
+    void testReadCustomer() {
+        customerService.create(testCustomer);
+        Customer found = customerService.read("deltasnakeEater@example.com");
         assertNotNull(found);
-        assertEquals("john.doe@example.com", found.getEmail());
+        assertEquals("deltasnakeEater@example.com", found.getEmail());
+        assertEquals("Franco", found.getFirstName());
     }
 
     @Test
     @Order(3)
-    void testUpdate() {
-        Customer created = customerService.create(testCustomer);
-        Long id = created.getCustomerId();
+    void testUpdateCustomer() {
+        customerService.create(testCustomer);
 
         Customer updatedCustomer = new Customer.Builder()
-                .copy(created)
+                .copy(testCustomer)
                 .setPhoneNumber("0829999999")
                 .build();
 
@@ -83,13 +87,19 @@ class CustomerServiceTest {
     @Test
     @Order(4)
     @Disabled
-    void testDelete() {
-        Customer created = customerService.create(testCustomer);
-        Long id = created.getCustomerId();
+    void testDeleteCustomer() {
+        customerService.create(testCustomer);
 
-        boolean deleted = customerService.delete(id);
+        boolean deleted = customerService.delete("deltasnakeEater@example.com");
         assertTrue(deleted);
 
-        assertNull(customerService.read(id));
+        assertNull(customerService.read("deltasnakeEater@example.com"));
+    }
+
+    @Test
+    @Order(5)
+    void testReadNonExistentCustomer() {
+        Customer found = customerService.read("nonexistent@example.com");
+        assertNull(found, "Reading a non-existent customer should return null");
     }
 }

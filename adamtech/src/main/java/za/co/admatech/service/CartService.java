@@ -46,7 +46,7 @@ public class CartService implements ICartService {
     @Override
     public Cart getCartByCustomer(Customer customer) {
         return repository.findByCustomer(customer)
-                .orElseThrow(() -> new RuntimeException("Cart not found for customer: " + customer.getCustomerId()));
+                .orElseThrow(() -> new RuntimeException("Cart not found for customer: " + customer.getEmail()));
     }
 
 
