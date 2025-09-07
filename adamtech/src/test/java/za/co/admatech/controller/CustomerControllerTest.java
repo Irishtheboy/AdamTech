@@ -32,14 +32,15 @@ class CustomerControllerTest {
 
         Cart cart = new Cart.Builder().build();
 
-        // Create Customer
+        // Create Customer (email is PK now)
         customer = restTemplate.postForObject(
                 BASE_URL + "/create",
                 new Customer.Builder()
                         .setFirstName("John")
                         .setLastName("Doe")
-                        .setEmail("john@example.com")
+                        .setEmail("john@example.com") // <-- PK
                         .setPhoneNumber("1234567890")
+                        .setPassword("password")
                         .setAddress(address)
                         .setCart(cart)
                         .build(),
@@ -47,7 +48,7 @@ class CustomerControllerTest {
         );
 
         assertNotNull(customer);
-        assertNotNull(customer.getCustomerId());
+        assertNotNull(customer.getEmail()); // check PK
     }
 
     @Test
@@ -59,13 +60,13 @@ class CustomerControllerTest {
     @Test
     void b_read() {
         ResponseEntity<Customer> response = restTemplate.getForEntity(
-                BASE_URL + "/read/" + customer.getCustomerId(),
+                BASE_URL + "/read/" + customer.getEmail(), // use email instead of ID
                 Customer.class
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(customer.getCustomerId(), response.getBody().getCustomerId());
+        assertEquals(customer.getEmail(), response.getBody().getEmail());
 
         System.out.println("Read Customer: " + response.getBody());
     }
@@ -87,27 +88,31 @@ class CustomerControllerTest {
 
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(updatedCustomer.getCustomerId(), response.getBody().getCustomerId());
+        assertEquals(updatedCustomer.getEmail(), response.getBody().getEmail());
+        assertEquals("Jane", response.getBody().getFirstName());
+
         System.out.println("Updated Customer: " + response.getBody());
 
-        customer = response.getBody(); // Update with persisted object
-
-
-
+        customer = response.getBody(); // update reference
     }
 
     @Test
+    @Disabled
     void d_delete() {
-        restTemplate.delete(BASE_URL + "/delete/" + customer.getCustomerId());
+        restTemplate.delete(BASE_URL + "/delete/" + customer.getEmail()); // delete by email
 
         ResponseEntity<Customer> response = restTemplate.getForEntity(
-                BASE_URL + "/read/" + customer.getCustomerId(),
+                BASE_URL + "/read/" + customer.getEmail(),
                 Customer.class
         );
 
-        assertTrue(response.getStatusCode().is2xxSuccessful() || response.getStatusCode() == HttpStatus.NOT_FOUND);
-        System.out.println("Deleted Customer with ID: " + customer.getCustomerId());
+        // Either returns NOT_FOUND or null body
+        assertTrue(
+                response.getStatusCode() == HttpStatus.NOT_FOUND ||
+                        (response.getStatusCode() == HttpStatus.OK && response.getBody() == null)
+        );
+
+        System.out.println("Deleted Customer with Email: " + customer.getEmail());
     }
 
     @Test

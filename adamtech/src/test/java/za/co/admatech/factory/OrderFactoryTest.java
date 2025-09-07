@@ -131,7 +131,7 @@ class OrderFactoryTest {
     void createOrder() {
         // Test order1
         assertNotNull(order1);
-        assertEquals(customer.getCustomerId(), order1.getCustomer().getCustomerId());
+        assertEquals(customer.getEmail(), order1.getCustomer().getEmail());
         assertEquals(LocalDate.of(2025, 5, 5), order1.getOrderDate());
         assertEquals(OrderStatus.PENDING, order1.getOrderStatus());
         assertEquals(45000, order1.getTotalAmount().getAmount());
@@ -141,7 +141,7 @@ class OrderFactoryTest {
 
         // Test order2
         assertNotNull(order2);
-        assertEquals(customer.getCustomerId(), order2.getCustomer().getCustomerId());
+        assertEquals(customer.getEmail(), order2.getCustomer().getEmail());
         assertEquals(LocalDate.of(2025, 6, 6), order2.getOrderDate());
         assertEquals(OrderStatus.CONFIRMED, order2.getOrderStatus());
         assertEquals(85000, order2.getTotalAmount().getAmount());
@@ -161,7 +161,7 @@ class OrderFactoryTest {
                 .setOrderStatus(OrderStatus.SHIPPED)
                 .build();
         assertNotNull(updatedOrder);
-        assertEquals(order1.getCustomer().getCustomerId(), updatedOrder.getCustomer().getCustomerId());
+        assertEquals(order1.getCustomer().getEmail(), updatedOrder.getCustomer().getEmail());
         assertEquals(order1.getOrderDate(), updatedOrder.getOrderDate());
         assertEquals(OrderStatus.SHIPPED, updatedOrder.getOrderStatus());
         assertEquals(order1.getTotalAmount().getAmount(), updatedOrder.getTotalAmount().getAmount());
@@ -183,7 +183,7 @@ class OrderFactoryTest {
         Order persisted1 = orderService.create(order1);
         assertNotNull(persisted1);
         assertNotNull(persisted1.getId());
-        assertEquals(order1.getCustomer().getCustomerId(), persisted1.getCustomer().getCustomerId());
+        assertEquals(order1.getCustomer().getEmail(), persisted1.getCustomer().getEmail());
         assertEquals(order1.getOrderDate(), persisted1.getOrderDate());
         assertEquals(order1.getOrderStatus(), persisted1.getOrderStatus());
         assertEquals(order1.getTotalAmount().getAmount(), persisted1.getTotalAmount().getAmount());
@@ -201,7 +201,7 @@ class OrderFactoryTest {
         Order persisted2 = orderService.create(order2);
         assertNotNull(persisted2);
         assertNotNull(persisted2.getId());
-        assertEquals(order2.getCustomer().getCustomerId(), persisted2.getCustomer().getCustomerId());
+        assertEquals(order2.getCustomer().getEmail(), persisted2.getCustomer().getEmail());
         assertEquals(order2.getOrderDate(), persisted2.getOrderDate());
         assertEquals(order2.getOrderStatus(), persisted2.getOrderStatus());
         assertEquals(order2.getTotalAmount().getAmount(), persisted2.getTotalAmount().getAmount());

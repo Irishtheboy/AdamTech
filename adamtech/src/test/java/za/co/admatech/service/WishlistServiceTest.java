@@ -34,9 +34,9 @@ class WishlistServiceTest {
     private ProductService productService;
 
     private static Customer customer = new Customer.Builder()
-            .setFirstName("John")
-            .setLastName("Doe")
-            .setEmail("john.doe@example.com")
+            .setFirstName("Franco")
+            .setLastName("Lukhele")
+            .setEmail("Francolukhele14@gmail.com")
             .setPhoneNumber("0812345678")
             .build();
 
@@ -67,7 +67,7 @@ class WishlistServiceTest {
         Wishlist created = wishlistService.create(wishlist);
         assertNotNull(created);
         assertNotNull(created.getWishlistId());
-        assertEquals(customer.getCustomerId(), created.getCustomer().getCustomerId());
+        assertEquals(customer.getEmail(), created.getCustomer().getEmail());
         assertEquals(product.getProductId(), created.getProduct().getProductId());
         wishlist = created; // Update with generated ID
         System.out.println("Created: " + created);

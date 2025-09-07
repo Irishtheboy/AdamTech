@@ -87,7 +87,7 @@ class CartControllerTest {
     void createCart() {
         assertNotNull(cart);
         assertNotNull(cart.getCartId());
-        assertEquals(customer.getCustomerId(), cart.getCustomer().getCustomerId());
+        assertEquals(customer.getEmail(), cart.getCustomer().getEmail());
         assertEquals(1, cart.getCartItems().size());
         assertEquals(product.getProductId(), cart.getCartItems().get(0).getProduct().getProductId());
         assertEquals(3, cart.getCartItems().get(0).getQuantity());
@@ -102,7 +102,7 @@ class CartControllerTest {
         Cart readCart = response.getBody();
         assertNotNull(readCart);
         assertEquals(cart.getCartId(), readCart.getCartId());
-        assertEquals(cart.getCustomer().getCustomerId(), readCart.getCustomer().getCustomerId());
+        assertEquals(cart.getCustomer().getEmail(), readCart.getCustomer().getEmail());
         assertEquals(1, readCart.getCartItems().size());
         System.out.println("Read Cart: " + readCart);
     }
