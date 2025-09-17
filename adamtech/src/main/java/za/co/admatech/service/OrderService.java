@@ -14,9 +14,7 @@ import za.co.admatech.repository.OrderRepository;
 import java.util.List;
 
 @Service
-public class OrderService implements IService <Order, String> {
-
-
+public class OrderService implements IOrderService {
     @Autowired
     private OrderRepository repository;
 
@@ -26,7 +24,7 @@ public class OrderService implements IService <Order, String> {
     }
 
     @Override
-    public Order read(String id) {
+    public Order read(Long id) {
         return this.repository.findById(id).orElse(null);
     }
 
@@ -36,17 +34,13 @@ public class OrderService implements IService <Order, String> {
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         this.repository.deleteById(id);
         return true;
     }
 
-
-    public List<Order> getOrders(){
+    @Override
+    public List<Order> getAll() {
         return this.repository.findAll();
     }
-
-
-
-
 }

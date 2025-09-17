@@ -14,12 +14,10 @@ import java.time.LocalDate;
 
 public class OrderFactory {
 
-    public static Order createOrder(String customerId, LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
-        String id = customerId;
+    public static Order createOrder( LocalDate orderDate, OrderStatus orderStatus, Money totalAmount) {
 
-        if(Helper.isNullOrEmpty(customerId)){
-            return null;
-        }
+
+
 
         if (orderDate == null || !Helper.isValidLocalDate(orderDate)) {
             return null;
@@ -35,8 +33,8 @@ public class OrderFactory {
 
 
         return new Order.Builder()
-                .setId(Helper.generateId())
-                .setCustomerId(customerId)
+
+
                 .setOrderDate(orderDate)
                 .setOrderStatus(orderStatus)
                 .setTotalAmount(totalAmount)

@@ -1,48 +1,42 @@
 package za.co.admatech.factory;
 /**
  * CustomerFactory.java
- * CustomerFactory Factory class
+ * Factory class for Customer
  *
- * Author: Rorisang Makgana(230602363)
+ * Author: Rorisang Makgana (230602363)
  */
 import za.co.admatech.domain.*;
 import za.co.admatech.util.Helper;
 
 public class CustomerFactory {
+
     public static Customer createCustomer(
-            String customerID,
             String firstName,
             String lastName,
             String email,
-            //Cart cartID,
+            String password,
             Address address) {
 
-        //Validating the fields inside the Customer domain
-        //Validating the customerID
-        if (Helper.isNullOrEmpty(lastName)) {
-
+        // 🔹 Validate required fields
+        if (Helper.isNullOrEmpty(firstName) ||
+                Helper.isNullOrEmpty(lastName) ||
+                Helper.isNullOrEmpty(email) ||
+                Helper.isNullOrEmpty(password)) {
+            return null; // invalid input
         }
 
-        //Validating the customers first name
-        if (Helper.isNullOrEmpty(firstName)) {
-
-        }
-        //Validating the customer last name
-        if (Helper.isNullOrEmpty(lastName)) {
-
-        }
-        //Validating the customers email address using regex
-        if(Helper.isValidEmail(email)){
-            return null;
+        // 🔹 Validate email format
+        if (!Helper.isValidEmail(email)) {
+            return null; // invalid email
         }
 
+        // 🔹 Build and return Customer (password will be hashed in builder)
         return new Customer.Builder()
-        //.setCartID(cartID)
-        .setCustomerID(customerID)
-        .setFirstName(firstName)
-        .setLastName(lastName)
-        .setAddress(address)
-        .build();
-
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)       // ✅ email is PK
+                .setPassword(password) // ✅ hashes password
+                .setAddress(address)
+                .build();
     }
 }

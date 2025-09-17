@@ -5,14 +5,15 @@ import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Address;
 import za.co.admatech.repository.AddressRepository;
 
+import java.util.List;
+
 @Service
-public class AddressService implements IAddressService{
+public class AddressService implements IAddressService {
+
     private final AddressRepository addressRepository;
 
     @Autowired
-    public AddressService(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
+    public AddressService(AddressRepository addressRepository) {this.addressRepository = addressRepository;}
 
     @Override
     public Address create(Address address) {
@@ -21,7 +22,7 @@ public class AddressService implements IAddressService{
 
     @Override
     public Address read(Long addressID) {
-        return addressRepository.findAddress(addressID).orElse(null);
+        return addressRepository.findById(addressID).orElse(null);
     }
 
     @Override
@@ -30,9 +31,13 @@ public class AddressService implements IAddressService{
     }
 
     @Override
-    public Address delete(Long addressID) {
+    public boolean delete(Long addressID) {
         addressRepository.deleteById(addressID);
-        return null;
+        return true;
     }
 
+    @Override
+    public List<Address> getAll() {
+        return addressRepository.findAll();
+    }
 }

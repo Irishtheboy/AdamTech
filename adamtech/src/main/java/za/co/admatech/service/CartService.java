@@ -8,6 +8,7 @@ package za.co.admatech.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Cart;
+import za.co.admatech.domain.Customer;
 import za.co.admatech.repository.CartRepository;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Cart read(String id) {
+    public Cart read(Long id) {
         return this.repository.findById(id).orElse(null);
     }
 
@@ -38,10 +39,16 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Long id) {
         this.repository.deleteById(id);
         return true;
     }
+    @Override
+    public Cart getCartByCustomer(Customer customer) {
+        return repository.findByCustomer(customer)
+                .orElseThrow(() -> new RuntimeException("Cart not found for customer: " + customer.getEmail()));
+    }
+
 
     @Override
     public List<Cart> getAll() {

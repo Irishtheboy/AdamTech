@@ -1,5 +1,7 @@
 package za.co.admatech.domain;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 
 /* Money.java
@@ -9,7 +11,7 @@ import jakarta.persistence.Entity;
      Author: FN Lukhele (221075127)
 
      Date: 10 May 2025 */
-
+@Embeddable
 public class Money {
     private int amount;
     private String currency;

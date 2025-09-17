@@ -6,26 +6,36 @@
  */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Table(name = "address")
 public class Address {
     @Id
-    private Long addressID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long addressId;
+
+    @Column(name = "street_number")
     private short streetNumber;
+
+    @Column(name = "street_name")
     private String streetName;
+
     private String suburb;
+
     private String city;
+
     private String province;
+
+    @Column(name = "postal_code")
     private short postalCode;
 
-    protected Address() {
-
+    public Address() {
     }
 
-    public Long getAddressID() {
-        return addressID;
+    public Long getAddressId() {
+        return addressId;
     }
 
     public short getStreetNumber() {
@@ -55,7 +65,7 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "addressID=" + addressID +
+                "addressId=" + addressId +
                 ", streetNumber=" + streetNumber +
                 ", streetName='" + streetName + '\'' +
                 ", suburb='" + suburb + '\'' +
@@ -65,8 +75,8 @@ public class Address {
                 '}';
     }
 
-    protected Address(Builder builder){
-        this.addressID = builder.addressID;
+    protected Address(Builder builder) {
+        this.addressId = builder.addressId;
         this.streetNumber = builder.streetNumber;
         this.streetName = builder.streetName;
         this.suburb = builder.suburb;
@@ -76,7 +86,7 @@ public class Address {
     }
 
     public static class Builder {
-        private Long addressID;
+        private Long addressId;
         private short streetNumber;
         private String streetName;
         private String suburb;
@@ -84,8 +94,8 @@ public class Address {
         private String province;
         private short postalCode;
 
-        public Builder setAddressID(Long addressID) {
-            this.addressID = addressID;
+        public Builder setAddressId(Long addressId) {
+            this.addressId = addressId;
             return this;
         }
 
@@ -120,17 +130,17 @@ public class Address {
         }
 
         public Builder copy(Address address) {
-            this.addressID = addressID;
-            this.streetNumber = streetNumber;
-            this.streetName = streetName;
-            this.suburb = suburb;
-            this.city = city;
-            this.province = province;
-            this.postalCode = postalCode;
+            this.addressId = address.addressId;
+            this.streetNumber = address.streetNumber;
+            this.streetName = address.streetName;
+            this.suburb = address.suburb;
+            this.city = address.city;
+            this.province = address.province;
+            this.postalCode = address.postalCode;
             return this;
         }
 
-        public Address build(){
+        public Address build() {
             return new Address(this);
         }
     }

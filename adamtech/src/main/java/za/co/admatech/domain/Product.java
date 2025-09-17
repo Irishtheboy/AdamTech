@@ -1,25 +1,32 @@
-/*
- * Product.java
- * Product Class
- * Author: Seymour Lawrence (230185991)
- * Date: 11 May 2025
- */
 package za.co.admatech.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.google.gson.annotations.SerializedName;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "product")
 public class Product {
 
     @Id
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private Long productId;
+
     private String name;
+
     private String description;
+
     private String sku;
-    private int priceAmount;
-    private String priceCurrency;
+
+    @Embedded
+    private Money price;
+
     private String categoryId;
+
+    // ✅ Add this field for image
+    @Lob
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
 
     public Product() {
     }
@@ -29,12 +36,12 @@ public class Product {
         this.name = builder.name;
         this.description = builder.description;
         this.sku = builder.sku;
-        this.priceAmount = builder.price != null ? builder.price.getAmount() : 0;
-        this.priceCurrency = builder.price != null ? builder.price.getCurrency() : null;
+        this.price = builder.price;
         this.categoryId = builder.categoryId;
+        this.imageData = builder.imageData; // set image from builder
     }
 
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -51,37 +58,44 @@ public class Product {
     }
 
     public Money getPrice() {
-        return new Money.Builder()
-                .setAmount(priceAmount)
-                .setCurrency(priceCurrency)
-                .build();
+        return price;
     }
 
     public String getCategoryId() {
         return categoryId;
     }
 
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
-                "productId='" + productId + '\'' +
+                "productId=" + productId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", sku='" + sku + '\'' +
-                ", price=" + getPrice() +
+                ", price=" + price +
                 ", categoryId='" + categoryId + '\'' +
+                ", imageData=" + (imageData != null ? imageData.length + " bytes" : "null") +
                 '}';
     }
 
     public static class Builder {
-        private String productId;
+        private Long productId;
         private String name;
         private String description;
         private String sku;
         private Money price;
         private String categoryId;
+        private byte[] imageData; // add to builder
 
-        public Builder setProductId(String productId) {
+        public Builder setProductId(Long productId) {
             this.productId = productId;
             return this;
         }
@@ -111,13 +125,19 @@ public class Product {
             return this;
         }
 
+        public Builder setImageData(byte[] imageData) {
+            this.imageData = imageData;
+            return this;
+        }
+
         public Builder copy(Product product) {
             this.productId = product.productId;
             this.name = product.name;
             this.description = product.description;
             this.sku = product.sku;
-            this.price = product.getPrice();
+            this.price = product.price;
             this.categoryId = product.categoryId;
+            this.imageData = product.imageData;
             return this;
         }
 

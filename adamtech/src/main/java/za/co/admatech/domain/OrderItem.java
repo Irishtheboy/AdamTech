@@ -1,11 +1,8 @@
-/*OrderItem.java
-  OrderItem Class
-  Author: Naqeebah Khan (219099073)
-  Date: 10 May 2025
- */
-
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,39 +10,40 @@ import jakarta.persistence.*;
 public class OrderItem {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     private int quantity;
 
     @Embedded
     private Money unitPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 
-
     public OrderItem() {
-
     }
 
-    private OrderItem(Builder builder) {
+    protected OrderItem(Builder builder) {
         this.id = builder.id;
-        this.productId = builder.productId;
+        this.product = builder.product;
         this.quantity = builder.quantity;
         this.unitPrice = builder.unitPrice;
         this.order = builder.order;
-
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
@@ -60,30 +58,35 @@ public class OrderItem {
         return order;
     }
 
+    // For bidirectional linking
+    void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "OrderItem{" +
-                "id='" + id + '\'' +
-                ", productId='" + productId + '\'' +
+                "id=" + id +
+                ", product=" + product +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +
                 '}';
     }
 
     public static class Builder {
-        private String id;
-        private String productId;
+        private Long id;
+        private Product product;
         private int quantity;
         private Money unitPrice;
         private Order order;
 
-        public Builder setId(String id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -104,7 +107,7 @@ public class OrderItem {
 
         public Builder copy(OrderItem orderItem) {
             this.id = orderItem.id;
-            this.productId = orderItem.productId;
+            this.product = orderItem.product;
             this.quantity = orderItem.quantity;
             this.unitPrice = orderItem.unitPrice;
             this.order = orderItem.order;

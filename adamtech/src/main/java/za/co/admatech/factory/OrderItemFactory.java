@@ -13,11 +13,9 @@ import za.co.admatech.util.Helper;
 
 public class OrderItemFactory {
 
-    public static OrderItem createOrderItem(String productId, int quantity, Money unitPrice) {
+    public static OrderItem createOrderItem( int quantity, Money unitPrice) {
 
-        if (Helper.isNullOrEmpty(productId)){
-            return null;
-        }
+
 
         if (quantity <= 0){
             return null;
@@ -28,8 +26,7 @@ public class OrderItemFactory {
         }
 
         return new OrderItem.Builder()
-                .setId(Helper.generateId())
-                .setProductId(productId)
+
                 .setQuantity(quantity)
                 .setUnitPrice(unitPrice)
                 .build();
