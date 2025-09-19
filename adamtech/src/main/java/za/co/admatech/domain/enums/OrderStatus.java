@@ -11,6 +11,9 @@ public enum OrderStatus {
     SHIPPED("Shipped"),
     DELIVERED("Delivered"),
     COMPLETED("Completed"),
+
+    PAID("Paid"),        // ← added
+
     CANCELLED("Cancelled"),
     RETURNED("Returned");
 

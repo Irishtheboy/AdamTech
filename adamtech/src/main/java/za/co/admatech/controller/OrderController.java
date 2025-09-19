@@ -1,8 +1,10 @@
 package za.co.admatech.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.DTO.OrderDTO;
 import za.co.admatech.domain.Order;
+import za.co.admatech.domain.enums.OrderStatus;
 import za.co.admatech.service.OrderService;
 
 import java.util.List;
@@ -47,4 +49,28 @@ public class OrderController {
                 .map(OrderDTO::new)
                 .collect(Collectors.toList());
     }
+
+    // --- Extra features ---
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<Order> updateStatus(
+            @PathVariable Long orderId,
+            @RequestParam String status) {
+        Order updated = service.updateStatus(orderId, OrderStatus.valueOf(status.toUpperCase()));
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/customer/{email}")
+    public List<OrderDTO> getOrdersByCustomer(@PathVariable String email) {
+        return service.getOrdersByCustomer(email)
+                .stream()
+                .map(OrderDTO::new)
+                .collect(Collectors.toList());
+    }
+//    @PutMapping("/{orderId}/status")
+//    public Order updateOrderStatus(
+//            @PathVariable Long orderId,
+//            @RequestParam OrderStatus status) {
+//        return service.updateOrderStatus(orderId, status);
+//    }
+
 }

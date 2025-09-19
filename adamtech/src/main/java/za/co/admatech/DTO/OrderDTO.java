@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class OrderDTO {
 
     private Long id;
@@ -18,34 +17,36 @@ public class OrderDTO {
     private LocalDate orderDate;
     private String status;
     private double totalAmount;
+    private int totalItems; // add totalItems
     private List<OrderItemDTO> items;
-
 
     public OrderDTO(Order order) {
         if (order != null) {
             this.id = order.getId();
-
-
-            Customer customer = order.getCustomer();
-            this.customerName = customer != null ? customer.getFirstName() : "Guest";
-
+            this.customerName = order.getCustomer() != null ? order.getCustomer().getFirstName() : "Guest";
             this.orderDate = order.getOrderDate();
-            OrderStatus orderStatus = order.getOrderStatus();
-            this.status = orderStatus != null ? orderStatus.name() : "PENDING";
-
-            Money total = order.getTotalAmount();
-            this.totalAmount = total != null ? total.getAmount() : 0.0;
-
+            this.status = order.getOrderStatus() != null ? order.getOrderStatus().name() : "PENDING";
 
             List<OrderItem> orderItems = order.getOrderItems();
-            if (orderItems != null) {
-                this.items = orderItems.stream()
-                        .map(OrderItemDTO::new)
-                        .collect(Collectors.toList());
+            if (orderItems != null && !orderItems.isEmpty()) {
+                this.items = orderItems.stream().map(OrderItemDTO::new).collect(Collectors.toList());
+
+                // Calculate totalItems
+                this.totalItems = orderItems.stream()
+                        .mapToInt(OrderItem::getQuantity)
+                        .sum();
+
+                // Calculate totalAmount
+                this.totalAmount = orderItems.stream()
+                        .mapToDouble(item -> item.getProduct().getPrice().getAmount() * item.getQuantity())
+                        .sum();
+            } else {
+                this.items = List.of();
+                this.totalItems = 0;
+                this.totalAmount = 0.0;
             }
         }
     }
-
 
     public Long getId() {
         return id;
@@ -67,6 +68,10 @@ public class OrderDTO {
         return totalAmount;
     }
 
+    public int getTotalItems() {
+        return totalItems;
+    }
+
     public List<OrderItemDTO> getItems() {
         return items;
     }
@@ -79,6 +84,7 @@ public class OrderDTO {
                 ", orderDate=" + orderDate +
                 ", status='" + status + '\'' +
                 ", totalAmount=" + totalAmount +
+                ", totalItems=" + totalItems +
                 ", items=" + items +
                 '}';
     }
