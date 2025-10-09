@@ -7,13 +7,13 @@
 package za.co.admatech.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "address")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "address_id")
     private Long addressId;
 
     @Column(name = "street_number")
@@ -22,17 +22,17 @@ public class Address {
     @Column(name = "street_name")
     private String streetName;
 
+    @Column(name = "suburb")
     private String suburb;
 
+    @Column(name = "city")
     private String city;
 
+    @Column(name = "province")
     private String province;
 
     @Column(name = "postal_code")
     private short postalCode;
-
-    public Address() {
-    }
 
     public Long getAddressId() {
         return addressId;
@@ -75,6 +75,9 @@ public class Address {
                 '}';
     }
 
+    public Address() {
+    }
+
     protected Address(Builder builder) {
         this.addressId = builder.addressId;
         this.streetNumber = builder.streetNumber;
@@ -93,11 +96,6 @@ public class Address {
         private String city;
         private String province;
         private short postalCode;
-
-        public Builder setAddressId(Long addressId) {
-            this.addressId = addressId;
-            return this;
-        }
 
         public Builder setStreetNumber(short streetNumber) {
             this.streetNumber = streetNumber;

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.transaction.annotation.Transactional;
 import za.co.admatech.domain.*;
 import za.co.admatech.service.CustomerService;
 import za.co.admatech.service.ProductService;

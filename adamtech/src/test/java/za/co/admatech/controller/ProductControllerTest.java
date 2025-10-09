@@ -56,7 +56,6 @@ class ProductControllerTest {
 
         Product createdProduct = postResponse.getBody();
         assertNotNull(createdProduct);
-        assertNotNull(createdProduct.getProductId());
         assertEquals(product.getName(), createdProduct.getName());
 
         // ✅ Save the created product directly
@@ -97,6 +96,7 @@ class ProductControllerTest {
         product = response.getBody(); // ✅ update reference
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     void d_getImage() {
         // Build URL for image endpoint

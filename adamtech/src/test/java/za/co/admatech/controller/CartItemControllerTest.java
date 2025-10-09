@@ -34,6 +34,7 @@ class CartItemControllerTest {
     @Autowired
     private CartService cartService;
 
+    @SuppressWarnings("unused")
     @Autowired
     private CartItemService cartItemService;
 
@@ -46,7 +47,8 @@ class CartItemControllerTest {
                 new Customer.Builder()
                         .setFirstName("John")
                         .setLastName("Doe")
-                        .setEmail("john@example.com")
+                        .setPassword("eldlle#rr1")
+                        .setEmail("john1@example.com")
                         .setPhoneNumber("1234567890")
                         .build()
         );

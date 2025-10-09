@@ -18,10 +18,14 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String email;   // ✅ Primary Key
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
+    @Column(nullable = false)
     private String password; // ✅ stored as hashed password
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -29,18 +33,13 @@ public class Customer {
     private Address address;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
+    @JsonIgnore
     private Cart cart;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Customer() {}
-
-    // ✅ Hash password when setting
-    public void setPassword(String rawPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        this.password = encoder.encode(rawPassword);
-    }
 
     protected Customer(Builder builder) {
         this.email = builder.email;
@@ -50,6 +49,15 @@ public class Customer {
         this.address = builder.address;
         this.cart = builder.cart;
         this.phoneNumber = builder.phoneNumber;
+    }
+
+    // Setters for JPA/relationship management (used by services)
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getEmail() {
@@ -80,13 +88,6 @@ public class Customer {
         return phoneNumber;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 
     @Override
     public String toString() {

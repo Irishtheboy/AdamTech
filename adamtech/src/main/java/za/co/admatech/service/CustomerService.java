@@ -24,10 +24,17 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer create(Customer customer) {
+        // Save customer first (since Customer owns the relationship)
+        Customer savedCustomer = customerRepository.save(customer);
+        
+        // Create cart and link to saved customer
         Cart cart = new Cart();
-        cartRepository.save(cart);
-        customer.setCart(cart);
-        return customerRepository.save(customer);
+        cart.setCustomer(savedCustomer);
+        Cart savedCart = cartRepository.save(cart);
+        
+        // Update customer with cart reference
+        savedCustomer.setCart(savedCart);
+        return customerRepository.save(savedCustomer);
     }
 
     @Override

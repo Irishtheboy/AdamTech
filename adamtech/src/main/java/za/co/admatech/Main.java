@@ -2,10 +2,11 @@ package za.co.admatech;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+/* 
 import za.co.admatech.views.AdminProductSwing;
-
 import javax.swing.*;
 import java.awt.*;
+*/
 
 @SpringBootApplication
 public class Main {

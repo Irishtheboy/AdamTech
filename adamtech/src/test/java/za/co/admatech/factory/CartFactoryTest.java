@@ -11,11 +11,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.CartItem;
-import za.co.admatech.domain.Customer;
-import za.co.admatech.domain.Product;
-import za.co.admatech.util.Helper;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

@@ -14,6 +14,7 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long cartId;
 
     @OneToOne
@@ -24,16 +25,7 @@ public class Cart {
     @JsonManagedReference
     private List<CartItem> cartItems = new ArrayList<>();
 
-    public Cart() {
-        this.cartItems = new ArrayList<>();
-    }
-
-    public Cart(Builder builder) {
-        this.cartId = builder.cartId;
-        this.customer = builder.customer;
-        this.cartItems = builder.cartItems != null ? builder.cartItems : new ArrayList<>();
-    }
-
+    // Getters only - no public setters for immutability
     public Long getCartId() {
         return cartId;
     }
@@ -43,9 +35,22 @@ public class Cart {
     }
 
     public List<CartItem> getCartItems() {
-        return cartItems;
+        return cartItems != null ? cartItems : new ArrayList<>();
     }
 
+    // Default constructor for JPA
+    public Cart() {
+        this.cartItems = new ArrayList<>();
+    }
+
+    // Protected constructor for Builder pattern
+    protected Cart(Builder builder) {
+        this.cartId = builder.cartId;
+        this.customer = builder.customer;
+        this.cartItems = builder.cartItems != null ? builder.cartItems : new ArrayList<>();
+    }
+
+    // Setters for JPA/Hibernate and CartItem relationship management (used by services)
     public void setCartId(Long cartId) {
         this.cartId = cartId;
     }
@@ -62,8 +67,8 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "cartId=" + cartId +
-                ", customer=" + customer +
-                ", cartItems=" + cartItems +
+                ", customer=" + (customer != null ? customer.getEmail() : "null") +
+                ", cartItems=" + (cartItems != null ? cartItems.size() + " items" : "null") +
                 '}';
     }
 
@@ -87,33 +92,27 @@ public class Cart {
             return this;
         }
 
-        public Builder addProduct(Product product) {
-            if (this.cartItems == null) {
-                this.cartItems = new ArrayList<>();
-            }
-            CartItem item = new CartItem.Builder()
-                    .setProduct(product)
-                    .setQuantity(1)
-                    .build();
-            this.cartItems.add(item);
-            return this;
-        }
-
         public Builder copy(Cart cart) {
             this.cartId = cart.cartId;
             this.customer = cart.customer;
-            this.cartItems = cart.cartItems;
+            this.cartItems = new ArrayList<>(cart.cartItems != null ? cart.cartItems : new ArrayList<>());
             return this;
         }
 
         public Cart build() {
             Cart cart = new Cart(this);
 
-
+            // Establish bidirectional relationships for existing CartItems
             if (cart.getCartItems() != null) {
+                List<CartItem> updatedItems = new ArrayList<>();
                 for (CartItem item : cart.getCartItems()) {
-                    item.setCart(cart);
+                    CartItem updatedItem = new CartItem.Builder()
+                            .copy(item)
+                            .setCart(cart)
+                            .build();
+                    updatedItems.add(updatedItem);
                 }
+                cart.setCartItems(updatedItems);
             }
 
             return cart;

@@ -8,7 +8,6 @@ package za.co.admatech.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;

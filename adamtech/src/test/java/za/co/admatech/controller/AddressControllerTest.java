@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import za.co.admatech.domain.Address;
@@ -81,8 +80,6 @@ class AddressControllerTest {
         String url = BASE_URL + "/read/" + address.getAddressId();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-
         try {
             ResponseEntity<Address> response = restTemplate.getForEntity(url, Address.class);
             assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected 200 OK");
@@ -185,7 +182,6 @@ class AddressControllerTest {
             assertEquals(HttpStatus.OK, createResponse.getStatusCode(), "Expected 200 OK for create");
 
             String url = BASE_URL + "/getAll";
-            HttpEntity<Void> request = new HttpEntity<>(headers);
             ResponseEntity<Address[]> response = restTemplate.getForEntity(url, Address[].class);
             assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected 200 OK");
             assertNotNull(response.getBody(), "Response body should not be null");

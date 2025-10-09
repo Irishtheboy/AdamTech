@@ -7,8 +7,6 @@ package za.co.admatech.factory;
  */
 
 import za.co.admatech.domain.*;
-import za.co.admatech.util.Helper;
-
 public class AddressFactory {
     public static Address createAddress(short streetNumber, String streetName,
                                         String suburb, String city,

@@ -21,9 +21,6 @@ class InventoryControllerTest {
     @Autowired
     private IInventoryService inventoryService;
 
-    @Autowired
-    private IProductService productService;
-
     private static Inventory inventory;
     private static Product product;
 

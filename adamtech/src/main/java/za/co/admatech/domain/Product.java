@@ -1,6 +1,5 @@
 package za.co.admatech.domain;
 
-import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,18 +8,22 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "sku")
     private String sku;
 
     @Embedded
     private Money price;
 
+    @Column(name = "category_id")
     private String categoryId;
 
     // ✅ Add this field for image
@@ -67,10 +70,6 @@ public class Product {
 
     public byte[] getImageData() {
         return imageData;
-    }
-
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
     }
 
     @Override

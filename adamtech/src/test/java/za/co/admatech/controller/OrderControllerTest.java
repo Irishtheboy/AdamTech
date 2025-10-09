@@ -22,6 +22,7 @@ class OrderControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @SuppressWarnings("unused")
     @Autowired
     private OrderService orderService;
 

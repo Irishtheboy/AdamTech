@@ -15,8 +15,6 @@ import java.util.List;
 @Service
 public class InventoryService implements IInventoryService {
 
-    private static IInventoryService service;
-
     @Autowired
     private InventoryRepository repository;
 

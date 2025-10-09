@@ -59,9 +59,9 @@ class WishlistServiceTest {
 
         // Create Wishlist
         wishlist = new Wishlist.Builder()
-                .customer(customer)
-                .product(product)
-                .createdAt(LocalDateTime.now())
+                .setCustomer(customer)
+                .setProduct(product)
+                .setCreatedAt(LocalDateTime.now())
                 .build();
 
         Wishlist created = wishlistService.create(wishlist);
@@ -98,7 +98,7 @@ class WishlistServiceTest {
 
         Wishlist updatedWishlist = new Wishlist.Builder()
                 .copy(wishlist)
-                .product(newProduct)
+                .setProduct(newProduct)
                 .build();
 
         Wishlist result = wishlistService.update(updatedWishlist);

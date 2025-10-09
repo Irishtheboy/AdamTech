@@ -34,6 +34,12 @@ class AddressFactoryTest {
     @Order(1)
     void createAddress() {
         assertNotNull(address);
+        assertEquals((short) 1, address.getStreetNumber());
+        assertEquals("Devin's Chapman", address.getStreetName());
+        assertEquals("Cravenwood", address.getSuburb());
+        assertEquals("Mulburrey", address.getCity());
+        assertEquals("Lancashire", address.getProvince());
+        assertEquals((short) 1299, address.getPostalCode());
         System.out.println("Created Address: " + address);
     }
 }

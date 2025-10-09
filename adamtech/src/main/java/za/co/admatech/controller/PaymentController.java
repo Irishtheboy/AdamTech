@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Payment;
 import za.co.admatech.service.PaymentService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController

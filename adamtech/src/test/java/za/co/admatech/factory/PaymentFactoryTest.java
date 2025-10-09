@@ -22,13 +22,18 @@ class PaymentFactoryTest {
     @Order(1)
     public void testCreatePayment() {
         assertNotNull(p);
+        assertEquals(LocalDate.now(), p.getPaymentDate());
+
+        assertEquals(amount, p.getAmount());
+        assertEquals(PaymentStatus.PENDING, p.getPaymentStatus());
         System.out.println(p.toString());
     }
 
     @Test
     @Order(2)
     public void testPaymentThatFails() {
-        assertNotNull(p);
-        System.out.println(p.toString());
+        Payment invalidPayment = PaymentFactory.createPayment(null, null, null, null);
+        assertNull(invalidPayment);
+        System.out.println("Invalid payment creation test passed");
     }
 }

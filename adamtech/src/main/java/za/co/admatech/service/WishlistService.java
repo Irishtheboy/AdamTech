@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 public class WishlistService implements IWishlistService {
 
-
     @Autowired
     public WishlistRepository WishlistRepository;
 

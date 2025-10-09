@@ -6,7 +6,6 @@ import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductFactoryTest {
@@ -31,23 +30,35 @@ class ProductFactoryTest {
     @Order(1)
     public void testCreateProduct1() {
         assertNotNull(p1);
-        assertNotNull(p1.getProductId());
-        System.out.println(p1.toString());
+        assertEquals("Sneakers", p1.getName());
+        assertEquals("White running shoes", p1.getDescription());
+        assertEquals("SKU123", p1.getSku());
+        assertEquals(price1, p1.getPrice());
+        assertEquals("cat001", p1.getCategoryId());
+        System.out.println("Product 1 created: " + p1.toString());
     }
 
     @Test
     @Order(2)
     public void testCreateProduct2() {
         assertNotNull(p2);
-        assertNotNull(p2.getProductId());
-        System.out.println(p2.toString());
+        assertEquals("Boots", p2.getName());
+        assertEquals("Leather boots", p2.getDescription());
+        assertEquals("SKU456", p2.getSku());
+        assertEquals(price2, p2.getPrice());
+        assertEquals("cat002", p2.getCategoryId());
+        System.out.println("Product 2 created: " + p2.toString());
     }
 
     @Test
     @Order(3)
     public void testCreateProduct3() {
         assertNotNull(p3);
-        assertNotNull(p3.getProductId());
-        System.out.println(p3.toString());
+        assertEquals("Sandals", p3.getName());
+        assertEquals("Beach sandals", p3.getDescription());
+        assertEquals("SKU789", p3.getSku());
+        assertEquals(price3, p3.getPrice());
+        assertEquals("cat003", p3.getCategoryId());
+        System.out.println("Product 3 created: " + p3.toString());
     }
 }

@@ -7,8 +7,6 @@
 package za.co.admatech.service;
 
 import za.co.admatech.domain.Product;
-import java.util.List;
-
 public interface IProductService extends IService<Product, Long> {
 
 }

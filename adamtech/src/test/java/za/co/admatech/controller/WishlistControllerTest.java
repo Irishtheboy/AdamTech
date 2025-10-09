@@ -68,9 +68,9 @@ class WishlistControllerTest {
     @Order(1)
     void a_createWishlist() {
         wishlist = new Wishlist.Builder()
-                .customer(customer)
-                .product(product)
-                .createdAt(LocalDateTime.now())
+                .setCustomer(customer)
+                .setProduct(product)
+                .setCreatedAt(LocalDateTime.now())
                 .build();
 
         ResponseEntity<Wishlist> response = restTemplate.postForEntity(
@@ -109,7 +109,7 @@ class WishlistControllerTest {
 
         Wishlist updatedWishlist = new Wishlist.Builder()
                 .copy(wishlist)
-                .product(newProduct)
+                .setProduct(newProduct)
                 .build();
 
         HttpHeaders headers = new HttpHeaders();

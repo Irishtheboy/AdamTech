@@ -18,16 +18,17 @@ class MoneyFactoryTest {
     @Order(1)
     public void testCreateMoney() {
         assertNotNull(m);
+        assertEquals(100, m.getAmount());
+        assertEquals("USD", m.getCurrency());
         System.out.println(m.toString());
     }
 
     @Test
     @Order(2)
     public void testMoneyThatFails() {
-        //fails();
-
-        assertNotNull(m);
-        System.out.println(m.toString());
+        Money invalidMoney = MoneyFactory.createMoney(-100, null);
+        assertNull(invalidMoney);
+        System.out.println("Invalid money creation test passed");
     }
 
 }
