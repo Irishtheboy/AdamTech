@@ -54,6 +54,11 @@ public class CartItem {
         this.cart = cart;
     }
 
+    // --- Add this setter ---
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     @Override
     public String toString() {
         return "CartItem{" +
