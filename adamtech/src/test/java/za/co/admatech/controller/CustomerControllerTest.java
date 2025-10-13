@@ -1,6 +1,8 @@
 package za.co.admatech.controller;
 
-import org.junit.jupiter.api.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -8,8 +10,12 @@ import org.springframework.http.*;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
+import za.co.admatech.factory.AddressFactory;
+import za.co.admatech.factory.CustomerFactory;
+import za.co.admatech.service.CustomerService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.MethodName.class)

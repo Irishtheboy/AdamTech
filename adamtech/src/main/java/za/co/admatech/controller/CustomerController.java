@@ -157,4 +157,9 @@ public class CustomerController {
 
         return ResponseEntity.status(401).build(); // ❌ invalid email
     }
+
+    @GetMapping("/getall")
+    public java.util.List<Customer> getAll(){
+        return customerService.getAll();
+    }
 }

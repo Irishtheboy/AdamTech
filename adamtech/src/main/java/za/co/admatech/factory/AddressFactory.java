@@ -39,4 +39,17 @@ public class AddressFactory {
                 .build();
     }
 
+    public static Address buildAddress(int streetNumber, String streetName,
+                                      String suburb, String city,
+                                      String province, short postalCode) {
+        return new Address.Builder()
+                .setStreetNumber((short) streetNumber)
+                .setStreetName(streetName)
+                .setSuburb(suburb)
+                .setCity(city)
+                .setProvince(province)
+                .setPostalCode(postalCode)
+                .build();
+    }
+
 }

@@ -1,24 +1,33 @@
 package za.co.admatech.service;
 
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.repository.CustomerRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
 
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
+    @Mock
     private CustomerRepository customerRepository;
+
+    @InjectMocks
+    private CustomerService customerService;
 
     private Customer testCustomer;
 

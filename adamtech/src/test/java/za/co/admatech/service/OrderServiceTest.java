@@ -3,6 +3,8 @@ package za.co.admatech.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import za.co.admatech.config.TestSecurityConfig;
 import za.co.admatech.domain.*;
 import za.co.admatech.domain.Order;
 import za.co.admatech.domain.enums.OrderStatus;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(TestSecurityConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrderServiceTest {
 
@@ -109,11 +112,11 @@ class OrderServiceTest {
 
         Order updatedOrder = new Order.Builder()
                 .copy(created)
-                .setOrderStatus(OrderStatus.COMPLETED)
+                .setOrderStatus(OrderStatus.CONFIRMED)
                 .build();
 
         Order updated = orderService.update(updatedOrder);
-        assertEquals(OrderStatus.COMPLETED, updated.getOrderStatus());
+        assertEquals(OrderStatus.CONFIRMED, updated.getOrderStatus());
     }
 
     @Test

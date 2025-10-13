@@ -3,17 +3,26 @@ package za.co.admatech.controller;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
+import za.co.admatech.security.JwtAuthenticationFilter;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.MethodName.class)
@@ -25,7 +34,10 @@ class ProductControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String BASE_URL = "/products";
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private static final String BASE_URL = "/adamtech/products";
 
     @BeforeAll
     static void loadImage() throws Exception {
@@ -50,6 +62,12 @@ class ProductControllerTest {
 
     @Test
     void a_create() {
+        // Mock authentication for ADMIN role
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                "admin", null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         String url = BASE_URL + "/create";
         ResponseEntity<Product> postResponse = restTemplate.postForEntity(url, product, Product.class);
         assertNotNull(postResponse);
@@ -65,6 +83,12 @@ class ProductControllerTest {
 
     @Test
     void b_read() {
+        // Mock authentication for USER role
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                "user", null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         String url = BASE_URL + "/read/" + product.getProductId();
         ResponseEntity<Product> response = restTemplate.getForEntity(url, Product.class);
 
@@ -75,6 +99,12 @@ class ProductControllerTest {
 
     @Test
     void c_update() {
+        // Mock authentication for USER role
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                "user", null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         Product updatedProduct = new Product.Builder()
                 .copy(product)
                 .setName("Updated Product")
@@ -86,10 +116,10 @@ class ProductControllerTest {
 
         String url = BASE_URL + "/update/" + product.getProductId();
         HttpEntity<Product> request = new HttpEntity<>(updatedProduct);
-
         ResponseEntity<Product> response = restTemplate.exchange(url, HttpMethod.PUT, request, Product.class);
 
-        assertNotNull(response.getBody());
+        assertEquals(200, response.getStatusCodeValue(), "Expected 200 OK");
+        assertNotNull(response.getBody(), "Response body should not be null");
         assertEquals("Updated Product", response.getBody().getName());
         System.out.println("Updated: " + response.getBody());
 
@@ -114,6 +144,12 @@ class ProductControllerTest {
 
     @Test
     void e_getAll() {
+        // Mock authentication for USER role
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                "user", null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         String url = BASE_URL + "/getAll";
         ResponseEntity<Product[]> response = restTemplate.getForEntity(url, Product[].class);
 

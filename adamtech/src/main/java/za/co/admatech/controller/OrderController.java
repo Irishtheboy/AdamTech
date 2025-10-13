@@ -8,6 +8,7 @@ import za.co.admatech.service.OrderService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/order")
 public class OrderController {

@@ -1,22 +1,34 @@
 package za.co.admatech.service;
 
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
+import za.co.admatech.factory.MoneyFactory;
+import za.co.admatech.factory.ProductFactory;
+import za.co.admatech.repository.ProductRepository;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    @Autowired
+    @Mock
+    private ProductRepository productRepository;
+
+    @InjectMocks
     private ProductService productService;
 
     private static byte[] laptopImg1, laptopImg2, laptopImg3, laptopImg4, laptopImg5,

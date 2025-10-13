@@ -8,6 +8,7 @@ import za.co.admatech.service.PaymentService;
 
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {

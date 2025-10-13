@@ -18,4 +18,11 @@ public class MoneyFactory {
                 .setCurrency(currency)
                 .build();
     }
+
+    public static Money buildMoney(int amount, String currency) {
+        return new Money.Builder()
+                .setAmount(amount)
+                .setCurrency(currency)
+                .build();
+    }
 }

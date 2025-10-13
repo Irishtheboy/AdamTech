@@ -1,30 +1,61 @@
 package za.co.admatech.factory;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.Test;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
-import org.junit.jupiter.api.*;
 
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductFactoryTest {
 
-    private static Money price1 = new Money.Builder().setAmount(1000).setCurrency("ZAR").build();
-    private static Money price2 = new Money.Builder().setAmount(750).setCurrency("ZAR").build();
-    private static Money price3 = new Money.Builder().setAmount(0).setCurrency("ZAR").build();
+    @Test
+    void buildProduct_ShouldReturnValidProduct_WhenAllParametersProvided() {
+        // Given
+        Long productId = 1L;
+        String name = "Gaming Laptop";
+        String description = "High-performance gaming laptop";
+        String sku = "LAPTOP-001";
+        Money price = MoneyFactory.buildMoney(150000, "ZAR");
+        String categoryId = "electronics";
 
-    private static Product p1 = ProductFactory.createProduct(
-             "Sneakers", "White running shoes", "SKU123", price1, "cat001"
-    );
+        // When
+        Product product = ProductFactory.buildProduct(
+                productId, name, description, sku, price, categoryId
+        );
 
-    private static Product p2 = ProductFactory.createProduct(
-             "Boots", "Leather boots", "SKU456", price2, "cat002"
-    );
+        // Then
+        assertNotNull(product);
+        assertEquals(productId, product.getProductId());
+        assertEquals(name, product.getName());
+        assertEquals(description, product.getDescription());
+        assertEquals(sku, product.getSku());
+        assertEquals(price, product.getPrice());
+        assertEquals(categoryId, product.getCategoryId());
+    }
 
-    private static Product p3 = ProductFactory.createProduct(
-             "Sandals", "Beach sandals", "SKU789", price3, "cat003"
-    );
+    @Test
+    void buildProduct_ShouldHandleNullValues_WhenOptionalParametersNotProvided() {
+        // Given
+        Long productId = 2L;
+        String name = "Smartphone";
+        String description = null;
+        String sku = "PHONE-001";
+        Money price = null;
+        String categoryId = null;
+
+        // When
+        Product product = ProductFactory.buildProduct(
+                productId, name, description, sku, price, categoryId
+        );
+
+        // Then
+        assertNotNull(product);
+        assertEquals(productId, product.getProductId());
+        assertEquals(name, product.getName());
+        assertNull(product.getDescription());
+        assertEquals(sku, product.getSku());
+        assertNull(product.getPrice());
+        assertNull(product.getCategoryId());
+    }
 
     @Test
     @Order(1)

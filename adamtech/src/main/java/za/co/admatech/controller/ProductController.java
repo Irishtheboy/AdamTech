@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Product;
 import za.co.admatech.service.ProductService;
@@ -23,6 +24,7 @@ public class ProductController {
 
     // Create a new product
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<Product> create(@RequestBody Product product) {
         return ResponseEntity.ok(service.create(product));
     }
@@ -51,6 +53,7 @@ public class ProductController {
 
     // Delete a product
     @DeleteMapping("/delete/{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long productId) {
         boolean deleted = service.delete(productId);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

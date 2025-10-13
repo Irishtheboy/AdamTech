@@ -36,4 +36,12 @@ public class WishlistFactory {
                 .setCreatedAt(createdAt)
                 .build();
     }
+
+    public static Wishlist buildWishlist(Customer customer, Product product, LocalDateTime createdAt) {
+        return new Wishlist.Builder()
+                .customer(customer)
+                .product(product)
+                .createdAt(createdAt)
+                .build();
+    }
 }
