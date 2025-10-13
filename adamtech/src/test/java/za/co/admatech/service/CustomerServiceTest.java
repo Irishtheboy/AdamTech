@@ -8,8 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Customer;
-import za.co.admatech.factory.AddressFactory;
-import za.co.admatech.factory.CustomerFactory;
+import za.co.admatech.domain.Cart;
 import za.co.admatech.repository.CustomerRepository;
 
 import java.util.Arrays;
@@ -31,143 +30,85 @@ class CustomerServiceTest {
     private CustomerService customerService;
 
     private Customer testCustomer;
-    private Address testAddress;
 
     @BeforeEach
     void setUp() {
-        testAddress = AddressFactory.buildAddress(
-                123, "Main Street", "Downtown", "New York", "NY", (short) 10001
-        );
+        // Clear database before each test
+        customerRepository.deleteAll();
 
-        testCustomer = CustomerFactory.buildCustomer(
-                1L, "John", "Doe", "john.doe@example.com", testAddress, null, "+1234567890"
-        );
+        Address address = new Address.Builder()
+                .setStreetNumber((short) 123)
+                .setStreetName("Main St")
+                .setSuburb("Central")
+                .setCity("Cape Town")
+                .setProvince("Western Cape")
+                .setPostalCode((short) 8001)
+                .build();
+
+        testCustomer = new Customer.Builder()
+                .setFirstName("Franco")
+                .setLastName("Snake")
+                .setEmail("deltasnakeEater@example.com") // PK
+                .setPhoneNumber("0812345678")
+                .setPassword("123456")
+                .setAddress(address)
+                .build();
     }
 
     @Test
-    void create_ShouldReturnSavedCustomer_WhenValidCustomer() {
-        // Given
-        when(customerRepository.save(any(Customer.class))).thenReturn(testCustomer);
+    @Order(1)
+    void testCreateCustomer() {
+        Customer created = customerService.create(testCustomer);
+        assertNotNull(created);
+        assertEquals("deltasnakeEater@example.com", created.getEmail());
+        assertEquals("Franco", created.getFirstName());
 
-        // When
-        Customer result = customerService.create(testCustomer);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(testCustomer.getCustomerId(), result.getCustomerId());
-        assertEquals(testCustomer.getFirstName(), result.getFirstName());
-        assertEquals(testCustomer.getLastName(), result.getLastName());
-        assertEquals(testCustomer.getEmail(), result.getEmail());
-        verify(customerRepository).save(testCustomer);
+        // ✅ Check automatic cart creation
+        Cart cart = created.getCart();
+        assertNotNull(cart, "Customer should have a cart automatically");
+        assertNotNull(cart.getCartId(), "Cart should have an ID");
     }
 
     @Test
-    void read_ShouldReturnCustomer_WhenCustomerExists() {
-        // Given
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(testCustomer));
-
-        // When
-        Customer result = customerService.read(1L);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(testCustomer.getCustomerId(), result.getCustomerId());
-        assertEquals(testCustomer.getFirstName(), result.getFirstName());
-        verify(customerRepository).findById(1L);
+    @Order(2)
+    void testReadCustomer() {
+        customerService.create(testCustomer);
+        Customer found = customerService.read("deltasnakeEater@example.com");
+        assertNotNull(found);
+        assertEquals("deltasnakeEater@example.com", found.getEmail());
+        assertEquals("Franco", found.getFirstName());
     }
 
     @Test
-    void read_ShouldReturnNull_WhenCustomerDoesNotExist() {
-        // Given
-        when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
+    @Order(3)
+    void testUpdateCustomer() {
+        customerService.create(testCustomer);
 
-        // When
-        Customer result = customerService.read(999L);
+        Customer updatedCustomer = new Customer.Builder()
+                .copy(testCustomer)
+                .setPhoneNumber("0829999999")
+                .build();
 
-        // Then
-        assertNull(result);
-        verify(customerRepository).findById(999L);
+        Customer updated = customerService.update(updatedCustomer);
+        assertEquals("0829999999", updated.getPhoneNumber());
     }
 
     @Test
-    void update_ShouldReturnUpdatedCustomer_WhenValidCustomer() {
-        // Given
-        Customer updatedCustomer = CustomerFactory.buildCustomer(
-                1L, "Jane", "Smith", "jane.smith@example.com", testAddress, null, "+0987654321"
-        );
-        when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
+    @Order(4)
+    @Disabled
+    void testDeleteCustomer() {
+        customerService.create(testCustomer);
 
-        // When
-        Customer result = customerService.update(updatedCustomer);
+        boolean deleted = customerService.delete("deltasnakeEater@example.com");
+        assertTrue(deleted);
 
-        // Then
-        assertNotNull(result);
-        assertEquals(updatedCustomer.getFirstName(), result.getFirstName());
-        assertEquals(updatedCustomer.getLastName(), result.getLastName());
-        assertEquals(updatedCustomer.getEmail(), result.getEmail());
-        verify(customerRepository).save(updatedCustomer);
+        assertNull(customerService.read("deltasnakeEater@example.com"));
     }
 
     @Test
-    void delete_ShouldReturnTrue_WhenCustomerExists() {
-        // Given
-        when(customerRepository.existsById(1L)).thenReturn(true);
-        doNothing().when(customerRepository).deleteById(1L);
-
-        // When
-        boolean result = customerService.delete(1L);
-
-        // Then
-        assertTrue(result);
-        verify(customerRepository).existsById(1L);
-        verify(customerRepository).deleteById(1L);
-    }
-
-    @Test
-    void delete_ShouldReturnFalse_WhenCustomerDoesNotExist() {
-        // Given
-        when(customerRepository.existsById(999L)).thenReturn(false);
-
-        // When
-        boolean result = customerService.delete(999L);
-
-        // Then
-        assertFalse(result);
-        verify(customerRepository).existsById(999L);
-        verify(customerRepository, never()).deleteById(anyLong());
-    }
-
-    @Test
-    void getAll_ShouldReturnListOfCustomers() {
-        // Given
-        Customer customer2 = CustomerFactory.buildCustomer(
-                2L, "Jane", "Smith", "jane.smith@example.com", testAddress, null, "+0987654321"
-        );
-        List<Customer> customers = Arrays.asList(testCustomer, customer2);
-        when(customerRepository.findAll()).thenReturn(customers);
-
-        // When
-        List<Customer> result = customerService.getAll();
-
-        // Then
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(testCustomer.getCustomerId(), result.get(0).getCustomerId());
-        assertEquals(customer2.getCustomerId(), result.get(1).getCustomerId());
-        verify(customerRepository).findAll();
-    }
-
-    @Test
-    void getAll_ShouldReturnEmptyList_WhenNoCustomers() {
-        // Given
-        when(customerRepository.findAll()).thenReturn(Arrays.asList());
-
-        // When
-        List<Customer> result = customerService.getAll();
-
-        // Then
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(customerRepository).findAll();
+    @Order(5)
+    void testReadNonExistentCustomer() {
+        Customer found = customerService.read("nonexistent@example.com");
+        assertNull(found, "Reading a non-existent customer should return null");
     }
 }

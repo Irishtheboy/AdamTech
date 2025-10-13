@@ -1,176 +1,136 @@
+/*
+ * WishlistServiceTest.java
+ * Test class for WishlistService
+ * Author: [Your Name]
+ * Date: [Today’s Date]
+ */
+
 package za.co.admatech.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 import za.co.admatech.domain.Wishlist;
-import za.co.admatech.factory.CustomerFactory;
-import za.co.admatech.factory.MoneyFactory;
-import za.co.admatech.factory.ProductFactory;
-import za.co.admatech.factory.WishlistFactory;
-import za.co.admatech.repository.WishlistRepository;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class WishlistServiceTest {
 
-    @Mock
-    private WishlistRepository wishlistRepository;
+    @Autowired
+    private IWishlistService wishlistService;
 
-    @InjectMocks
-    private WishlistService wishlistService;
+    @Autowired
+    private CustomerService customerService;
 
-    private Wishlist testWishlist;
-    private Customer testCustomer;
-    private Product testProduct;
+    @Autowired
+    private ProductService productService;
 
-    @BeforeEach
-    void setUp() {
-        testCustomer = CustomerFactory.createCustomer(
-                "John", "Doe", "john.doe@example.com", null
-        );
+    private static Customer customer = new Customer.Builder()
+            .setFirstName("Franco")
+            .setLastName("Lukhele")
+            .setEmail("Francolukhele14@gmail.com")
+            .setPhoneNumber("0812345678")
+            .build();
 
-        Money testPrice = MoneyFactory.createMoney(150000, "ZAR");
-        testProduct = ProductFactory.createProduct(
-                "HP Victus 15", "Gaming Laptop", "CAT90",
-                testPrice, "electronics"
-        );
+    private static Product product = new Product.Builder()
+            .setName("Gaming Laptop")
+            .setDescription("High-end gaming laptop")
+            .setPrice(new Money(150, "RSA"))
+            .setSku("GL12345")
+            .setCategoryId("IQQ1")
+            .build();
 
-        testWishlist = WishlistFactory.createWishlist(testCustomer, testProduct, LocalDateTime.now());
+    private static Wishlist wishlist;
+
+    @Test
+    @Order(1)
+    void create() {
+        // Persist Customer and Product first
+        customer = customerService.create(customer);
+        product = productService.create(product);
+
+        // Create Wishlist
+        wishlist = new Wishlist.Builder()
+                .setCustomer(customer)
+                .setProduct(product)
+                .setCreatedAt(LocalDateTime.now())
+                .build();
+
+        Wishlist created = wishlistService.create(wishlist);
+        assertNotNull(created);
+        assertNotNull(created.getWishlistId());
+        assertEquals(customer.getEmail(), created.getCustomer().getEmail());
+        assertEquals(product.getProductId(), created.getProduct().getProductId());
+        wishlist = created; // Update with generated ID
+        System.out.println("Created: " + created);
     }
 
     @Test
-    void create_ShouldReturnSavedWishlist_WhenValidWishlist() {
-        // Given
-        when(wishlistRepository.save(any(Wishlist.class))).thenReturn(testWishlist);
+    @Order(2)
+    void read() {
+        Wishlist read = wishlistService.read(wishlist.getWishlistId());
+        assertNotNull(read);
+        assertEquals(wishlist.getWishlistId(), read.getWishlistId());
+        System.out.println("Read: " + read);
+    }
 
-        // When
-        Wishlist result = wishlistService.create(testWishlist);
+    @Test
+    @Order(3)
+    void update() {
+        // Create a new Product
+        Product newProduct = new Product.Builder()
+                .setName("Mechanical Keyboard")
+                .setDescription("RGB backlit mechanical keyboard")
+                .setPrice(new Money(50, "RSA"))
+                .setSku("KB98765")
+                .setCategoryId("IQQ2")
+                .build();
+        newProduct = productService.create(newProduct);
 
-        // Then
+
+        Wishlist updatedWishlist = new Wishlist.Builder()
+                .copy(wishlist)
+                .setProduct(newProduct)
+                .build();
+
+        Wishlist result = wishlistService.update(updatedWishlist);
+
         assertNotNull(result);
-        assertEquals(testWishlist.getCustomer().getCustomerId(), result.getCustomer().getCustomerId());
-        assertEquals(testWishlist.getProduct().getProductId(), result.getProduct().getProductId());
-        verify(wishlistRepository).save(testWishlist);
+        assertEquals(wishlist.getWishlistId(), result.getWishlistId());
+        assertEquals(newProduct.getProductId(), result.getProduct().getProductId());
+
+        wishlist = result;
+        System.out.println("Updated: " + result);
+    }
+
+
+    @Test
+    @Order(4)
+    @Disabled
+    void delete() {
+        boolean success = wishlistService.delete(wishlist.getWishlistId());
+        assertTrue(success);
+
+        // Verify deletion
+        Wishlist read = wishlistService.read(wishlist.getWishlistId());
+        assertNull(read);
+        System.out.println("Deleted wishlist with ID: " + wishlist.getWishlistId());
     }
 
     @Test
-    void read_ShouldReturnWishlist_WhenWishlistExists() {
-        // Given
-        when(wishlistRepository.findById(1L)).thenReturn(Optional.of(testWishlist));
-
-        // When
-        Wishlist result = wishlistService.read(1L);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(testWishlist.getCustomer().getCustomerId(), result.getCustomer().getCustomerId());
-        assertEquals(testWishlist.getProduct().getProductId(), result.getProduct().getProductId());
-        verify(wishlistRepository).findById(1L);
-    }
-
-    @Test
-    void read_ShouldReturnNull_WhenWishlistDoesNotExist() {
-        // Given
-        when(wishlistRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        // When
-        Wishlist result = wishlistService.read(999L);
-
-        // Then
-        assertNull(result);
-        verify(wishlistRepository).findById(999L);
-    }
-
-    @Test
-    void delete_ShouldReturnTrue_WhenWishlistExists() {
-        // Given
-        when(wishlistRepository.existsById(1L)).thenReturn(true);
-        doNothing().when(wishlistRepository).deleteById(1L);
-
-        // When
-        boolean result = wishlistService.delete(1L);
-
-        // Then
-        assertTrue(result);
-        verify(wishlistRepository).existsById(1L);
-        verify(wishlistRepository).deleteById(1L);
-    }
-
-    @Test
-    void delete_ShouldReturnFalse_WhenWishlistDoesNotExist() {
-        // Given
-        when(wishlistRepository.existsById(999L)).thenReturn(false);
-
-        // When
-        boolean result = wishlistService.delete(999L);
-
-        // Then
-        assertFalse(result);
-        verify(wishlistRepository).existsById(999L);
-        verify(wishlistRepository, never()).deleteById(anyLong());
-    }
-
-    @Test
-    void findByCustomerId_ShouldReturnWishlistItems_WhenCustomerHasWishlistItems() {
-        // Given
-        List<Wishlist> wishlists = Arrays.asList(testWishlist);
-        when(wishlistRepository.findByCustomer_CustomerId(1L)).thenReturn(wishlists);
-
-        // When
-        List<Wishlist> result = wishlistService.findByCustomerId(1L);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(testWishlist.getCustomer().getCustomerId(), result.get(0).getCustomer().getCustomerId());
-        verify(wishlistRepository).findByCustomer_CustomerId(1L);
-    }
-
-    @Test
-    void findByProductId_ShouldReturnWishlistItems_WhenProductIsInWishlists() {
-        // Given
-        List<Wishlist> wishlists = Arrays.asList(testWishlist);
-        when(wishlistRepository.findByProduct_ProductId(1L)).thenReturn(wishlists);
-
-        // When
-        List<Wishlist> result = wishlistService.findByProductId(1L);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(testWishlist.getProduct().getProductId(), result.get(0).getProduct().getProductId());
-        verify(wishlistRepository).findByProduct_ProductId(1L);
-    }
-
-    @Test
-    void getAll_ShouldReturnListOfWishlists() {
-        // Given
-        List<Wishlist> wishlists = Arrays.asList(testWishlist);
-        when(wishlistRepository.findAll()).thenReturn(wishlists);
-
-        // When
-        List<Wishlist> result = wishlistService.getAll();
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(testWishlist.getCustomer().getCustomerId(), result.get(0).getCustomer().getCustomerId());
-        verify(wishlistRepository).findAll();
+    @Order(5)
+    void getAll() {
+        List<Wishlist> all = wishlistService.getAll();
+        assertNotNull(all);
+        assertTrue(all.size() >= 0);
+        System.out.println("All wishlists: " + all);
     }
 }

@@ -6,45 +6,63 @@
  */
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Table(name = "customer")
 public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
 
+    @Id
+    @Column(nullable = false, unique = true)
+    private String email;   // ✅ Primary Key
+
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "last_name")
     private String lastName;
 
-    private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
+    private String password; // ✅ stored as hashed password
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Cart cart;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    public Customer() {
-    }
+    public Customer() {}
 
     protected Customer(Builder builder) {
-        this.customerId = builder.customerId;
+        this.email = builder.email;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
-        this.email = builder.email;
+        this.password = builder.password;
         this.address = builder.address;
         this.cart = builder.cart;
         this.phoneNumber = builder.phoneNumber;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    // Setters for JPA/relationship management (used by services)
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getFirstName() {
@@ -55,8 +73,8 @@ public class Customer {
         return lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
     public Address getAddress() {
@@ -71,38 +89,29 @@ public class Customer {
         return phoneNumber;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "customerId=" + customerId +
+                "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", address=" + address +
-                ", cart=" + cart +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", address=" + address +
                 '}';
     }
 
     public static class Builder {
-        private Long customerId;
+        private String email;
         private String firstName;
         private String lastName;
-        private String email;
+        private String password;
         private Address address;
         private Cart cart;
         private String phoneNumber;
 
-        public Builder setCustomerId(Long customerId) {
-            this.customerId = customerId;
+        public Builder setEmail(String email) {
+            this.email = email;
             return this;
         }
 
@@ -116,8 +125,10 @@ public class Customer {
             return this;
         }
 
-        public Builder setEmail(String email) {
-            this.email = email;
+        // ✅ Hash password inside builder too
+        public Builder setPassword(String rawPassword) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            this.password = encoder.encode(rawPassword);
             return this;
         }
 
@@ -137,10 +148,10 @@ public class Customer {
         }
 
         public Builder copy(Customer customer) {
-            this.customerId = customer.customerId;
+            this.email = customer.email;
             this.firstName = customer.firstName;
             this.lastName = customer.lastName;
-            this.email = customer.email;
+            this.password = customer.password;
             this.address = customer.address;
             this.cart = customer.cart;
             this.phoneNumber = customer.phoneNumber;

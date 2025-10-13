@@ -15,8 +15,11 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public Payment create(Payment payment) {
-        return paymentRepository.save(payment);
+        Payment saved = paymentRepository.save(payment);
+        paymentRepository.flush();
+        return saved;
     }
+
     @Override
     public Payment read(Long id) {
         return paymentRepository.findById(id).orElse(null);
@@ -35,9 +38,5 @@ public class PaymentService implements IPaymentService {
         return paymentRepository.findAll();
     }
 
-
-    public List<Payment> getPayments() {
-        return paymentRepository.findAll();
-    }
 
 }

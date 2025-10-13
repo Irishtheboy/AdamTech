@@ -8,7 +8,6 @@ package za.co.admatech.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.CartItem;
@@ -28,13 +27,13 @@ class CartItemServiceTest {
     private ICartItemService service;
 
     @Autowired
-    private CartService cartService; // For creating Cart
+    private CartService cartService;
 
     @Autowired
-    private ProductService productService; // For creating Product
+    private ProductService productService;
 
     @Autowired
-    private CustomerService customerService; // For creating Customer
+    private CustomerService customerService;
 
     private static CartItem savedCartItem;
     private static Cart cart;

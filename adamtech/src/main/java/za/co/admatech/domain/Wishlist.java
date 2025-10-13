@@ -1,10 +1,13 @@
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wishlist")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "wishlistId")
 public class Wishlist {
 
     @Id
@@ -23,75 +26,81 @@ public class Wishlist {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Default constructor
-    public Wishlist() {
+    @Override
+    public String toString() {
+        return "Wishlist{" +
+                "wishlistId=" + wishlistId +
+                ", customer=" + (customer != null ? customer.getEmail() : "null") +
+                ", product=" + (product != null ? product.getName() : "null") +
+                ", createdAt=" + createdAt +
+                '}';
     }
 
-    // Constructor (used by Builder)
-    public Wishlist(Customer customer, Product product, LocalDateTime createdAt) {
-        this.customer = customer;
-        this.product = product;
-        this.createdAt = createdAt;
+    public Wishlist() {}
+
+    private Wishlist(Builder builder) {
+        this.wishlistId = builder.wishlistId;
+        this.customer = builder.customer;
+        this.product = builder.product;
+        this.createdAt = builder.createdAt;
     }
 
-    // Getters and Setters
+
     public Long getWishlistId() {
         return wishlistId;
-    }
-
-    public void setWishlistId(Long wishlistId) {
-        this.wishlistId = wishlistId;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    // ========================
-    // Builder Pattern (Fluent)
-    // ========================
     public static class Builder {
+        private Long wishlistId;
         private Customer customer;
         private Product product;
         private LocalDateTime createdAt;
 
-        public Builder customer(Customer customer) {
+        public Builder setWishlistId(Long wishlistId) {
+            this.wishlistId = wishlistId;
+            return this;
+        }
+
+        public Builder setCustomer(Customer customer) {
             this.customer = customer;
             return this;
         }
 
-        public Builder product(Product product) {
+        public Builder setProduct(Product product) {
             this.product = product;
             return this;
         }
 
-        public Builder createdAt(LocalDateTime createdAt) {
+        public Builder setCreatedAt(LocalDateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
+        // ✅ copy method
+        public Builder copy(Wishlist wishlist) {
+            this.wishlistId = wishlist.wishlistId;
+            this.customer = wishlist.customer;
+            this.product = wishlist.product;
+            this.createdAt = wishlist.createdAt;
+            return this;
+        }
+
         public Wishlist build() {
-            return new Wishlist(customer, product, createdAt);
+            return new Wishlist(this);
         }
     }
+
+
 }

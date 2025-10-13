@@ -10,47 +10,30 @@ import java.util.List;
 @Service
 public class WishlistService implements IWishlistService {
 
-    private final WishlistRepository wishlistRepository;
-
     @Autowired
-    public WishlistService(WishlistRepository wishlistRepository) {
-        this.wishlistRepository = wishlistRepository;
-    }
+    public WishlistRepository WishlistRepository;
 
     @Override
     public Wishlist create(Wishlist wishlist) {
-        return wishlistRepository.save(wishlist);
+        return this.WishlistRepository.save(wishlist);
     }
-
     @Override
-    public Wishlist read(Long wishlistId) {
-        return wishlistRepository.findById(wishlistId).orElse(null);
+    public Wishlist read(Long id) {
+        return this.WishlistRepository.findById(id).orElse(null);
     }
-
     @Override
     public Wishlist update(Wishlist wishlist) {
-        return wishlistRepository.save(wishlist);
+        return this.WishlistRepository.save(wishlist);
     }
-
     @Override
-    public List<Wishlist> getAll() {
-        return wishlistRepository.findAll();
-    }
-
-    @Override
-    public boolean delete(Long wishlistId) {
-        if (!wishlistRepository.existsById(wishlistId)) return false;
-        wishlistRepository.deleteById(wishlistId);
+    public boolean delete(Long id) {
+        this.WishlistRepository.deleteById(id);
         return true;
     }
-
     @Override
-    public List<Wishlist> findByCustomerId(Long customerId) {
-        return wishlistRepository.findByCustomer_CustomerId(customerId);
+    public List<Wishlist> getAll() {
+        return this.WishlistRepository.findAll();
     }
 
-    @Override
-    public List<Wishlist> findByProductId(Long productId) {
-        return wishlistRepository.findByProduct_ProductId(productId);
-    }
+
 }

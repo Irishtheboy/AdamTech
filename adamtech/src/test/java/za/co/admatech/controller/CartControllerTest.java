@@ -1,25 +1,12 @@
-/*
- * CartControllerTest.java
- * Author: Teyana Raubenheimer (230237622)
- * Date: 31 May 2025
- */
 package za.co.admatech.controller;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import za.co.admatech.domain.Address;
-import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.CartItem;
-import za.co.admatech.domain.Customer;
-import za.co.admatech.domain.Money;
-import za.co.admatech.domain.Product;
+import org.springframework.http.*;
+import za.co.admatech.domain.*;
 import za.co.admatech.service.CustomerService;
 import za.co.admatech.service.ProductService;
 
@@ -29,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Transactional
 class CartControllerTest {
 
     @Autowired
@@ -41,21 +27,15 @@ class CartControllerTest {
     @Autowired
     private ProductService productService;
 
-    private static final String BASE_URL = "/admatech/cart";
+    private static final String BASE_URL = "/cart";
 
-    private static Cart cart;
+    private Cart cart;
     private Customer customer;
     private Product product;
-    private CartItem cartItem;
-
-    @BeforeAll
-    static void setUp() {
-        // Initialize in @BeforeEach after persisting dependencies
-    }
 
     @BeforeEach
-    void beforeEach() {
-        // Initialize Address
+    void init() {
+        // Address
         Address address = new Address.Builder()
                 .setStreetNumber((short) 12)
                 .setStreetName("Oak Street")
@@ -65,7 +45,7 @@ class CartControllerTest {
                 .setPostalCode((short) 7441)
                 .build();
 
-        // Initialize Customer
+        // Customer
         customer = new Customer.Builder()
                 .setFirstName("Test")
                 .setLastName("User")
@@ -75,124 +55,118 @@ class CartControllerTest {
                 .build();
         customer = customerService.create(customer);
 
-        // Initialize Product
+        // Product
         product = new Product.Builder()
                 .setName("Test Product")
                 .setDescription("A test product")
                 .setSku("TEST123")
-                .setPrice(new Money.Builder().setAmount(15000).setCurrency("ZAR").build()) // 150.00 ZAR
+                .setPrice(new Money.Builder().setAmount(15000).setCurrency("ZAR").build())
                 .setCategoryId("CAT1")
                 .build();
         product = productService.create(product);
 
-        // Initialize CartItem
-        cartItem = new CartItem.Builder()
+        // CartItem
+        CartItem cartItem = new CartItem.Builder()
                 .setProduct(product)
                 .setQuantity(3)
                 .build();
 
-        // Initialize Cart
+        // Cart (CartItems will auto-link)
         cart = new Cart.Builder()
                 .setCustomer(customer)
                 .setCartItems(Collections.singletonList(cartItem))
                 .build();
+
+        // Persist Cart
+        cart = restTemplate.postForEntity(BASE_URL + "/create", cart, Cart.class).getBody();
     }
 
     @Test
     @Order(1)
-    void create() {
-        // Set Cart reference in CartItem
-        cartItem = new CartItem.Builder()
-                .setCart(cart)
-                .setProduct(product)
-                .setQuantity(3)
-                .build();
-        cart.getCartItems().set(0, cartItem);
-
-        ResponseEntity<Cart> postResponse = restTemplate.postForEntity(BASE_URL + "/create", cart, Cart.class);
-        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
-        assertNotNull(postResponse.getBody());
-        assertNotNull(postResponse.getBody().getCartId());
-        assertEquals(customer.getCustomerId(), postResponse.getBody().getCustomer().getCustomerId());
-        assertEquals(1, postResponse.getBody().getCartItems().size());
-        assertEquals(product.getProductId(), postResponse.getBody().getCartItems().get(0).getProduct().getProductId());
-        assertEquals(3, postResponse.getBody().getCartItems().get(0).getQuantity());
-
-        cart = postResponse.getBody(); // Update reference
-        System.out.println("Created: " + cart);
+    void createCart() {
+        assertNotNull(cart);
+        assertNotNull(cart.getCartId());
+        assertEquals(customer.getEmail(), cart.getCustomer().getEmail());
+        assertEquals(1, cart.getCartItems().size());
+        assertEquals(product.getProductId(), cart.getCartItems().get(0).getProduct().getProductId());
+        assertEquals(3, cart.getCartItems().get(0).getQuantity());
+        System.out.println("Created Cart: " + cart);
     }
 
     @Test
     @Order(2)
-    void read() {
+    void readCart() {
         ResponseEntity<Cart> response = restTemplate.getForEntity(BASE_URL + "/read/" + cart.getCartId(), Cart.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(cart.getCartId(), response.getBody().getCartId());
-        assertEquals(cart.getCustomer().getCustomerId(), response.getBody().getCustomer().getCustomerId());
-        assertEquals(1, response.getBody().getCartItems().size());
-        assertEquals(product.getProductId(), response.getBody().getCartItems().get(0).getProduct().getProductId());
-
-        System.out.println("Read: " + response.getBody());
+        Cart readCart = response.getBody();
+        assertNotNull(readCart);
+        assertEquals(cart.getCartId(), readCart.getCartId());
+        assertEquals(cart.getCustomer().getEmail(), readCart.getCustomer().getEmail());
+        assertEquals(1, readCart.getCartItems().size());
+        System.out.println("Read Cart: " + readCart);
     }
 
     @Test
     @Order(3)
-    void update() {
+    void updateCart() {
+        // Update CartItem quantity
+        CartItem updatedItem = new CartItem.Builder()
+                .setProduct(product)
+                .setQuantity(5)
+                .build();
+
         Cart updatedCart = new Cart.Builder()
                 .copy(cart)
-                .setCartItems(Collections.singletonList(new CartItem.Builder()
-                        .setCart(cart)
-                        .setProduct(product)
-                        .setQuantity(5) // Updated quantity
-                        .build()))
+                .setCartItems(Collections.singletonList(updatedItem))
                 .build();
 
         HttpEntity<Cart> request = new HttpEntity<>(updatedCart);
-        ResponseEntity<Cart> response = restTemplate.exchange(BASE_URL + "/update/" + cart.getCartId(), HttpMethod.PUT, request, Cart.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(cart.getCartId(), response.getBody().getCartId());
-        assertEquals(cart.getCustomer().getCustomerId(), response.getBody().getCustomer().getCustomerId());
-        assertEquals(1, response.getBody().getCartItems().size());
-        assertEquals(5, response.getBody().getCartItems().get(0).getQuantity());
+        ResponseEntity<Cart> response = restTemplate.exchange(BASE_URL + "/update", HttpMethod.PUT, request, Cart.class);
 
-        cart = response.getBody(); // Update reference
-        System.out.println("Updated: " + response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Cart cartResponse = response.getBody();
+        assertNotNull(cartResponse);
+        assertEquals(5, cartResponse.getCartItems().get(0).getQuantity());
+        System.out.println("Updated Cart: " + cartResponse);
+
+        cart = cartResponse;
     }
 
     @Test
     @Order(4)
-    void delete() {
+    void deleteCart() {
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(BASE_URL + "/delete/" + cart.getCartId(), HttpMethod.DELETE, null, Void.class);
-        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, deleteResponse.getStatusCode());
 
         ResponseEntity<Cart> response = restTemplate.getForEntity(BASE_URL + "/read/" + cart.getCartId(), Cart.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
 
-        System.out.println("Deleted: ID " + cart.getCartId());
+        System.out.println("Deleted Cart ID: " + cart.getCartId());
     }
 
     @Test
     @Order(5)
-    void getAll() {
-        // Create a new cart to ensure the list is non-empty
-        Cart newCart = new Cart.Builder()
-                .setCustomer(customer)
-                .setCartItems(Collections.singletonList(new CartItem.Builder()
-                        .setProduct(product)
-                        .setQuantity(2)
-                        .build()))
+    void getAllCarts() {
+        // Create another cart
+        CartItem anotherItem = new CartItem.Builder()
+                .setProduct(product)
+                .setQuantity(2)
                 .build();
-        restTemplate.postForEntity(BASE_URL + "/create", newCart, Cart.class);
+
+        Cart anotherCart = new Cart.Builder()
+                .setCustomer(customer)
+                .setCartItems(Collections.singletonList(anotherItem))
+                .build();
+
+        restTemplate.postForEntity(BASE_URL + "/create", anotherCart, Cart.class);
 
         ResponseEntity<Cart[]> response = restTemplate.getForEntity(BASE_URL + "/getAll", Cart[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertTrue(response.getBody().length > 0);
+        assertTrue(response.getBody().length >= 1);
 
-        System.out.println("Get All:");
+        System.out.println("All Carts:");
         for (Cart c : response.getBody()) {
             System.out.println(c);
         }

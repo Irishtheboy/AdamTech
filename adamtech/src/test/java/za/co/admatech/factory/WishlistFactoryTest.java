@@ -38,7 +38,7 @@ class WishlistFactoryTest {
     );
 
     private static Customer customer1 = CustomerFactory.createCustomer(
-            "Franco", "Lukhele", "Francolukhele14@gmail.com", address1
+            "Franco", "Lukhele", "Francolukhele14@gmail.com", "password123", address1
     );
 
     private static Wishlist w1 = WishlistFactory.createWishlist(customer1, product1,LocalDateTime.now());
@@ -48,19 +48,19 @@ class WishlistFactoryTest {
     @Order(1)
     void testCreateWishlist1() {
         assertNotNull(w1);
-        assertNotNull(w1.getWishlistId());
         assertEquals(customer1, w1.getCustomer());
         assertEquals(product1, w1.getProduct());
-        System.out.println(w1.toString());
+        assertNotNull(w1.getCreatedAt());
+        System.out.println("Wishlist 1 created: " + w1.toString());
     }
 
     @Test
     @Order(2)
     void testCreateWishlist2() {
         assertNotNull(w2);
-        assertNotNull(w2.getWishlistId());
         assertEquals(customer1, w2.getCustomer());
         assertEquals(product2, w2.getProduct());
-        System.out.println(w2.toString());
+        assertNotNull(w2.getCreatedAt());
+        System.out.println("Wishlist 2 created: " + w2.toString());
     }
 }

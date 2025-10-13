@@ -16,18 +16,21 @@ import java.time.LocalDate;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Column(name = "payment_date")
     private LocalDate paymentDate;
 
     @Embedded
     private Money amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
     public Payment() {

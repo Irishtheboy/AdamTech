@@ -1,10 +1,13 @@
 package za.co.admatech.factory;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Money;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MoneyFactoryTest {
 
     @Test
@@ -38,33 +41,20 @@ class MoneyFactoryTest {
     }
 
     @Test
-    void buildMoney_ShouldHandleNegativeAmount() {
-        // Given
-        int amount = -5000;
-        String currency = "EUR";
-
-        // When
-        Money money = MoneyFactory.buildMoney(amount, currency);
-
-        // Then
-        assertNotNull(money);
-        assertEquals(-5000, money.getAmount());
-        assertEquals(currency, money.getCurrency());
+    @Order(1)
+    public void testCreateMoney() {
+        assertNotNull(m);
+        assertEquals(100, m.getAmount());
+        assertEquals("USD", m.getCurrency());
+        System.out.println(m.toString());
     }
 
     @Test
-    void buildMoney_ShouldHandleNullCurrency() {
-        // Given
-        int amount = 100000;
-        String currency = null;
-
-        // When
-        Money money = MoneyFactory.buildMoney(amount, currency);
-
-        // Then
-        assertNotNull(money);
-        assertEquals(amount, money.getAmount());
-        assertNull(money.getCurrency());
+    @Order(2)
+    public void testMoneyThatFails() {
+        Money invalidMoney = MoneyFactory.createMoney(-100, null);
+        assertNull(invalidMoney);
+        System.out.println("Invalid money creation test passed");
     }
 
     @Test

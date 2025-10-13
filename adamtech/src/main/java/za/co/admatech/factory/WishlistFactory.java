@@ -31,9 +31,9 @@ public class WishlistFactory {
         }
 
         return new Wishlist.Builder()
-                .customer(customer)
-                .product(product)
-                .createdAt(createdAt)
+                .setCustomer(customer)
+                .setProduct(product)
+                .setCreatedAt(createdAt)
                 .build();
     }
 

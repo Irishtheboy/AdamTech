@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import za.co.admatech.domain.Money;
 import za.co.admatech.domain.Product;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProductFactoryTest {
 
@@ -59,62 +58,38 @@ class ProductFactoryTest {
     }
 
     @Test
-    void buildProduct_ShouldCreateUniqueInstances_WhenCalledMultipleTimes() {
-        // Given
-        Long productId = 1L;
-        String name = "Test Product";
-        String description = "Test Description";
-        String sku = "TEST-001";
-        Money price = MoneyFactory.buildMoney(10000, "ZAR");
-        String categoryId = "test";
-
-        // When
-        Product product1 = ProductFactory.buildProduct(
-                productId, name, description, sku, price, categoryId
-        );
-        Product product2 = ProductFactory.buildProduct(
-                productId, name, description, sku, price, categoryId
-        );
-
-        // Then
-        assertNotNull(product1);
-        assertNotNull(product2);
-        assertNotSame(product1, product2); // Different instances
-        assertEquals(product1.getProductId(), product2.getProductId()); // Same data
-        assertEquals(product1.getName(), product2.getName());
-        assertEquals(product1.getSku(), product2.getSku());
+    @Order(1)
+    public void testCreateProduct1() {
+        assertNotNull(p1);
+        assertEquals("Sneakers", p1.getName());
+        assertEquals("White running shoes", p1.getDescription());
+        assertEquals("SKU123", p1.getSku());
+        assertEquals(price1, p1.getPrice());
+        assertEquals("cat001", p1.getCategoryId());
+        System.out.println("Product 1 created: " + p1.toString());
     }
 
     @Test
-    void buildProduct_ShouldPreservePriceRelationship() {
-        // Given
-        Money price = MoneyFactory.buildMoney(250000, "USD");
-
-        // When
-        Product product = ProductFactory.buildProduct(
-                1L, "MacBook Pro", "Apple laptop", "APPLE-001", price, "computers"
-        );
-
-        // Then
-        assertNotNull(product.getPrice());
-        assertEquals(price.getAmount(), product.getPrice().getAmount());
-        assertEquals(price.getCurrency(), product.getPrice().getCurrency());
+    @Order(2)
+    public void testCreateProduct2() {
+        assertNotNull(p2);
+        assertEquals("Boots", p2.getName());
+        assertEquals("Leather boots", p2.getDescription());
+        assertEquals("SKU456", p2.getSku());
+        assertEquals(price2, p2.getPrice());
+        assertEquals("cat002", p2.getCategoryId());
+        System.out.println("Product 2 created: " + p2.toString());
     }
 
     @Test
-    void buildProduct_ShouldHandleZeroPrice() {
-        // Given
-        Money freePrice = MoneyFactory.buildMoney(0, "ZAR");
-
-        // When
-        Product product = ProductFactory.buildProduct(
-                1L, "Free Sample", "Free product sample", "FREE-001", freePrice, "samples"
-        );
-
-        // Then
-        assertNotNull(product);
-        assertNotNull(product.getPrice());
-        assertEquals(0, product.getPrice().getAmount());
-        assertEquals("ZAR", product.getPrice().getCurrency());
+    @Order(3)
+    public void testCreateProduct3() {
+        assertNotNull(p3);
+        assertEquals("Sandals", p3.getName());
+        assertEquals("Beach sandals", p3.getDescription());
+        assertEquals("SKU789", p3.getSku());
+        assertEquals(price3, p3.getPrice());
+        assertEquals("cat003", p3.getCategoryId());
+        System.out.println("Product 3 created: " + p3.toString());
     }
 }

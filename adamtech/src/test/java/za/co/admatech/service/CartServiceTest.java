@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.*;
 import za.co.admatech.repository.CartRepository;
-import za.co.admatech.repository.ProductRepository;
 import za.co.admatech.repository.CustomerRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,13 +21,9 @@ class CartServiceTest {
     private CartRepository cartRepository;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private CustomerRepository customerRepository;
 
     private Customer testCustomer;
-    private Product testProduct;
     private Cart testCart;
 
     @BeforeEach
@@ -53,23 +48,13 @@ class CartServiceTest {
                         .setLastName("Smith")
                         .setEmail("alice.smith@example.com")
                         .setPhoneNumber("0712345678")
+                        
                         .setAddress(address)
                         .build()
         );
-
-        // Persist test Product
-        testProduct = productRepository.save(
-                new Product.Builder()
-                        .setName("Laptop")
-                        .setDescription("Gaming laptop")
-                        .setSku("LAP123")
-                        .build()
-        );
-
         // Build Cart
         testCart = new Cart.Builder()
                 .setCustomer(testCustomer)
-                .addProduct(testProduct)
                 .build();
     }
 
@@ -80,7 +65,7 @@ class CartServiceTest {
         assertNotNull(created);
         assertNotNull(created.getCartId());
         assertEquals("Alice", created.getCustomer().getFirstName());
-        assertEquals(1, created.getProducts().size());
+        assertEquals(1, created.getCartItems().size());
     }
 
     @Test
@@ -98,22 +83,12 @@ class CartServiceTest {
     void testUpdateCart() {
         Cart created = cartService.create(testCart);
 
-        // Persist a new product for update
-        Product newProduct = productRepository.save(
-                new Product.Builder()
-                        .setName("Mouse")
-                        .setDescription("Wireless mouse")
-                        .setSku("MOU456")
-                        .build()
-        );
-
         Cart updatedCart = new Cart.Builder()
                 .copy(created)
-                .addProduct(newProduct)
                 .build();
 
         Cart updated = cartService.update(updatedCart);
-        assertEquals(2, updated.getProducts().size());
+        assertEquals(2, updated.getCartItems().size());
     }
 
     @Test

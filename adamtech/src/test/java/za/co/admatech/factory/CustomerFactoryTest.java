@@ -1,68 +1,49 @@
 package za.co.admatech.factory;
+/**
+ * CustomerFactoryTest.java
+ * CustomerFactoryTest Factory Test class
+ *
+ * Author: Rorisang Makgana(230602363)
+ */
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import za.co.admatech.domain.Address;
-import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.Customer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
+import za.co.admatech.domain.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CustomerFactoryTest {
 
+    private static Address address = AddressFactory.createAddress(
+            (short)07111,
+            "Bakersdraft",
+            "Kuils River",
+            "Cape Town",
+            "Western Cape",
+            (short) 7440);
+
+    private static Customer customer = CustomerFactory.createCustomer(
+            "Dennis",
+            "Estrange",
+            "estranged@commons.net",
+            "password123",
+            address
+    );
+
     @Test
-    void buildCustomer_ShouldReturnValidCustomer_WhenAllParametersProvided() {
-        // Given
-        Long customerId = 1L;
-        String firstName = "John";
-        String lastName = "Doe";
-        String email = "john.doe@example.com";
-        Address address = AddressFactory.buildAddress(
-                123, "Main Street", "Downtown", "New York", "NY", (short) 10001
-        );
-        Cart cart = null;
-        String phoneNumber = "+1234567890";
-
-        // When
-        Customer customer = CustomerFactory.buildCustomer(
-                customerId, firstName, lastName, email, address, cart, phoneNumber
-        );
-
-        // Then
+    @Order(1)
+    void testCreateCustomer(){
         assertNotNull(customer);
-        assertEquals(customerId, customer.getCustomerId());
-        assertEquals(firstName, customer.getFirstName());
-        assertEquals(lastName, customer.getLastName());
-        assertEquals(email, customer.getEmail());
+        assertNotNull(customer.getPassword());
+        assertEquals("Dennis", customer.getFirstName());
+        assertEquals("Estrange", customer.getLastName());
+        assertEquals("estranged@commons.net", customer.getEmail());
         assertEquals(address, customer.getAddress());
-        assertEquals(cart, customer.getCart());
-        assertEquals(phoneNumber, customer.getPhoneNumber());
-    }
-
-    @Test
-    void buildCustomer_ShouldHandleNullValues_WhenOptionalParametersNotProvided() {
-        // Given
-        Long customerId = 2L;
-        String firstName = "Jane";
-        String lastName = "Smith";
-        String email = "jane.smith@example.com";
-        Address address = null;
-        Cart cart = null;
-        String phoneNumber = null;
-
-        // When
-        Customer customer = CustomerFactory.buildCustomer(
-                customerId, firstName, lastName, email, address, cart, phoneNumber
-        );
-
-        // Then
-        assertNotNull(customer);
-        assertEquals(customerId, customer.getCustomerId());
-        assertEquals(firstName, customer.getFirstName());
-        assertEquals(lastName, customer.getLastName());
-        assertEquals(email, customer.getEmail());
-        assertNull(customer.getAddress());
-        assertNull(customer.getCart());
-        assertNull(customer.getPhoneNumber());
+        System.out.println("Customer created: " + customer);
     }
 
     @Test

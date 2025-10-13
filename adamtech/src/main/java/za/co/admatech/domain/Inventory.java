@@ -6,6 +6,7 @@
  */
 package za.co.admatech.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import za.co.admatech.domain.enums.InventoryStatus;
 
@@ -19,11 +20,17 @@ public class Inventory {
 
     @OneToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Product product;
 
+    @Column(name = "quantity_in_stock")
     private int quantity;
 
+    @Column(name = "reorder_level")
+    private int reorderLevel;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "inventory_status")
     private InventoryStatus inventoryStatus;
 
     public Inventory() {
@@ -33,6 +40,7 @@ public class Inventory {
         this.id = builder.id;
         this.product = builder.product;
         this.quantity = builder.quantity;
+        this.reorderLevel = builder.reorderLevel;
         this.inventoryStatus = builder.inventoryStatus;
     }
 
@@ -46,6 +54,10 @@ public class Inventory {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getReorderLevel() {
+        return reorderLevel;
     }
 
     public InventoryStatus getInventoryStatus() {
@@ -66,6 +78,7 @@ public class Inventory {
         private Long id;
         private Product product;
         private int quantity;
+        private int reorderLevel;
         private InventoryStatus inventoryStatus;
 
         public Builder setId(Long id) {
@@ -83,6 +96,11 @@ public class Inventory {
             return this;
         }
 
+        public Builder setReorderLevel(int reorderLevel) {
+            this.reorderLevel = reorderLevel;
+            return this;
+        }
+
         public Builder setInventoryStatus(InventoryStatus inventoryStatus) {
             this.inventoryStatus = inventoryStatus;
             return this;
@@ -92,6 +110,7 @@ public class Inventory {
             this.id = inventory.id;
             this.product = inventory.product;
             this.quantity = inventory.quantity;
+            this.reorderLevel = inventory.reorderLevel;
             this.inventoryStatus = inventory.inventoryStatus;
             return this;
         }

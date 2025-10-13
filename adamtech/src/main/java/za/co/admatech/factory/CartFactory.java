@@ -7,22 +7,16 @@
 package za.co.admatech.factory;
 
 import za.co.admatech.domain.Cart;
-import za.co.admatech.domain.CartItem;
-import za.co.admatech.domain.Customer;
 import za.co.admatech.util.Helper;
 
 public class CartFactory {
-    public static Cart createCart(String customerID, String cartItemID) {
-      String cartID =  Helper.generateId();
+  public static Cart createCart(String customerID, String cartItemID) {
 
-      if (Helper.isNullOrEmpty(customerID) || Helper.isNullOrEmpty(cartItemID)) {
-          return null;
-      }
-
-            return new Cart.Builder()
-
-                    .build();
-
-
-}
+    if (Helper.isNullOrEmpty(customerID) || Helper.isNullOrEmpty(cartItemID)) {
+      return null;
     }
+    return new Cart.Builder()
+        .build();
+
+  }
+}
