@@ -6,10 +6,11 @@
 package za.co.admatech.factory;
 
 import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.CartItem;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CartItemFactoryTest {
 

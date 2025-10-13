@@ -10,13 +10,13 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.co.admatech.domain.Cart;
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class CartFactoryTest {
-//    private static CartItem validCartItem = new CartItem.Builder()
+//    private static CartItem validCartItem = new CartItem.Builder()
 //            .setCartItemID("1")
 //           // .setProductID()
 //            .setQuantity(2)

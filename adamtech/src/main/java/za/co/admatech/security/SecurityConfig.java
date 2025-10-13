@@ -33,7 +33,11 @@ public class SecurityConfig {
                 "/customer/create",
                 "/products/read/**",
                 "/products/getAll",
-                "/products/{productId}/image"
+                "/products/{productId}/image",
+                // OpenAPI/Swagger endpoints
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
             ).permitAll()
             
             // Customer-specific endpoints - require authentication
@@ -58,6 +62,11 @@ public class SecurityConfig {
                 "/payments/**",
                 "/address/**"
             ).authenticated()
+
+            //Adding the request matchers for the Address endpoint
+            .requestMatchers(
+                    "/address/**"
+            ).permitAll()
             
             // Admin endpoints - require authentication (should add role-based auth later)
             .requestMatchers(

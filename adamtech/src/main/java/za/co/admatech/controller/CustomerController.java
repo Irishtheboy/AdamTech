@@ -6,8 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.DTO.LoginRequest;
+import za.co.admatech.domain.Address;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
+import za.co.admatech.factory.AddressFactory;
+import za.co.admatech.factory.CustomerFactory;
 import za.co.admatech.service.CustomerService;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/customer")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -25,10 +29,68 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Customer> create(@RequestBody Customer customer) {
-        Cart cart = new Cart(); // new empty cart
-        customer.setCart(cart); // link cart to customer
-        return ResponseEntity.ok(customerService.create(customer));
+    public ResponseEntity<Customer> create(@RequestBody Customer customerRequest) {
+        try {
+            System.out.println("Received customer request: " + customerRequest.toString());
+            
+            // Create address using AddressFactory if address data is provided
+            Address address = null;
+            if (customerRequest.getAddress() != null) {
+                Address reqAddress = customerRequest.getAddress();
+                System.out.println("Creating address from: " + reqAddress.toString());
+                
+                address = AddressFactory.createAddress(
+                    reqAddress.getStreetNumber(),
+                    reqAddress.getStreetName(),
+                    reqAddress.getSuburb(),
+                    reqAddress.getCity(),
+                    reqAddress.getProvince(),
+                    reqAddress.getPostalCode()
+                );
+                
+                if (address == null) {
+                    System.err.println("Address creation failed!");
+                    return ResponseEntity.badRequest().build();
+                }
+            }
+            
+            // Use CustomerFactory to properly create customer with hashed password
+            System.out.println("Creating customer with email: " + customerRequest.getEmail());
+            System.out.println("Password from request: " + (customerRequest.getPassword() != null ? "***PROVIDED***" : "NULL"));
+            System.out.println("FirstName: " + customerRequest.getFirstName());
+            System.out.println("LastName: " + customerRequest.getLastName());
+            
+            Customer customer = CustomerFactory.createCustomer(
+                customerRequest.getFirstName(),
+                customerRequest.getLastName(), 
+                customerRequest.getEmail(),
+                customerRequest.getPassword(), // This will be hashed by the factory
+                address
+            );
+            
+            if (customer == null) {
+                System.err.println("Customer creation failed in factory!");
+                return ResponseEntity.badRequest().build(); // Invalid input
+            }
+            
+            // Set phone number if provided
+            if (customerRequest.getPhoneNumber() != null) {
+                customer = new Customer.Builder()
+                    .copy(customer)
+                    .setPhoneNumber(customerRequest.getPhoneNumber())
+                    .build();
+            }
+            
+            System.out.println("Saving customer to database...");
+            Customer savedCustomer = customerService.create(customer);
+            System.out.println("Customer saved successfully with email: " + savedCustomer.getEmail());
+            return ResponseEntity.ok(savedCustomer);
+            
+        } catch (Exception e) {
+            System.err.println("Error creating customer: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // ✅ Read by email (PK)
