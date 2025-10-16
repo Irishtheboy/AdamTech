@@ -25,26 +25,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configure(http)) // Enable CORS
+                .cors(cors -> cors.configure(http))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Critical for JWT
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
+                        // Public endpoints (no authentication required)
                         .requestMatchers("/customer/login").permitAll()
                         .requestMatchers("/customer/create").permitAll()
-                        .requestMatchers("/customer/read/**").permitAll()
-                        .requestMatchers("/customer/me").permitAll() // ✅ Add this
                         .requestMatchers("/products/getAll").permitAll()
                         .requestMatchers("/products/**").permitAll()
 
-                        // Protected endpoints
+                        // 🔒 ADMIN ENDPOINTS - ONLY FOR ROLE_ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // 🔒 CUSTOMER ENDPOINTS - AUTHENTICATED USERS ONLY
+                        .requestMatchers("/customer/me").authenticated()  // ✅ CHANGED: Now requires auth
                         .requestMatchers("/customer/update").authenticated()
-                                .requestMatchers("/customer/delete/**").authenticated()
-                                .requestMatchers("/cart/**").authenticated()
-                                .requestMatchers("/cart-items/**").authenticated()
-                                .requestMatchers("/order/**").authenticated()
+                        .requestMatchers("/customer/delete/**").authenticated()
+                        .requestMatchers("/customer/getAll").authenticated()
+
+                        // 🔒 ADMIN-ONLY CUSTOMER ENDPOINTS
+                        .requestMatchers("/customer/make-admin/**").hasRole("ADMIN")  // ✅ CHANGED: Admin only
+                        .requestMatchers("/customer/fix-user-roles").hasRole("ADMIN") // ✅ CHANGED: Admin only
+                        .requestMatchers("/customer/admin/**").hasRole("ADMIN")       // ✅ CHANGED: Admin only
+
+                        // 🔒 PROTECTED RESOURCES
+                        .requestMatchers("/cart/**").authenticated()
+                        .requestMatchers("/cart-items/**").authenticated()
+                        .requestMatchers("/order/**").authenticated()
 
                         .anyRequest().authenticated()
                 )

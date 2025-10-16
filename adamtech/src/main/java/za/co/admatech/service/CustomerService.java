@@ -33,6 +33,12 @@ public class CustomerService implements ICustomerService {
         String encodedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encodedPassword);
 
+        // ✅ CRITICAL FIX: Set default role if not provided
+        if (customer.getRole() == null || customer.getRole().trim().isEmpty()) {
+            customer.setRole("ROLE_USER");
+            System.out.println("Setting default role for: " + customer.getEmail() + " -> ROLE_USER");
+        }
+
         Cart cart = new Cart();
         cartRepository.save(cart);
         customer.setCart(cart);
@@ -46,7 +52,6 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer update(Customer customer) {
-        // ✅ Handle password update properly
         Optional<Customer> existingCustomer = customerRepository.findById(customer.getEmail());
         if (existingCustomer.isPresent()) {
             Customer updatedCustomer = existingCustomer.get();
@@ -56,6 +61,11 @@ public class CustomerService implements ICustomerService {
             updatedCustomer.setLastName(customer.getLastName());
             updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
             updatedCustomer.setAddress(customer.getAddress());
+
+            // ✅ Update role if provided
+            if (customer.getRole() != null && !customer.getRole().trim().isEmpty()) {
+                updatedCustomer.setRole(customer.getRole());
+            }
 
             // Only update password if a new one is provided
             if (customer.getPassword() != null && !customer.getPassword().isEmpty()) {

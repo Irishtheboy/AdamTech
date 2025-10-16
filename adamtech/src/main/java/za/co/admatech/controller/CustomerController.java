@@ -14,6 +14,7 @@ import za.co.admatech.config.JwtUtils;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.service.CustomerService;
+import java.util.stream.Collectors;
 
 import java.util.HashMap;
 import java.util.List;
@@ -143,5 +144,54 @@ public class CustomerController {
         }
 
         return ResponseEntity.ok(customer);
+    }
+
+    // ✅ Fix roles for existing users
+    @PostMapping("/fix-user-roles")
+    public ResponseEntity<String> fixUserRoles() {
+        try {
+            List<Customer> customers = customerService.getAll();
+            int fixed = 0;
+
+            for (Customer customer : customers) {
+                if (customer.getRole() == null || customer.getRole().trim().isEmpty()) {
+                    // Set default role as USER
+                    customer.setRole("ROLE_USER");
+                    customerService.update(customer);
+                    fixed++;
+                    System.out.println("Fixed role for: " + customer.getEmail() + " -> ROLE_USER");
+                }
+            }
+
+            return ResponseEntity.ok("Fixed roles for " + fixed + " users. Default: ROLE_USER");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    // ✅ Special endpoint to make a user admin
+    @PostMapping("/make-admin/{email}")
+    public ResponseEntity<String> makeUserAdmin(@PathVariable String email) {
+        try {
+            Customer customer = customerService.read(email);
+            if (customer == null) {
+                return ResponseEntity.badRequest().body("User not found");
+            }
+
+            customer.setRole("ROLE_ADMIN");
+            customerService.update(customer);
+
+            System.out.println("User " + email + " promoted to ADMIN");
+            return ResponseEntity.ok("User " + email + " is now an ADMIN");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    // ✅ Get all users (for admin panel)
+    @GetMapping("/admin/users")
+    public ResponseEntity<List<Customer>> getAllUsers() {
+        // In a real app, you'd check for admin role here
+        return ResponseEntity.ok(customerService.getAll());
     }
 }
