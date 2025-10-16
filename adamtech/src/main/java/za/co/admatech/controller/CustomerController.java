@@ -3,14 +3,21 @@ package za.co.admatech.controller;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.DTO.LoginRequest;
+import za.co.admatech.config.JwtUtils;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
 import za.co.admatech.service.CustomerService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,10 +25,16 @@ import java.util.Optional;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService,
+                              AuthenticationManager authenticationManager,
+                              JwtUtils jwtUtils) {
         this.customerService = customerService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/create")
@@ -60,39 +73,75 @@ public class CustomerController {
     }
 
     // 🔒 Secure endpoint to get logged-in customer
-    @GetMapping("/me")
-    public ResponseEntity<Customer> getLoggedInCustomer(HttpSession session) {
-        String email = (String) session.getAttribute("email");
+//    @GetMapping("/me")
+//    public ResponseEntity<Customer> getLoggedInCustomer(HttpSession session) {
+//        String email = (String) session.getAttribute("email");
+//
+//        if (email == null) {
+//            return ResponseEntity.status(401).build(); // ❌ No session → Unauthorized
+//        }
+//
+//        Customer customer = customerService.read(email);
+//        if (customer == null) {
+//            return ResponseEntity.status(401).build(); // ❌ Session invalid or user deleted
+//        }
+//
+//        return ResponseEntity.ok(customer); // ✅ Valid session + user exists
+//    }
 
-        if (email == null) {
-            return ResponseEntity.status(401).build(); // ❌ No session → Unauthorized
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            System.out.println("=== LOGIN ATTEMPT ===");
+            System.out.println("Email: " + request.getEmail());
+            System.out.println("Password: " + request.getPassword());
+
+            // Debug: Check if user exists
+            Customer customer = customerService.read(request.getEmail());
+            if (customer != null) {
+                System.out.println("Customer found: " + customer.getEmail());
+                System.out.println("Stored password hash: " + customer.getPassword());
+            } else {
+                System.out.println("Customer NOT found");
+                return ResponseEntity.status(401).body("Invalid email or password");
+            }
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+
+            Customer authCustomer = (Customer) authentication.getPrincipal();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwt);
+            response.put("email", authCustomer.getEmail());
+            response.put("role", authCustomer.getRole());
+
+            System.out.println("=== LOGIN SUCCESS ===");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            System.err.println("=== LOGIN FAILED ===");
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
+    }
+
+    // 🔒 Secure endpoint to get logged-in customer (now uses JWT)
+    @GetMapping("/me")
+    public ResponseEntity<Customer> getLoggedInCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
         Customer customer = customerService.read(email);
         if (customer == null) {
-            return ResponseEntity.status(401).build(); // ❌ Session invalid or user deleted
+            return ResponseEntity.status(401).build();
         }
 
-        return ResponseEntity.ok(customer); // ✅ Valid session + user exists
-    }
-
-    // ✅ Login (check password and store email in session)
-    @PostMapping("/login")
-    public ResponseEntity<Customer> login(@RequestBody LoginRequest request, HttpSession session) {
-        Optional<Customer> optionalCustomer = customerService.findByEmail(request.getEmail());
-
-        if (optionalCustomer.isPresent()) {
-            Customer customer = optionalCustomer.get();
-
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            if (encoder.matches(request.getPassword(), customer.getPassword())) {
-                session.setAttribute("email", customer.getEmail()); // ✅ login successful
-                return ResponseEntity.ok(customer);
-            } else {
-                return ResponseEntity.status(401).build(); // ❌ invalid password
-            }
-        }
-
-        return ResponseEntity.status(401).build(); // ❌ invalid email
+        return ResponseEntity.ok(customer);
     }
 }

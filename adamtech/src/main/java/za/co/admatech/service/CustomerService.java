@@ -1,6 +1,7 @@
 package za.co.admatech.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import za.co.admatech.domain.Cart;
 import za.co.admatech.domain.Customer;
@@ -15,15 +16,23 @@ public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
     private final CartRepository cartRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, CartRepository cartRepository) {
+    public CustomerService(CustomerRepository customerRepository,
+                           CartRepository cartRepository,
+                           PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.cartRepository = cartRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Customer create(Customer customer) {
+        // ✅ Hash the password before saving
+        String encodedPassword = passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
+
         Cart cart = new Cart();
         cartRepository.save(cart);
         customer.setCart(cart);
@@ -37,7 +46,26 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer update(Customer customer) {
-        return customerRepository.save(customer);
+        // ✅ Handle password update properly
+        Optional<Customer> existingCustomer = customerRepository.findById(customer.getEmail());
+        if (existingCustomer.isPresent()) {
+            Customer updatedCustomer = existingCustomer.get();
+
+            // Update fields
+            updatedCustomer.setFirstName(customer.getFirstName());
+            updatedCustomer.setLastName(customer.getLastName());
+            updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+            updatedCustomer.setAddress(customer.getAddress());
+
+            // Only update password if a new one is provided
+            if (customer.getPassword() != null && !customer.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(customer.getPassword());
+                updatedCustomer.setPassword(encodedPassword);
+            }
+
+            return customerRepository.save(updatedCustomer);
+        }
+        return null;
     }
 
     @Override
