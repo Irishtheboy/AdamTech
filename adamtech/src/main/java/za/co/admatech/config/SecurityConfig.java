@@ -40,21 +40,29 @@ public class SecurityConfig {
                         // 🔒 ADMIN ENDPOINTS - ONLY FOR ROLE_ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        // 🔒 CUSTOMER ENDPOINTS - AUTHENTICATED USERS ONLY
-                        .requestMatchers("/customer/me").authenticated()  // ✅ CHANGED: Now requires auth
+                        // 🔒 PROTECTED ENDPOINTS - AUTHENTICATED USERS ONLY
+                        .requestMatchers("/customer/me").authenticated()
                         .requestMatchers("/customer/update").authenticated()
                         .requestMatchers("/customer/delete/**").authenticated()
                         .requestMatchers("/customer/getAll").authenticated()
 
-                        // 🔒 ADMIN-ONLY CUSTOMER ENDPOINTS
-                        .requestMatchers("/customer/make-admin/**").hasRole("ADMIN")  // ✅ CHANGED: Admin only
-                        .requestMatchers("/customer/fix-user-roles").hasRole("ADMIN") // ✅ CHANGED: Admin only
-                        .requestMatchers("/customer/admin/**").hasRole("ADMIN")       // ✅ CHANGED: Admin only
+                        // 🔒 ORDER ENDPOINTS - AUTHENTICATED USERS
+                        .requestMatchers("/order/**").authenticated()
 
-                        // 🔒 PROTECTED RESOURCES
+                        // 🔒 WISHLIST ENDPOINTS - AUTHENTICATED USERS
+                        .requestMatchers("/wishlist/**").authenticated()
+
+                        // 🔒 ADDRESS ENDPOINTS - AUTHENTICATED USERS
+                        .requestMatchers("/address/**").authenticated()
+
+                        // 🔒 CART ENDPOINTS - AUTHENTICATED USERS
                         .requestMatchers("/cart/**").authenticated()
                         .requestMatchers("/cart-items/**").authenticated()
-                        .requestMatchers("/order/**").authenticated()
+
+                        // ADMIN-ONLY CUSTOMER ENDPOINTS
+                        .requestMatchers("/customer/make-admin/**").hasRole("ADMIN")
+                        .requestMatchers("/customer/fix-user-roles").hasRole("ADMIN")
+                        .requestMatchers("/customer/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
