@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.admatech.domain.Product;
 import za.co.admatech.service.ProductService;
+import org.springframework.security.access.prepost.PreAuthorize; // 🔒 ADD THIS
+
 
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
@@ -22,6 +24,7 @@ public class ProductController {
     }
 
     // Create a new product
+    @PreAuthorize("hasRole('ADMIN')") // 🔒 ONLY ADMIN CAN CREATE
     @PostMapping("/create")
     public ResponseEntity<Product> create(@RequestBody Product product) {
         return ResponseEntity.ok(service.create(product));
@@ -50,6 +53,7 @@ public class ProductController {
 
 
     // Delete a product
+    @PreAuthorize("hasRole('ADMIN')") // 🔒 ONLY ADMIN CAN DELETE
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<Void> delete(@PathVariable Long productId) {
         boolean deleted = service.delete(productId);
