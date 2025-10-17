@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch, AiOutlineUser, AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai';
 import '../../styles/HeaderStyling.css';
 import ADM_logo from '../../assets/images/ADM_logo.png';
 
-const Header = ({ user, setUser }) => { // ✅ Added setUser prop
+const Header = ({ user, setUser }) => {
     const [isSticky, setIsSticky] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const cartItems = []; 
+    const cartItems = [];
     const location = useLocation();
     const navigate = useNavigate();
     const profileRef = useRef();
@@ -35,7 +35,6 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
         fontWeight: location.pathname === path ? 'bold' : 'normal'
     });
 
-    // ✅ Handle profile click
     const handleProfileClick = () => {
         if (!user) {
             navigate('/login');
@@ -44,7 +43,6 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
         }
     };
 
-    // ✅ Handle logout
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -56,7 +54,7 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
     return (
         <header className={isSticky ? 'header sticky' : 'header'} style={{ backgroundColor: '#fff', padding: '10px 20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
             <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto' }}>
-                
+
                 {/* Logo */}
                 <h2 className="logo" style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
                     <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: '#f4a261' }}>
@@ -71,11 +69,11 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                     <Link to="/about" style={getLinkStyle('/about')}>ABOUT</Link>
                     <Link to="/shop" style={getLinkStyle('/shop')}>SHOP</Link>
                     <Link to="/contact" style={getLinkStyle('/contact')}>CONTACT</Link>
-                    
+
                     {/* ✅ ADMIN LINK - Only show for admins */}
                     {user && user.role === 'ROLE_ADMIN' && (
-                        <Link 
-                            to="/admin/dashboard" 
+                        <Link
+                            to="/admin/dashboard"
                             style={{
                                 ...getLinkStyle('/admin/dashboard'),
                                 color: '#d32f2f',
@@ -92,11 +90,11 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                     <Link to="/search" className="icon" style={{ color: '#666', fontSize: '1.2rem', textDecoration: 'none' }}>
                         <AiOutlineSearch />
                     </Link>
-                    
+
                     {/* User Profile */}
-                    <div 
-                        className="user-profile" 
-                        ref={profileRef} 
+                    <div
+                        className="user-profile"
+                        ref={profileRef}
                         onClick={handleProfileClick}
                         style={{ position: 'relative', cursor: 'pointer' }}
                     >
@@ -123,7 +121,7 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                                 position: 'absolute',
                                 top: '35px',
                                 right: '0',
-                                width: '200px',
+                                width: '220px',
                                 background: 'white',
                                 borderRadius: '8px',
                                 padding: '10px',
@@ -134,11 +132,11 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                                 zIndex: 1000,
                                 border: '1px solid #eee'
                             }}>
-                                <Link 
-                                    to="/profile" 
-                                    style={{ 
-                                        color: '#333', 
-                                        textDecoration: 'none', 
+                                <Link
+                                    to="/profile"
+                                    style={{
+                                        color: '#333',
+                                        textDecoration: 'none',
                                         padding: '8px 12px',
                                         borderRadius: '4px',
                                         transition: 'background 0.3s ease',
@@ -149,26 +147,55 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                                     👤 Profile
                                 </Link>
 
-                                {/* ✅ Admin Dashboard in dropdown */}
+                                {/* ✅ ADMIN DASHBOARD SECTION */}
                                 {user.role === 'ROLE_ADMIN' && (
-                                    <Link 
-                                        to="/admin/dashboard" 
-                                        style={{ 
-                                            color: '#d32f2f', 
-                                            textDecoration: 'none', 
-                                            padding: '8px 12px',
-                                            borderRadius: '4px',
-                                            transition: 'background 0.3s ease',
-                                            fontWeight: 'bold'
-                                        }}
-                                        onMouseOver={(e) => e.currentTarget.style.background = '#ffebee'}
-                                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                        ⚙️ Admin Dashboard
-                                    </Link>
+                                    <>
+                                        <div style={{
+                                            padding: '4px 12px',
+                                            fontSize: '0.8rem',
+                                            color: '#999',
+                                            fontWeight: 'bold',
+                                            borderBottom: '1px solid #eee',
+                                            marginBottom: '4px'
+                                        }}>
+                                            ADMIN TOOLS
+                                        </div>
+
+                                        <Link
+                                            to="/admin/dashboard"
+                                            style={{
+                                                color: '#d32f2f',
+                                                textDecoration: 'none',
+                                                padding: '8px 12px',
+                                                borderRadius: '4px',
+                                                transition: 'background 0.3s ease',
+                                                fontWeight: 'bold'
+                                            }}
+                                            onMouseOver={(e) => e.currentTarget.style.background = '#ffebee'}
+                                            onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            📊 Admin Dashboard
+                                        </Link>
+
+                                        <Link
+                                            to="/admin/orders"
+                                            style={{
+                                                color: '#d32f2f',
+                                                textDecoration: 'none',
+                                                padding: '8px 12px',
+                                                borderRadius: '4px',
+                                                transition: 'background 0.3s ease',
+                                                fontWeight: 'bold'
+                                            }}
+                                            onMouseOver={(e) => e.currentTarget.style.background = '#ffebee'}
+                                            onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            📦 Order Management
+                                        </Link>
+                                    </>
                                 )}
-                                
-                                <button 
+
+                                <button
                                     onClick={handleLogout}
                                     style={{
                                         background: 'none',
@@ -179,6 +206,9 @@ const Header = ({ user, setUser }) => { // ✅ Added setUser prop
                                         padding: '8px 12px',
                                         borderRadius: '4px',
                                         transition: 'background 0.3s ease',
+                                        marginTop: '8px',
+                                        borderTop: '1px solid #eee',
+                                        paddingTop: '12px'
                                     }}
                                     onMouseOver={(e) => e.currentTarget.style.background = '#f5f5f5'}
                                     onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
