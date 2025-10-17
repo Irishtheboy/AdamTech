@@ -198,6 +198,7 @@ const Checkout = () => {
                 color: "#333"
               }}>
                 Total: R{subtotal.toFixed(2)}
+
               </div>
             </section>
           </div>

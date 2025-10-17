@@ -5,7 +5,10 @@ import axios from "axios";
 function Cart() {
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const DELIVERY_FEE = 150; // R150 delivery fee
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,6 +41,7 @@ function Cart() {
 
     const fetchCart = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");
         const res = await axios.get(
             `http://localhost:8080/adamtech/cart/customer/${user.email}`,
@@ -68,6 +72,8 @@ function Cart() {
           localStorage.removeItem("user");
           setUser(null);
         }
+      } finally {
+        setLoading(false);
       }
     };
     fetchCart();
@@ -131,10 +137,12 @@ function Cart() {
   const checkout = async () => {
     if (!cartItems.length) return;
 
-    const total = cartItems.reduce(
+    const subtotal = cartItems.reduce(
         (sum, item) => sum + (item.product?.price?.amount || 0) * item.quantity,
         0
     );
+
+    const total = subtotal + DELIVERY_FEE;
 
     // FIXED: Send Money object structure that matches your backend
     const orderPayload = {
@@ -181,7 +189,9 @@ function Cart() {
           state: {
             user,
             cartItems,
-            subtotal: total,
+            subtotal: subtotal,
+            deliveryFee: DELIVERY_FEE,
+            total: total,
             orderId: orderId
           }
         });
@@ -212,6 +222,8 @@ function Cart() {
       0
   );
 
+  const total = subtotal + DELIVERY_FEE;
+
   if (!user) return (
       <div style={{ padding: "40px", textAlign: "center" }}>
         <h3>Please log in to view your cart</h3>
@@ -232,110 +244,240 @@ function Cart() {
       </div>
   );
 
+  if (loading) {
+    return (
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <h3>Loading your cart...</h3>
+        </div>
+    );
+  }
+
   return (
       <div style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", fontFamily: "'Segoe UI', sans-serif" }}>
         <h2 style={{ marginBottom: "30px", color: "#333", textAlign: "center", fontSize: "2rem" }}>Your Cart</h2>
 
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-            <thead style={{ backgroundColor: "orange", color: "#fff" }}>
-            <tr>
-              <th style={{ textAlign: "left", padding: "12px", border: "1px solid #ddd" }}>Product</th>
-              <th style={{ textAlign: "center", padding: "12px", border: "1px solid #ddd" }}>Quantity</th>
-              <th style={{ textAlign: "right", padding: "12px", border: "1px solid #ddd" }}>Subtotal</th>
-              <th style={{ padding: "12px", border: "1px solid #ddd" }}></th>
-            </tr>
-            </thead>
-            <tbody>
-            {cartItems.length === 0 ? (
-                <tr>
-                  <td colSpan={4} style={{ textAlign: "center", padding: "25px", color: "#555" }}>
-                    Your cart is empty
-                  </td>
-                </tr>
-            ) : (
-                cartItems.map((item) => (
-                    <tr key={item.cartItemId} style={{ borderBottom: "1px solid #eee", transition: "background 0.2s" }}>
-                      <td style={{ display: "flex", alignItems: "center", gap: "15px", padding: "10px" }}>
-                        {item.product?.image && (
+        {cartItems.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px" }}>
+              <h3 style={{ color: "#666", marginBottom: "20px" }}>Your cart is empty</h3>
+              <button
+                  onClick={() => navigate("/shop")}
+                  style={{
+                    padding: "12px 24px",
+                    backgroundColor: "#f4a261",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "1rem",
+                    fontWeight: "bold"
+                  }}
+              >
+                Continue Shopping
+              </button>
+            </div>
+        ) : (
+            <>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "700px" }}>
+                  <thead style={{ backgroundColor: "orange", color: "#fff" }}>
+                  <tr>
+                    <th style={{ textAlign: "left", padding: "15px", border: "1px solid #ddd", fontSize: "1.1rem" }}>Product</th>
+                    <th style={{ textAlign: "center", padding: "15px", border: "1px solid #ddd", fontSize: "1.1rem" }}>Price</th>
+                    <th style={{ textAlign: "center", padding: "15px", border: "1px solid #ddd", fontSize: "1.1rem" }}>Quantity</th>
+                    <th style={{ textAlign: "right", padding: "15px", border: "1px solid #ddd", fontSize: "1.1rem" }}>Subtotal</th>
+                    <th style={{ padding: "15px", border: "1px solid #ddd", fontSize: "1.1rem" }}></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {cartItems.map((item) => (
+                      <tr key={item.cartItemId} style={{ borderBottom: "1px solid #eee", transition: "background 0.2s" }}>
+                        <td style={{ padding: "15px", border: "1px solid #ddd" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                             <img
                                 src={`http://localhost:8080/adamtech/products/${item.product.productId}/image`}
                                 alt={item.product.name}
-                                style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px" }}
+                                style={{
+                                  width: "80px",
+                                  height: "80px",
+                                  objectFit: "cover",
+                                  borderRadius: "8px",
+                                  border: "1px solid #ddd"
+                                }}
+                                onError={(e) => {
+                                  // Fallback if image fails to load
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'block';
+                                }}
                             />
-                        )}
-                        <span>{item.product?.name || "Unnamed Product"}</span>
-                      </td>
-                      <td style={{ textAlign: "center", padding: "10px" }}>
-                        <button
-                            onClick={() => updateQuantity(item.cartItemId, -1)}
-                            style={{ padding: "5px 10px", marginRight: "5px", borderRadius: "5px", border: "1px solid #ccc", cursor: "pointer" }}
-                        >-</button>
-                        <span>{item.quantity}</span>
-                        <button
-                            onClick={() => updateQuantity(item.cartItemId, 1)}
-                            style={{ padding: "5px 10px", marginLeft: "5px", borderRadius: "5px", border: "1px solid #ccc", cursor: "pointer" }}
-                        >+</button>
-                      </td>
-                      <td style={{ textAlign: "right", padding: "10px", fontWeight: "bold", color: "#f4a261" }}>
-                        R{((item.product?.price?.amount || 0) * item.quantity).toFixed(2)}
-                      </td>
-                      <td style={{ textAlign: "center", padding: "10px" }}>
-                        <button
-                            onClick={() => removeItem(item.cartItemId)}
-                            style={{ backgroundColor: "#e76f51", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer" }}
-                        >
-                          🗑
-                        </button>
-                      </td>
-                    </tr>
-                ))
-            )}
-            </tbody>
-          </table>
-        </div>
+                            <div
+                                style={{
+                                  display: 'none',
+                                  width: "80px",
+                                  height: "80px",
+                                  backgroundColor: "#f5f5f5",
+                                  borderRadius: "8px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#999",
+                                  fontSize: "0.8rem",
+                                  textAlign: "center"
+                                }}
+                            >
+                              No Image
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: "600", color: "#333", marginBottom: "5px", fontSize: "1.1rem" }}>
+                                {item.product?.name || "Unnamed Product"}
+                              </div>
+                              {item.product?.description && (
+                                  <div style={{ color: "#666", fontSize: "0.9rem", maxWidth: "300px" }}>
+                                    {item.product.description.length > 80
+                                        ? `${item.product.description.substring(0, 80)}...`
+                                        : item.product.description
+                                    }
+                                  </div>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: "center", padding: "15px", border: "1px solid #ddd", fontWeight: "bold", color: "#f4a261", fontSize: "1.1rem" }}>
+                          R{item.product?.price?.amount?.toFixed(2) || "0.00"}
+                        </td>
+                        <td style={{ textAlign: "center", padding: "15px", border: "1px solid #ddd" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+                            <button
+                                onClick={() => updateQuantity(item.cartItemId, -1)}
+                                style={{
+                                  padding: "8px 12px",
+                                  borderRadius: "5px",
+                                  border: "1px solid #ccc",
+                                  cursor: "pointer",
+                                  backgroundColor: "#fff",
+                                  fontSize: "1rem",
+                                  minWidth: "40px"
+                                }}
+                            >-</button>
+                            <span style={{
+                              padding: "8px 16px",
+                              border: "1px solid #ddd",
+                              borderRadius: "5px",
+                              minWidth: "50px",
+                              display: "inline-block",
+                              fontWeight: "bold"
+                            }}>
+                            {item.quantity}
+                          </span>
+                            <button
+                                onClick={() => updateQuantity(item.cartItemId, 1)}
+                                style={{
+                                  padding: "8px 12px",
+                                  borderRadius: "5px",
+                                  border: "1px solid #ccc",
+                                  cursor: "pointer",
+                                  backgroundColor: "#fff",
+                                  fontSize: "1rem",
+                                  minWidth: "40px"
+                                }}
+                            >+</button>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: "right", padding: "15px", border: "1px solid #ddd", fontWeight: "bold", color: "#f4a261", fontSize: "1.1rem" }}>
+                          R{((item.product?.price?.amount || 0) * item.quantity).toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "center", padding: "15px", border: "1px solid #ddd" }}>
+                          <button
+                              onClick={() => removeItem(item.cartItemId)}
+                              style={{
+                                backgroundColor: "#e76f51",
+                                color: "#fff",
+                                border: "none",
+                                padding: "8px 12px",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                                fontSize: "0.9rem",
+                                fontWeight: "600"
+                              }}
+                              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#d65c40"}
+                              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#e76f51"}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                  ))}
+                  </tbody>
+                </table>
+              </div>
 
-        {cartItems.length > 0 && (
-            <div
-                style={{
-                  marginTop: "30px",
-                  maxWidth: "400px",
-                  marginLeft: "auto",
-                  backgroundColor: "#f8f8f8",
-                  padding: "25px",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
-                }}
-            >
-              <h3 style={{ marginBottom: "20px", fontSize: "1.5rem", color: "#333" }}>Cart Totals</h3>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "1.1rem" }}>
-                <span>Subtotal</span>
-                <span style={{ color: "#f4a261" }}>R{subtotal.toFixed(2)}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px", fontWeight: "bold", fontSize: "1.1rem" }}>
-                <span>Total</span>
-                <span style={{ color: "#f4a261" }}>R{subtotal.toFixed(2)}</span>
-              </div>
-              <button
-                  onClick={checkout}
+              <div
                   style={{
-                    width: "100%",
-                    padding: "14px",
-                    backgroundColor: "#2a9d8f",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "10px",
-                    fontWeight: "bold",
-                    fontSize: "1.1rem",
-                    cursor: "pointer",
-                    transition: "background 0.2s"
+                    marginTop: "30px",
+                    maxWidth: "400px",
+                    marginLeft: "auto",
+                    backgroundColor: "#f8f8f8",
+                    padding: "25px",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#21867a"}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#2a9d8f"}
               >
-                PROCEED TO CHECKOUT
-              </button>
-            </div>
+                <h3 style={{ marginBottom: "20px", fontSize: "1.5rem", color: "#333" }}>Cart Totals</h3>
+
+                {/* Subtotal */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "1.1rem" }}>
+                  <span>Subtotal</span>
+                  <span style={{ color: "#333" }}>R{subtotal.toFixed(2)}</span>
+                </div>
+
+                {/* Delivery Fee */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "1.1rem" }}>
+                  <span>Delivery Fee</span>
+                  <span style={{ color: "#333" }}>R{DELIVERY_FEE.toFixed(2)}</span>
+                </div>
+
+                {/* Separator */}
+                <hr style={{ border: "none", borderTop: "1px solid #ddd", margin: "15px 0" }} />
+
+                {/* Total */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px", fontWeight: "bold", fontSize: "1.3rem" }}>
+                  <span>Total</span>
+                  <span style={{ color: "#f4a261" }}>R{total.toFixed(2)}</span>
+                </div>
+
+                {/* Delivery Info Note */}
+                <div style={{
+                  backgroundColor: "#e8f5e8",
+                  padding: "10px 15px",
+                  borderRadius: "6px",
+                  marginBottom: "20px",
+                  fontSize: "0.9rem",
+                  color: "#2d5a2d",
+                  border: "1px solid #c8e6c9"
+                }}>
+                  <strong>🚚 Free delivery</strong> on orders over R1000
+                </div>
+
+                <button
+                    onClick={checkout}
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      backgroundColor: "#2a9d8f",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "10px",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      cursor: "pointer",
+                      transition: "background 0.2s"
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#21867a"}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#2a9d8f"}
+                >
+                  PROCEED TO CHECKOUT
+                </button>
+              </div>
+            </>
         )}
       </div>
   );

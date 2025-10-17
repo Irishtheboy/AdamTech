@@ -28,26 +28,26 @@ function App() {
   // ✅ FIXED: Check if a user session exists using the correct endpoint
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
+
     if (token) {
       axios
-        .get("http://localhost:8080/adamtech/customer/me", {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        .then((res) => {
-          console.log("User data loaded:", res.data);
-          setUser(res.data);
-        })
-        .catch((error) => {
-          console.error("Error loading user:", error);
-          setUser(null);
-          // Clear invalid token
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-        });
+          .get("http://localhost:8080/adamtech/customer/me", {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then((res) => {
+            console.log("User data loaded:", res.data);
+            setUser(res.data);
+          })
+          .catch((error) => {
+            console.error("Error loading user:", error);
+            setUser(null);
+            // Clear invalid token
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+          });
     } else {
       setUser(null);
     }
@@ -62,51 +62,51 @@ function App() {
 
     try {
       const token = localStorage.getItem("token");
-      
+
       // 1️⃣ Get or create the user's cart
       const cartRes = await axios.get(
-        `http://localhost:8080/adamtech/cart/customer/${user.email}`,
-        { 
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+          `http://localhost:8080/adamtech/cart/customer/${user.email}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
           }
-        }
       );
       const cart = cartRes.data;
 
       // 2️⃣ Prepare CartItem payload linked to that cart
       const cartItem = {
         product: { productId: product.productId },
-        quantity: 1,
+        quantity: product.quantity || 1, // Use the quantity from product or default to 1
         cart: { cartId: cart.cartId },
       };
 
       // 3️⃣ Save cart item in backend
       const res = await axios.post(
-        "http://localhost:8080/adamtech/cart-items/create",
-        cartItem,
-        { 
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+          "http://localhost:8080/adamtech/cart-items/create",
+          cartItem,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
           }
-        }
       );
 
       const savedItem = res.data;
 
       // 4️⃣ Update frontend state for instant UI
       const existingItem = cartItems.find(
-        (item) => item.productId === savedItem.productId
+          (item) => item.product?.productId === savedItem.product?.productId
       );
       if (existingItem) {
         setCartItems(
-          cartItems.map((item) =>
-            item.productId === savedItem.productId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
+            cartItems.map((item) =>
+                item.product?.productId === savedItem.product?.productId
+                    ? { ...item, quantity: item.quantity + (product.quantity || 1) }
+                    : item
+            )
         );
       } else {
         setCartItems([...cartItems, savedItem]);
@@ -127,11 +127,11 @@ function App() {
   // Update quantity
   const updateQuantity = (name, amount) => {
     setCartItems(
-      cartItems.map((item) =>
-        item.name === name
-          ? { ...item, quantity: Math.max(item.quantity + amount, 1) }
-          : item
-      )
+        cartItems.map((item) =>
+            item.name === name
+                ? { ...item, quantity: Math.max(item.quantity + amount, 1) }
+                : item
+        )
     );
   };
 
@@ -140,8 +140,8 @@ function App() {
     if (!cartItems.length) return;
 
     const total = cartItems.reduce(
-      (sum, item) => sum + item.price.amount * item.quantity,
-      0
+        (sum, item) => sum + (item.product?.price?.amount || 0) * item.quantity,
+        0
     );
     const newOrder = {
       id: orders.length + 1,
@@ -156,44 +156,54 @@ function App() {
   };
 
   return (
-    <Router>
-     
-<Header user={user} setUser={setUser} />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home addToCart={addToCart} user={user} />} />
-          <Route path="/signUp" element={<SignUp setUser={setUser} />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/shop" element={<Shop addToCart={addToCart} user={user} />} />
-          <Route
-            path="/product/:id"
-            element={<ProductDetails addToCart={addToCart} user={user} />}
-          />
+      <Router>
+        <Header user={user} setUser={setUser} />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home addToCart={addToCart} user={user} />} />
+            <Route path="/signUp" element={<SignUp setUser={setUser} />} />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/shop" element={<Shop addToCart={addToCart} user={user} />} />
+            <Route
+                path="/product/:id"
+                element={<ProductDetails addToCart={addToCart} user={user} />}
+            />
 
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                cartItems={cartItems}
-                removeItem={removeItem}
-                updateQuantity={updateQuantity}
-                checkout={checkout}
-              />
-            }
-          />
-          <Route path="/orders" element={<MyOrders orders={orders} />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/account/edit" element={<EditProfile />} />
-          <Route path="/profile" element={<ProfileDash user={user} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
+            <Route
+                path="/cart"
+                element={
+                  <Cart
+                      cartItems={cartItems}
+                      removeItem={removeItem}
+                      updateQuantity={updateQuantity}
+                      checkout={checkout}
+                  />
+                }
+            />
+            <Route path="/orders" element={<MyOrders orders={orders} />} />
+
+            {/* ✅ FIXED: Add user and addToCart props to WishlistPage */}
+            <Route
+                path="/wishlist"
+                element={
+                  <WishlistPage
+                      user={user}
+                      addToCart={addToCart}
+                  />
+                }
+            />
+
+            <Route path="/account/edit" element={<EditProfile />} />
+            <Route path="/profile" element={<ProfileDash user={user} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
   );
 }
 
