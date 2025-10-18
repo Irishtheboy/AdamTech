@@ -19,6 +19,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Checkout from "./pages/Checkout";
 import AdminOrders from "./pages/AdminOrders";
 import AdminDashboard from "./pages/AdminDashboard";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -200,6 +201,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/search" element={<SearchPage addToCart={addToCart} user={user} />}/>
           </Routes>
         </main>
         <Footer />
