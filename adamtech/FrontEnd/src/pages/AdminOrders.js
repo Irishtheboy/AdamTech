@@ -197,7 +197,7 @@ const AdminOrders = () => {
                 onClick={() => fetchOrders(localStorage.getItem("token"))}
                 style={{
                   padding: "10px 20px",
-                  backgroundColor: "#6c757d",
+                  backgroundColor: "orange",
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
