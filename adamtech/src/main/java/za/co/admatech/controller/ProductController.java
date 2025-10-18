@@ -62,6 +62,23 @@ public class ProductController {
         return ResponseEntity.ok(service.getAll());
     }
 
+    // inside ProductController
+    // inside existing ProductController
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> search(@RequestParam(value = "q", required = false) String q) {
+        List<Product> results;
+        if (q == null || q.trim().isEmpty()) {
+            // return all by default (or return empty list if you prefer)
+            results = service.getAll();
+        } else {
+            results = service.searchByName(q);
+        }
+        return ResponseEntity.ok(results);
+    }
+
+
+
+
 
     @GetMapping("/{productId}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long productId) {
@@ -69,6 +86,8 @@ public class ProductController {
         if (product == null || product.getImageData() == null) {
             return ResponseEntity.notFound().build();
         }
+
+
 
         // Image content type can be adjusted based on actual image type
         return ResponseEntity.ok()
