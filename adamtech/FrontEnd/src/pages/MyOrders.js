@@ -248,8 +248,8 @@ const MyOrders = ({ user }) => {
                     fontSize: '14px',
                     transition: 'background-color 0.2s'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#5a6268'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#6c757d'}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'orange'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'orange'}
               >
                 Refresh
               </button>
@@ -421,7 +421,7 @@ const MyOrders = ({ user }) => {
                           padding: '15px',
                           textAlign: 'right',
                           fontWeight: '600',
-                          color: '#2a9d8f'
+                          color: 'orange'
                         }}>
                           R{getOrderTotal(order).toFixed(2)}
                         </td>
