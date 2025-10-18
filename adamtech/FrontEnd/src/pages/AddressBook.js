@@ -552,7 +552,7 @@ const AddressBook = ({ user }) => {
                   type="submit"
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? "#ccc" : (isEditing ? "#0077cc" : "#ff6600"),
+                    backgroundColor: loading ? "#ccc" : (isEditing ? "#0077cc" : "orange"),
                     color: "white",
                     padding: "14px 30px",
                     borderRadius: "8px",
@@ -571,7 +571,7 @@ const AddressBook = ({ user }) => {
                     </>
                 ) : (
                     <>
-                      <span style={{ marginRight: "8px" }}>💾</span>
+                      <span style={{ marginRight: "8px" }}></span>
                       {isEditing ? "Update Address" : "Save Address"}
                     </>
                 )}
@@ -667,7 +667,7 @@ const AddressBook = ({ user }) => {
                             onClick={() => handleEdit(address)}
                             disabled={loading}
                             style={{
-                              backgroundColor: "#0077cc",
+                              backgroundColor: "orange",
                               color: "#fff",
                               padding: "8px 16px",
                               borderRadius: "6px",
@@ -678,7 +678,7 @@ const AddressBook = ({ user }) => {
                               flex: 1
                             }}
                         >
-                          ✏️ Edit
+                           Edit
                         </button>
                         <button
                             onClick={() => handleDelete(address.addressId)}
@@ -695,7 +695,7 @@ const AddressBook = ({ user }) => {
                               flex: 1
                             }}
                         >
-                          🗑️ Delete
+                           Delete
                         </button>
                       </div>
                     </div>
