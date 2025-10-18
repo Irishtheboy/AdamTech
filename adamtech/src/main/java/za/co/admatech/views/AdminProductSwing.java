@@ -22,7 +22,6 @@ public class AdminProductSwing extends JFrame {
     private JLabel imageLabel;
     private File selectedImage;
     private JButton submitButton;
-
     private JTable productTable;
     private ProductTableModel tableModel;
 

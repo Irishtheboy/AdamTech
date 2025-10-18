@@ -52,6 +52,7 @@ public class Order {
         this.orderItems.forEach(item -> item.setOrder(this));
     }
 
+    // ======== Getters =========
     public Long getId() {
         return id;
     }
@@ -76,6 +77,40 @@ public class Order {
         return orderItems;
     }
 
+    // ======== Setters / State changes =========
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setTotalAmount(Money totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+        // Keep bidirectional link consistent
+        if (orderItems != null) {
+            orderItems.forEach(item -> item.setOrder(this));
+        }
+    }
+
+    // ======== Domain-specific helpers =========
+    public void markAsPaid() {
+        this.orderStatus = OrderStatus.CONFIRMED;
+    }
+
+    public void cancel() {
+        this.orderStatus = OrderStatus.CANCELLED;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -88,6 +123,7 @@ public class Order {
                 '}';
     }
 
+    // ======== Builder =========
     public static class Builder {
         private Long id;
         private Customer customer;

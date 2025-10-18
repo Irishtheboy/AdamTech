@@ -1,0 +1,162 @@
+/* Header Styles */
+.header {
+  background-color: black;
+  color: orange;
+  padding: 15px 20px;
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.header.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(255, 165, 0, 0.2); /* soft orange shadow */
+}
+
+/* Container to center content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar Flex */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.logo a {
+  font-size: 24px;
+  font-weight: bold;
+  color: orange;
+  text-decoration: none;
+}
+
+/* Icons nav */
+.nav-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  position: relative;
+}
+
+/* Individual Icon */
+.icon {
+  color: orange;
+  font-size: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.icon:hover {
+  color: white;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  top: 30px;
+  background: orange;
+  color: black;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: none;
+}
+
+.icon:hover .tooltip {
+  display: block;
+}
+
+/* Badge for cart */
+.badge {
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 50%;
+  position: absolute;
+  top: -6px;
+  right: -8px;
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  padding: 10px;
+  display: none;
+  width: 200px;
+  z-index: 10;
+}
+
+.icon:hover .dropdown {
+  display: block;
+}
+
+.dropdown h4 {
+  margin: 0 0 5px;
+}
+
+.dropdown p {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.dropdown button {
+  background: orange;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: black;
+  color: orange;
+}
+
+.divider {
+  height: 1px;
+  background: #ccc;
+  margin: 10px 0;
+}
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown li {
+  margin: 5px 0;
+}
+
+.dropdown li a {
+  text-decoration: none;
+  color: black;
+}
+
+.dropdown li a:hover {
+  color: orange;
+}
+
+/* Temporary search/login placeholders */
+.search-bar,
+.login-form {
+  background: white;
+  color: black;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+

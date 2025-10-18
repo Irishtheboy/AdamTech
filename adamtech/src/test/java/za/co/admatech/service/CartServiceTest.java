@@ -53,6 +53,7 @@ class CartServiceTest {
                         .setLastName("Smith")
                         .setEmail("alice.smith@example.com")
                         .setPhoneNumber("0712345678")
+                        
                         .setAddress(address)
                         .build()
         );

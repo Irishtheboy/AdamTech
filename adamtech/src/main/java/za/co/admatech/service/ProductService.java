@@ -1,9 +1,3 @@
-/*
- * ProductService.java
- * ProductService Class
- * Author: Seymour Lawrence (230185991)
- * Date: 25 May 2025
- */
 package za.co.admatech.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +8,6 @@ import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
-
-    private static IProductService service;
 
     @Autowired
     private ProductRepository repository;
@@ -44,5 +36,13 @@ public class ProductService implements IProductService {
     @Override
     public List<Product> getAll() {
         return this.repository.findAll();
+    }
+
+    @Override
+    public List<Product> searchByName(String q) {
+        if (q == null || q.trim().isEmpty()) return repository.findAll();
+        String pattern = "%" + q.trim().toLowerCase() + "%";
+        // using a repository method (see below) or filter in Java if repository lacks method
+        return repository.findByNameContainingIgnoreCase(q);
     }
 }
