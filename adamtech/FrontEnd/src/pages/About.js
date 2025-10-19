@@ -4,7 +4,7 @@ const teamMembers = [
     { name: "Franco Lukhele", role: "Front-end & Back-end", img: "" },
     { name: "Naqeebah Khan", role: "Front-end & Back-end", img: "" },
     { name: "Teyana Raubenheimer", role: "Front-end & Back-end", img: "" },
-    { name: "Rori", role: "Front-end & Back-end", img: "" },
+    { name: "Rorisang Makgana", role: "Front-end & Back-end", img: "" },
     { name: "Seymour Lawrence", role: "Front-end & Back-end", img: "" },
 ];
 
@@ -24,7 +24,7 @@ const About = () => {
                 }}
             >
                 <p style={{ fontSize: "14px", color: "#333" }}>
-                    We are final-year students n the Diploma in ICT: Applications Development.
+                    We are final-year students in the Diploma in ICT: Applications Development.
                     As part of our capstone project for the subject Applications Development Practice 3(ADP), we have developed this eCommerce platform to
                     showcase our skills in full-stack development, user interface design, and
                     practical application of our learning throughout the subject.
@@ -69,7 +69,7 @@ const About = () => {
                                 height: "100px",
                                 margin: "0 auto 15px auto",
                                 borderRadius: "50%",
-                                backgroundColor: "#ccc",
+                                backgroundColor: "orange",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",

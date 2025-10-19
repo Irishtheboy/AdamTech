@@ -16,7 +16,7 @@ const Contact = () => {
             >
                 <p style={{ fontSize: '14px', color: '#333' }}>
                     For any inquiries, questions, or support, you can reach out to us using the details below.
-                    We are happy to assist you with any part of our platform or services.
+                    We are happy to assist you with any part of our website.
                 </p>
 
                 <div style={{ marginTop: '20px' }}>

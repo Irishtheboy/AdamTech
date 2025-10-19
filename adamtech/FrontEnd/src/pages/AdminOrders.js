@@ -197,7 +197,7 @@ const AdminOrders = () => {
                 onClick={() => fetchOrders(localStorage.getItem("token"))}
                 style={{
                   padding: "10px 20px",
-                  backgroundColor: "#6c757d",
+                  backgroundColor: "orange",
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
@@ -211,13 +211,13 @@ const AdminOrders = () => {
 
         {/* Orders Statistics */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "30px" }}>
-          <div style={{ backgroundColor: "#e3f2fd", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
-            <h3 style={{ color: "#1976d2", margin: "0 0 10px 0" }}>Total Orders</h3>
-            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#1976d2", margin: 0 }}>{orders.length}</p>
+          <div style={{ backgroundColor: "#fff3e0", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
+            <h3 style={{ color: "orange", margin: "0 0 10px 0" }}>Total Orders</h3>
+            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "orange", margin: 0 }}>{orders.length}</p>
           </div>
           <div style={{ backgroundColor: "#fff3e0", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
-            <h3 style={{ color: "#ef6c00", margin: "0 0 10px 0" }}>Pending</h3>
-            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#ef6c00", margin: 0 }}>
+            <h3 style={{ color: "orange", margin: "0 0 10px 0" }}>Pending</h3>
+            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "orange", margin: 0 }}>
               {orders.filter(o => getOrderStatus(o) === 'PENDING').length}
             </p>
           </div>
@@ -270,7 +270,7 @@ const AdminOrders = () => {
                         <td style={{ padding: "15px", color: "#666" }}>
                           {formatDate(order.orderDate)}
                         </td>
-                        <td style={{ padding: "15px", fontWeight: "bold", color: "#2a9d8f" }}>
+                        <td style={{ padding: "15px", fontWeight: "bold", color: "orange" }}>
                           R{getTotalAmount(order).toFixed(2)}
                         </td>
                         <td style={{ padding: "15px" }}>

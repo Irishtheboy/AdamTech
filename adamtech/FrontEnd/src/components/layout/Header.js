@@ -144,7 +144,7 @@ const Header = ({ user, setUser }) => {
                                     onMouseOver={(e) => e.currentTarget.style.background = '#f5f5f5'}
                                     onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                                 >
-                                    👤 Profile
+                                     Profile
                                 </Link>
 
                                 {/* ✅ ADMIN DASHBOARD SECTION */}
@@ -174,7 +174,7 @@ const Header = ({ user, setUser }) => {
                                             onMouseOver={(e) => e.currentTarget.style.background = '#ffebee'}
                                             onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                                         >
-                                            📊 Admin Dashboard
+                                             Admin Dashboard
                                         </Link>
 
                                         <Link
@@ -190,7 +190,7 @@ const Header = ({ user, setUser }) => {
                                             onMouseOver={(e) => e.currentTarget.style.background = '#ffebee'}
                                             onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                                         >
-                                            📦 Order Management
+                                             Order Management
                                         </Link>
                                     </>
                                 )}
@@ -213,7 +213,7 @@ const Header = ({ user, setUser }) => {
                                     onMouseOver={(e) => e.currentTarget.style.background = '#f5f5f5'}
                                     onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                                 >
-                                    🚪 Logout
+                                     Logout
                                 </button>
                             </div>
                         )}

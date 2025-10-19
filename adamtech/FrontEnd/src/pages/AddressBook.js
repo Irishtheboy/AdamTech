@@ -24,6 +24,25 @@ const AddressBook = ({ user }) => {
     }
   }, [user]);
 
+  // Prefill form with the first address (if exists)
+useEffect(() => {
+  if (addresses.length > 0 && !isEditing) {
+    const firstAddress = addresses[0];
+    setFormData({
+      streetNumber: firstAddress.streetNumber?.toString() || "",
+      streetName: firstAddress.streetName || "",
+      suburb: firstAddress.suburb || "",
+      city: firstAddress.city || "",
+      province: firstAddress.province || "",
+      postalCode: firstAddress.postalCode?.toString() || "",
+    });
+    setEditId(firstAddress.addressId);
+    setIsEditing(true); // Optional: mark form as editing
+  }
+}, [addresses]);
+
+
+
   const fetchUserAddresses = async () => {
     try {
       setLoading(true);
@@ -525,11 +544,11 @@ const AddressBook = ({ user }) => {
                   Postal Code *
                 </label>
                 <input
-                    type="number"
+                    type="text"
                     name="postalCode"
                     value={formData.postalCode}
                     onChange={handleChange}
-                    placeholder="e.g., 2000"
+                    placeholder="e.g., 7405"
                     required
                     min="1"
                     max="32767"
@@ -552,7 +571,7 @@ const AddressBook = ({ user }) => {
                   type="submit"
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? "#ccc" : (isEditing ? "#0077cc" : "#ff6600"),
+                    backgroundColor: loading ? "#ccc" : (isEditing ? "orange" : "orange"),
                     color: "white",
                     padding: "14px 30px",
                     borderRadius: "8px",
@@ -571,7 +590,7 @@ const AddressBook = ({ user }) => {
                     </>
                 ) : (
                     <>
-                      <span style={{ marginRight: "8px" }}>💾</span>
+                      <span style={{ marginRight: "8px" }}></span>
                       {isEditing ? "Update Address" : "Save Address"}
                     </>
                 )}
@@ -667,7 +686,7 @@ const AddressBook = ({ user }) => {
                             onClick={() => handleEdit(address)}
                             disabled={loading}
                             style={{
-                              backgroundColor: "#0077cc",
+                              backgroundColor: "orange",
                               color: "#fff",
                               padding: "8px 16px",
                               borderRadius: "6px",
@@ -678,7 +697,7 @@ const AddressBook = ({ user }) => {
                               flex: 1
                             }}
                         >
-                          ✏️ Edit
+                           Edit
                         </button>
                         <button
                             onClick={() => handleDelete(address.addressId)}
@@ -695,7 +714,7 @@ const AddressBook = ({ user }) => {
                               flex: 1
                             }}
                         >
-                          🗑️ Delete
+                           Delete
                         </button>
                       </div>
                     </div>

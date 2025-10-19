@@ -98,17 +98,17 @@ const AdminDashboard = () => {
 
         {/* Stats Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px", marginBottom: "40px" }}>
-          <div style={{ backgroundColor: "#e3f2fd", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
-            <h3 style={{ color: "#1976d2", margin: "0 0 10px 0" }}>Total Users</h3>
-            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#1976d2", margin: 0 }}>{stats.totalUsers}</p>
+          <div style={{ backgroundColor: "#fff3e0", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
+            <h3 style={{ color: "orange", margin: "0 0 10px 0" }}>Total Users</h3>
+            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "orange", margin: 0 }}>{stats.totalUsers}</p>
+          </div>
+          <div style={{ backgroundColor: "#eeb1b1", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
+            <h3 style={{ color: "#d32f2f", margin: "0 0 10px 0" }}>Admin Users</h3>
+            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#d32f2f", margin: 0 }}>{stats.adminUsers}</p>
           </div>
           <div style={{ backgroundColor: "#e8f5e8", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
-            <h3 style={{ color: "#2e7d32", margin: "0 0 10px 0" }}>Admin Users</h3>
-            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#2e7d32", margin: 0 }}>{stats.adminUsers}</p>
-          </div>
-          <div style={{ backgroundColor: "#fff3e0", padding: "20px", borderRadius: "8px", textAlign: "center" }}>
-            <h3 style={{ color: "#ef6c00", margin: "0 0 10px 0" }}>Regular Users</h3>
-            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#ef6c00", margin: 0 }}>{stats.regularUsers}</p>
+            <h3 style={{ color: "#2e7d32", margin: "0 0 10px 0" }}>Regular Users</h3>
+            <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#2e7d32", margin: 0 }}>{stats.regularUsers}</p>
           </div>
         </div>
 

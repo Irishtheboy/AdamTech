@@ -93,7 +93,7 @@ const Checkout = () => {
 
   return (
       <div style={{
-        maxWidth: "900px",
+        maxWidth: "95%",
         margin: "0 auto",
         padding: "40px 20px",
         fontFamily: "'Segoe UI', sans-serif",
@@ -112,7 +112,7 @@ const Checkout = () => {
         }}>
           <h1 style={{
             marginBottom: "10px",
-            color: "#2a9d8f",
+            color: "orange",
             fontSize: "2.5rem",
             fontWeight: "bold"
           }}>
@@ -124,7 +124,7 @@ const Checkout = () => {
           {orderId && (
               <p style={{
                 marginTop: "10px",
-                color: "#333",
+                color: "orange",
                 fontWeight: "bold",
                 backgroundColor: "#e9f5f3",
                 padding: "8px 15px",
@@ -183,7 +183,7 @@ const Checkout = () => {
                         <div style={{ fontWeight: "bold", color: "#333" }}>{item.product?.name}</div>
                         <div style={{ color: "#666", fontSize: "0.9rem" }}>Qty: {item.quantity}</div>
                       </div>
-                      <span style={{ fontWeight: "bold", color: "#2a9d8f" }}>
+                      <span style={{ fontWeight: "bold", color: "orange" }}>
                     R{calculateItemTotal(item)}
                   </span>
                     </div>
@@ -217,7 +217,7 @@ const Checkout = () => {
               </h3>
 
               <div style={{ backgroundColor: "#fff3cd", padding: "20px", borderRadius: "8px", marginBottom: "20px" }}>
-                <h4 style={{ color: "#856404", marginBottom: "15px" }}>📋 Important Payment Details</h4>
+                <h4 style={{ color: "orange", marginBottom: "15px" }}> Important Payment Details</h4>
 
                 <div style={{ marginBottom: "15px" }}>
                   <strong style={{ color: "#333" }}>Bank:</strong> FNB (First National Bank)
@@ -241,16 +241,16 @@ const Checkout = () => {
                 </div>
 
                 <div style={{
-                  backgroundColor: "#e7f3ff",
+                  backgroundColor: "#fff3cd",
                   padding: "15px",
                   borderRadius: "8px",
-                  border: "1px solid #b3d9ff"
+                  border: "1px solid orange"
                 }}>
-                  <strong>📧 Proof of Payment:</strong>
-                  <p style={{ margin: "10px 0 0 0", color: "#0066cc" }}>
+                  <strong> Proof of Payment:</strong>
+                  <p style={{ margin: "10px 0 0 0", color: "#333" }}>
                     After payment, please email your proof of payment to:
                     <br />
-                    <strong>francolukhele14@gmail.com</strong>
+                    <strong>adamtech@gmail.com</strong>
                   </p>
                 </div>
               </div>

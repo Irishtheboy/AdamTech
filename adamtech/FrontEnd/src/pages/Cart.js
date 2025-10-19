@@ -398,8 +398,8 @@ function Cart() {
                                 fontSize: "0.9rem",
                                 fontWeight: "600"
                               }}
-                              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#d65c40"}
-                              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#e76f51"}
+                              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "red"}
+                              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "red"}
                           >
                             Remove
                           </button>
@@ -454,7 +454,7 @@ function Cart() {
                   color: "#2d5a2d",
                   border: "1px solid #c8e6c9"
                 }}>
-                  <strong>🚚 Free delivery</strong> on orders over R1000
+                  <strong> Free delivery</strong> on orders over R1000
                 </div>
 
                 <button
@@ -462,7 +462,7 @@ function Cart() {
                     style={{
                       width: "100%",
                       padding: "14px",
-                      backgroundColor: "#2a9d8f",
+                      backgroundColor: "orange",
                       color: "#fff",
                       border: "none",
                       borderRadius: "10px",
@@ -471,8 +471,8 @@ function Cart() {
                       cursor: "pointer",
                       transition: "background 0.2s"
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#21867a"}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#2a9d8f"}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "orange"}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "orange"}
                 >
                   PROCEED TO CHECKOUT
                 </button>

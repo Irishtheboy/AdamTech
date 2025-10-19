@@ -156,7 +156,7 @@ const Profile = ({ user }) => {
                 <h1 style={{
                     textAlign: 'center',
                     marginBottom: '30px',
-                    color: '#333',
+                    color: 'orange',
                     fontSize: '2rem',
                     fontWeight: '600'
                 }}>
@@ -437,20 +437,20 @@ const Profile = ({ user }) => {
                                 minWidth: '200px'
                             }}
                             onMouseOver={(e) => {
-                                if (!loading) e.target.style.backgroundColor = '#e55b00';
+                                if (!loading) e.target.style.backgroundColor = 'orange';
                             }}
                             onMouseOut={(e) => {
-                                if (!loading) e.target.style.backgroundColor = '#ff6600';
+                                if (!loading) e.target.style.backgroundColor = 'orange';
                             }}
                         >
                             {loading ? (
                                 <>
-                                    <span style={{ marginRight: '8px' }}>⏳</span>
+                                    <span style={{ marginRight: '8px' }}></span>
                                     Saving Changes...
                                 </>
                             ) : (
                                 <>
-                                    <span style={{ marginRight: '8px' }}>💾</span>
+                                    <span style={{ marginRight: '8px' }}></span>
                                     Save Profile
                                 </>
                             )}
