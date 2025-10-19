@@ -544,11 +544,11 @@ useEffect(() => {
                   Postal Code *
                 </label>
                 <input
-                    type="number"
+                    type="text"
                     name="postalCode"
                     value={formData.postalCode}
                     onChange={handleChange}
-                    placeholder="e.g., 2000"
+                    placeholder="e.g., 7405"
                     required
                     min="1"
                     max="32767"
