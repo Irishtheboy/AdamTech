@@ -24,6 +24,25 @@ const AddressBook = ({ user }) => {
     }
   }, [user]);
 
+  // Prefill form with the first address (if exists)
+useEffect(() => {
+  if (addresses.length > 0 && !isEditing) {
+    const firstAddress = addresses[0];
+    setFormData({
+      streetNumber: firstAddress.streetNumber?.toString() || "",
+      streetName: firstAddress.streetName || "",
+      suburb: firstAddress.suburb || "",
+      city: firstAddress.city || "",
+      province: firstAddress.province || "",
+      postalCode: firstAddress.postalCode?.toString() || "",
+    });
+    setEditId(firstAddress.addressId);
+    setIsEditing(true); // Optional: mark form as editing
+  }
+}, [addresses]);
+
+
+
   const fetchUserAddresses = async () => {
     try {
       setLoading(true);
@@ -552,7 +571,7 @@ const AddressBook = ({ user }) => {
                   type="submit"
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? "#ccc" : (isEditing ? "#0077cc" : "orange"),
+                    backgroundColor: loading ? "#ccc" : (isEditing ? "orange" : "orange"),
                     color: "white",
                     padding: "14px 30px",
                     borderRadius: "8px",
