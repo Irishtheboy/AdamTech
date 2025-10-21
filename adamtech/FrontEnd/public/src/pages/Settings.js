@@ -1,8 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+
+  // Apply dark mode when the state changes
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+
+    // Optional: Save to localStorage
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  // Optional: Load saved preference on component mount
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setDarkMode(savedDarkMode);
+  }, []);
+
+  const handleSave = () => {
+    // Your save logic here
+    alert('Settings saved!');
+  };
 
   return (
       <>
@@ -31,7 +54,9 @@ const Settings = () => {
             </label>
           </div>
 
-          <button className="save-btn">Save Changes</button>
+          <button className="save-btn" onClick={handleSave}>
+            Save Changes
+          </button>
         </div>
 
         {/* Inline CSS */}
@@ -42,6 +67,7 @@ const Settings = () => {
           padding: 20px;
           box-shadow: 0 1px 3px rgba(0,0,0,0.08);
           max-width: 400px;
+          transition: all 0.3s ease;
         }
 
         .settings-container h2 {
@@ -73,10 +99,41 @@ const Settings = () => {
         .save-btn:hover {
           background: #e65c00;
         }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+          background-color: #1a1a1a;
+          color: #ffffff;
+        }
+
+        .dark-mode .settings-container {
+          background: #2d2d2d;
+          color: #ffffff;
+        }
+
+        .dark-mode .setting-item label {
+          color: #ffffff;
+        }
+
+        .dark-mode .save-btn {
+          background: #ff8c42;
+        }
+
+        .dark-mode .save-btn:hover {
+          background: #ff7b29;
+        }
+
+        /* Base body styles */
+        body {
+          margin: 0;
+          padding: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background-color: #f5f5f5;
+          transition: background-color 0.3s ease, color 0.3s ease;
+        }
       `}</style>
       </>
   );
 };
 
 export default Settings;
-

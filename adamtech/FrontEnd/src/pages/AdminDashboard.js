@@ -80,6 +80,10 @@ const AdminDashboard = () => {
     }
   };
 
+  const navigateToProducts = () => {
+    navigate("/admin/products");
+  };
+
   if (loading) {
     return (
         <div style={{ padding: "40px", textAlign: "center" }}>
@@ -202,6 +206,22 @@ const AdminDashboard = () => {
               }}
           >
             Refresh Data
+          </button>
+
+          <button
+              onClick={navigateToProducts}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#ff6600",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                marginRight: "10px",
+                fontWeight: "600"
+              }}
+          >
+            📦 Admin Products
           </button>
         </div>
       </div>

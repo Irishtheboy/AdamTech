@@ -6,11 +6,17 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("🔄 AdminDashboard mounted");
+
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    console.log("👤 User role:", user.role);
+    console.log("🔐 Token exists:", !!token);
 
     // Check if user is admin
     if (user.role !== "ROLE_ADMIN") {
@@ -24,6 +30,8 @@ const AdminDashboard = () => {
 
   const fetchAdminData = async (token) => {
     try {
+      console.log("📡 Fetching admin data...");
+
       // Fetch users
       const usersRes = await axios.get("http://localhost:8080/adamtech/admin/users", {
         headers: {
@@ -31,6 +39,8 @@ const AdminDashboard = () => {
           'Content-Type': 'application/json'
         }
       });
+
+      console.log("✅ Users fetched:", usersRes.data);
       setUsers(usersRes.data);
 
       // Calculate stats
@@ -44,8 +54,12 @@ const AdminDashboard = () => {
         regularUsers
       });
 
+      setError(null); // Clear any previous errors
+
     } catch (err) {
-      console.error("Failed to fetch admin data:", err);
+      console.error("❌ Failed to fetch admin data:", err);
+      setError(err.response?.data?.message || err.message || "Failed to load admin data");
+
       if (err.response?.status === 403) {
         alert("Access denied. Admin privileges required.");
         navigate("/");
@@ -80,6 +94,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const navigateToProducts = () => {
+    console.log("🎯 Navigating to products page");
+    navigate("/admin/products");
+  };
+
+  const retryFetchData = () => {
+    const token = localStorage.getItem("token");
+    setLoading(true);
+    setError(null);
+    fetchAdminData(token);
+  };
+
   if (loading) {
     return (
         <div style={{ padding: "40px", textAlign: "center" }}>
@@ -88,12 +114,133 @@ const AdminDashboard = () => {
     );
   }
 
+  if (error) {
+    return (
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <h2 style={{ color: "#d32f2f" }}>Error Loading Dashboard</h2>
+          <p style={{ color: "#666", marginBottom: "20px" }}>{error}</p>
+          <button
+              onClick={retryFetchData}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#1976d2",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer"
+              }}
+          >
+            Retry
+          </button>
+        </div>
+    );
+  }
+
   return (
       <div style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", fontFamily: "'Segoe UI', sans-serif" }}>
-        {/* Header */}
-        <div style={{ marginBottom: "40px" }}>
-          <h1 style={{ color: "#333", marginBottom: "10px" }}>Admin Dashboard</h1>
-          <p style={{ color: "#666" }}>Manage users and system settings</p>
+        {/* Header with Products Button */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "40px",
+          flexWrap: "wrap",
+          gap: "20px"
+        }}>
+          <div>
+            <h1 style={{ color: "#333", marginBottom: "10px" }}>Admin Dashboard</h1>
+            <p style={{ color: "#666" }}>Manage users, products, and system settings</p>
+          </div>
+          <button
+              onClick={navigateToProducts}
+              style={{
+                padding: "12px 24px",
+                backgroundColor: "#ff6600",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "16px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                height: "fit-content"
+              }}
+          >
+            <span>📦</span>
+            Manage Products
+          </button>
+        </div>
+
+        {/* Quick Actions */}
+        <div style={{
+          marginBottom: "40px",
+          padding: "20px",
+          backgroundColor: "#f8f9fa",
+          borderRadius: "8px",
+          border: "2px solid #e9ecef"
+        }}>
+          <h3 style={{ marginBottom: "15px", color: "#333" }}>Quick Actions</h3>
+          <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
+            <button
+                onClick={navigateToProducts}
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#ff6600",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}
+            >
+              <span>📦</span>
+              Manage Products
+            </button>
+            <button
+                onClick={() => window.location.reload()}
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}
+            >
+              <span>🔄</span>
+              Refresh Data
+            </button>
+            <button
+                onClick={retryFetchData}
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#1976d2",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}
+            >
+              <span>🔁</span>
+              Retry Load Data
+            </button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -184,25 +331,6 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div style={{ marginTop: "30px", padding: "20px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
-          <h3 style={{ marginBottom: "15px" }}>Quick Actions</h3>
-          <button
-              onClick={() => window.location.reload()}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#6c757d",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                marginRight: "10px"
-              }}
-          >
-            Refresh Data
-          </button>
         </div>
       </div>
   );
