@@ -31,6 +31,10 @@ public class Address {
     @Column(name = "postal_code")
     private short postalCode;
 
+
+    @Column(name = "customer_email")
+    private String customerEmail;
+
     public Address() {
     }
 
@@ -62,6 +66,14 @@ public class Address {
         return postalCode;
     }
 
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
@@ -72,6 +84,7 @@ public class Address {
                 ", city='" + city + '\'' +
                 ", province='" + province + '\'' +
                 ", postalCode=" + postalCode +
+                ", customerEmail='" + customerEmail + '\'' +
                 '}';
     }
 
@@ -83,6 +96,7 @@ public class Address {
         this.city = builder.city;
         this.province = builder.province;
         this.postalCode = builder.postalCode;
+        this.customerEmail = builder.customerEmail;
     }
 
     public static class Builder {
@@ -93,6 +107,7 @@ public class Address {
         private String city;
         private String province;
         private short postalCode;
+        private String customerEmail;
 
         public Builder setAddressId(Long addressId) {
             this.addressId = addressId;
@@ -129,6 +144,11 @@ public class Address {
             return this;
         }
 
+        public Builder setCustomerEmail(String customerEmail) {
+            this.customerEmail = customerEmail;
+            return this;
+        }
+
         public Builder copy(Address address) {
             this.addressId = address.addressId;
             this.streetNumber = address.streetNumber;
@@ -137,6 +157,7 @@ public class Address {
             this.city = address.city;
             this.province = address.province;
             this.postalCode = address.postalCode;
+            this.customerEmail = address.customerEmail;
             return this;
         }
 

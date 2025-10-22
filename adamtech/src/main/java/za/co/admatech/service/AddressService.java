@@ -40,4 +40,8 @@ public class AddressService implements IAddressService {
     public List<Address> getAll() {
         return addressRepository.findAll();
     }
+
+    public List<Address> findByCustomerEmail(String email) {
+        return addressRepository.findByCustomerEmail(email);
+    }
 }

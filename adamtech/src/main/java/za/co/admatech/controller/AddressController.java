@@ -43,4 +43,9 @@ public class AddressController {
     public Iterable<Address> getAll() {
         return service.getAll();
     }
+
+    @GetMapping("/user/{email}")
+    public List<Address> getAddressesByUserEmail(@PathVariable String email) {
+        return service.findByCustomerEmail(email);
+    }
 }
