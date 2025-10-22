@@ -25,23 +25,21 @@ const AddressBook = ({ user }) => {
   }, [user]);
 
   // Prefill form with the first address (if exists)
-useEffect(() => {
-  if (addresses.length > 0 && !isEditing) {
-    const firstAddress = addresses[0];
-    setFormData({
-      streetNumber: firstAddress.streetNumber?.toString() || "",
-      streetName: firstAddress.streetName || "",
-      suburb: firstAddress.suburb || "",
-      city: firstAddress.city || "",
-      province: firstAddress.province || "",
-      postalCode: firstAddress.postalCode?.toString() || "",
-    });
-    setEditId(firstAddress.addressId);
-    setIsEditing(true); // Optional: mark form as editing
-  }
-}, [addresses]);
-
-
+  useEffect(() => {
+    if (addresses.length > 0 && !isEditing) {
+      const firstAddress = addresses[0];
+      setFormData({
+        streetNumber: firstAddress.streetNumber?.toString() || "",
+        streetName: firstAddress.streetName || "",
+        suburb: firstAddress.suburb || "",
+        city: firstAddress.city || "",
+        province: firstAddress.province || "",
+        postalCode: firstAddress.postalCode?.toString() || "",
+      });
+      setEditId(firstAddress.addressId);
+      setIsEditing(true);
+    }
+  }, [addresses]);
 
   const fetchUserAddresses = async () => {
     try {
@@ -49,21 +47,14 @@ useEffect(() => {
       setError("");
       const token = localStorage.getItem("token");
 
-      // Option 1: Try to get addresses by user ID
-      try {
-        const response = await axios.get(`http://localhost:8080/adamtech/address/user/${user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        setAddresses(Array.isArray(response.data) ? response.data : []);
+      if (!token) {
+        setError("Authentication token not found. Please log in again.");
         return;
-      } catch (err) {
-        console.log('User-specific address endpoint not available, trying getAll...');
       }
 
-      // Option 2: Get all addresses and filter by user
+      // Since user.id is undefined, we'll use the getAll endpoint and filter by email
+      console.log("Fetching all addresses and filtering by user email:", user.email);
+
       const response = await axios.get("http://localhost:8080/adamtech/address/getAll", {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -71,14 +62,26 @@ useEffect(() => {
         }
       });
 
-      // Filter addresses for current user
+      console.log("All addresses from backend:", response.data);
+      console.log("Current user:", user);
+
+      // Filter addresses by user email - check all possible email fields
       const userAddresses = response.data.filter(address => {
-        // Check if address belongs to current user
-        return address.customer?.customerId === user.id ||
-            address.customer?.email === user.email ||
-            address.customerEmail === user.email;
+        // Check all possible email fields in the address object
+        const addressEmail = address.customerEmail ||
+            address.customer?.email ||
+            address.email;
+
+        console.log(`Address ${address.addressId}:`, {
+          addressEmail,
+          userEmail: user.email,
+          matches: addressEmail === user.email
+        });
+
+        return addressEmail === user.email;
       });
 
+      console.log("Filtered user addresses:", userAddresses);
       setAddresses(userAddresses);
 
     } catch (err) {
@@ -110,8 +113,8 @@ useEffect(() => {
     }
 
     // Validation
-    if (!formData.streetNumber || !formData.streetName || !formData.postalCode) {
-      setError("Street Number, Street Name, and Postal Code are required.");
+    if (!formData.streetNumber || !formData.streetName || !formData.city || !formData.province || !formData.postalCode) {
+      setError("Street Number, Street Name, City, Province, and Postal Code are required.");
       return;
     }
 
@@ -119,7 +122,12 @@ useEffect(() => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      // Prepare payload with user information
+      if (!token) {
+        setError("Authentication token not found. Please log in again.");
+        return;
+      }
+
+      // Prepare payload with user information - using email since id is undefined
       const payload = {
         streetNumber: Math.min(Number(formData.streetNumber), 32767),
         postalCode: Math.min(Number(formData.postalCode), 32767),
@@ -127,15 +135,23 @@ useEffect(() => {
         suburb: formData.suburb.trim(),
         city: formData.city.trim(),
         province: formData.province.trim(),
-        customerEmail: user.email, // Link to current user
-        customerId: user.id // Link to current user
+        customerEmail: user.email // Use email to link to current user
       };
+
+      console.log("Sending payload:", payload);
 
       if (isEditing) {
         // Update address - make sure it belongs to current user
         const addressToUpdate = addresses.find(addr => addr.addressId === editId);
         if (!addressToUpdate) {
           setError("Address not found.");
+          return;
+        }
+
+        // Verify ownership before update
+        const isUserAddress = verifyAddressOwnership(addressToUpdate);
+        if (!isUserAddress) {
+          setError("You can only edit your own addresses.");
           return;
         }
 
@@ -192,11 +208,17 @@ useEffect(() => {
     setEditId(null);
   };
 
+  // Helper function to verify address ownership
+  const verifyAddressOwnership = (address) => {
+    const addressEmail = address.customerEmail ||
+        address.customer?.email ||
+        address.email;
+    return addressEmail === user.email;
+  };
+
   const handleEdit = (address) => {
     // Verify address belongs to current user before editing
-    const isUserAddress = address.customer?.customerId === user.id ||
-        address.customer?.email === user.email ||
-        address.customerEmail === user.email;
+    const isUserAddress = verifyAddressOwnership(address);
 
     if (!isUserAddress) {
       setError("You can only edit your own addresses.");
@@ -231,9 +253,7 @@ useEffect(() => {
       return;
     }
 
-    const isUserAddress = addressToDelete.customer?.customerId === user.id ||
-        addressToDelete.customer?.email === user.email ||
-        addressToDelete.customerEmail === user.email;
+    const isUserAddress = verifyAddressOwnership(addressToDelete);
 
     if (!isUserAddress) {
       setError("You can only delete your own addresses.");
@@ -253,6 +273,11 @@ useEffect(() => {
 
       setAddresses((prev) => prev.filter((addr) => addr.addressId !== id));
       setSuccess("Address deleted successfully!");
+
+      // Reset form if we were editing the deleted address
+      if (editId === id) {
+        resetForm();
+      }
     } catch (err) {
       console.error("Error deleting address:", err);
       setError("Failed to delete address. Please try again.");
@@ -330,7 +355,8 @@ useEffect(() => {
             display: "flex",
             gap: "20px",
             fontSize: "14px",
-            color: "#666"
+            color: "#666",
+            flexWrap: "wrap"
           }}>
             <span>User: <strong>{user.firstName} {user.lastName}</strong></span>
             <span>Email: <strong>{user.email}</strong></span>
@@ -571,7 +597,7 @@ useEffect(() => {
                   type="submit"
                   disabled={loading}
                   style={{
-                    backgroundColor: loading ? "#ccc" : (isEditing ? "orange" : "orange"),
+                    backgroundColor: loading ? "#ccc" : "orange",
                     color: "white",
                     padding: "14px 30px",
                     borderRadius: "8px",
@@ -697,7 +723,7 @@ useEffect(() => {
                               flex: 1
                             }}
                         >
-                           Edit
+                          Edit
                         </button>
                         <button
                             onClick={() => handleDelete(address.addressId)}
@@ -714,7 +740,7 @@ useEffect(() => {
                               flex: 1
                             }}
                         >
-                           Delete
+                          Delete
                         </button>
                       </div>
                     </div>
