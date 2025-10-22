@@ -12,19 +12,62 @@ const Profile = ({ user }) => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [profileData, setProfileData] = useState(null);
 
-    // Populate form with logged-in user's details
+    // Fetch complete user profile data using email
     useEffect(() => {
-        if (user) {
-            console.log('User data received:', user); // Debug log
+        const fetchUserProfile = async () => {
+            if (!user || !user.email) return;
 
-            setFormData({
-                firstName: user.firstName || user.firstname || '',
-                lastName: user.lastName || user.lastname || '',
-                email: user.email || '',
-                phoneNumber: user.phoneNumber || user.phone || user.phonenumber || '',
-            });
-        }
+            try {
+                const token = localStorage.getItem('token');
+                const userEmail = user.email;
+
+                if (!token || !userEmail) {
+                    console.log('No token or email found');
+                    return;
+                }
+
+                console.log('Fetching profile for email:', userEmail);
+
+                // Fetch complete user profile from backend using EMAIL
+                const response = await axios.get(
+                    `http://localhost:8080/adamtech/customer/read/${userEmail}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+
+                console.log('Full profile data received:', response.data);
+                setProfileData(response.data);
+
+                // Populate form with complete user data
+                const userProfile = response.data;
+                setFormData({
+                    firstName: userProfile.firstName || userProfile.firstname || '',
+                    lastName: userProfile.lastName || userProfile.lastname || '',
+                    email: userProfile.email || user.email || '',
+                    phoneNumber: userProfile.phoneNumber || userProfile.phone || userProfile.phonenumber || '',
+                });
+
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+                console.log('Will use basic user data instead');
+
+                // Fallback to basic user data
+                setFormData({
+                    firstName: user.firstName || user.firstname || '',
+                    lastName: user.lastName || user.lastname || '',
+                    email: user.email || '',
+                    phoneNumber: user.phoneNumber || user.phone || user.phonenumber || '',
+                });
+            }
+        };
+
+        fetchUserProfile();
     }, [user]);
 
     const handleChange = (e) => {
@@ -52,28 +95,29 @@ const Profile = ({ user }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const userData = JSON.parse(localStorage.getItem('user'));
+            const userEmail = user.email;
 
-            if (!token) {
-                setError('Authentication token not found. Please log in again.');
+            if (!token || !userEmail) {
+                setError('Authentication token or email not found. Please log in again.');
                 setLoading(false);
                 return;
             }
 
-            // Use the correct user ID
-            const userId = user.id || userData?.id;
+            console.log('Updating profile with data:', formData);
 
-            if (!userId) {
-                setError('User ID not found. Please log in again.');
-                setLoading(false);
-                return;
-            }
-
-            console.log('Updating profile with data:', formData); // Debug log
+            // Use the correct update endpoint - your backend expects the full Customer object
+            const updatePayload = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                phoneNumber: formData.phoneNumber,
+                // Include other required fields if needed
+                role: user.role || 'ROLE_USER'
+            };
 
             const response = await axios.put(
-                `http://localhost:8080/adamtech/customer/update/${userId}`,
-                formData,
+                `http://localhost:8080/adamtech/customer/update`,
+                updatePayload,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -98,8 +142,6 @@ const Profile = ({ user }) => {
 
         } catch (error) {
             console.error('Error updating profile:', error);
-
-            // More detailed error logging
             console.log('Error response:', error.response);
 
             if (error.response?.status === 401) {
@@ -133,7 +175,10 @@ const Profile = ({ user }) => {
                 fontSize: '12px',
                 color: '#666'
             }}>
-                <strong>Debug Info:</strong> User object keys: {Object.keys(user).join(', ')}
+                <strong>Debug Info:</strong><br />
+                User object keys: {Object.keys(user).join(', ')}<br />
+                User email: {user.email}<br />
+                Profile data: {profileData ? Object.keys(profileData).join(', ') : 'Loading...'}
             </div>
         );
     };
@@ -243,7 +288,7 @@ const Profile = ({ user }) => {
                                 name="firstName"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                placeholder="First Name"
+                                placeholder="Enter your first name"
                                 required
                                 disabled={loading}
                                 style={{
@@ -278,7 +323,7 @@ const Profile = ({ user }) => {
                                 name="lastName"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                placeholder="Last Name"
+                                placeholder="Enter your last name"
                                 required
                                 disabled={loading}
                                 style={{
@@ -343,7 +388,7 @@ const Profile = ({ user }) => {
                                 name="phoneNumber"
                                 value={formData.phoneNumber}
                                 onChange={handleChange}
-                                placeholder="Phone Number"
+                                placeholder="Enter your phone number"
                                 required
                                 disabled={loading}
                                 style={{
