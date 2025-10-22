@@ -21,12 +21,12 @@ public class Product {
 
     private String categoryId;
 
-    // ✅ Add this field for image
+
     @Lob
     @Column(name = "image_data", columnDefinition = "LONGBLOB")
     private byte[] imageData;
 
-    // ✅ Add transient field for Base64 image string (not stored in DB)
+
     @Transient
     private String imageBase64;
 
@@ -43,10 +43,9 @@ public class Product {
         this.imageData = builder.imageData;
         this.imageBase64 = builder.imageBase64;
 
-        // Convert Base64 to imageData if provided
+
         if (this.imageBase64 != null && !this.imageBase64.isEmpty()) {
             try {
-                // Remove data URL prefix if present
                 String base64Data = this.imageBase64;
                 if (base64Data.contains(",")) {
                     base64Data = base64Data.split(",")[1];

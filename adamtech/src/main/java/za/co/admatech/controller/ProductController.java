@@ -37,7 +37,6 @@ public class ProductController {
     // Update a product
     @PutMapping("/update/{productId}")
     public ResponseEntity<Product> update(@PathVariable Long productId, @RequestBody Product product) {
-        // Create a copy with the ID from path
         Product productWithId = new Product.Builder()
                 .copy(product)
                 .setProductId(productId)
@@ -62,13 +61,11 @@ public class ProductController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    // inside ProductController
-    // inside existing ProductController
+
     @GetMapping("/search")
     public ResponseEntity<List<Product>> search(@RequestParam(value = "q", required = false) String q) {
         List<Product> results;
         if (q == null || q.trim().isEmpty()) {
-            // return all by default (or return empty list if you prefer)
             results = service.getAll();
         } else {
             results = service.searchByName(q);
