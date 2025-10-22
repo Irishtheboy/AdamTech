@@ -8,7 +8,7 @@ function Cart() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const DELIVERY_FEE = 150; // R150 delivery fee
+  const DELIVERY_FEE = 150;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -134,6 +134,44 @@ function Cart() {
     }
   };
 
+  // Function to clear the entire cart from backend
+  const clearCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Option 1: Clear the entire cart (if you have a clear cart endpoint)
+      try {
+        await axios.delete(
+            `http://localhost:8080/adamtech/cart/clear/${user.email}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }
+        );
+        console.log("Cart cleared successfully");
+      } catch (clearErr) {
+        // If clear endpoint doesn't exist, delete items one by one
+        console.log("Clear cart endpoint not available, deleting items individually");
+        for (const item of cartItems) {
+          await axios.delete(
+              `http://localhost:8080/adamtech/cart-items/delete/${item.cartItemId}`,
+              {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                }
+              }
+          );
+        }
+        console.log("All cart items deleted individually");
+      }
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+    }
+  };
+
   const checkout = async () => {
     if (!cartItems.length) return;
 
@@ -165,8 +203,6 @@ function Cart() {
     };
 
     console.log("Order payload:", JSON.stringify(orderPayload, null, 2));
-    console.log("Total amount type:", typeof orderPayload.totalAmount);
-    console.log("Total amount value:", orderPayload.totalAmount);
 
     try {
       const token = localStorage.getItem("token");
@@ -185,6 +221,13 @@ function Cart() {
 
       if (res.data?.orderId || res.data?.id) {
         const orderId = res.data.orderId || res.data.id;
+
+        // Clear cart from backend after successful order creation
+        await clearCart();
+
+        // Clear cart from frontend state
+        setCartItems([]);
+
         navigate("/checkout", {
           state: {
             user,
@@ -196,8 +239,6 @@ function Cart() {
           }
         });
 
-        // Clear cart after successful order creation
-        setCartItems([]);
       } else {
         alert("Order created but no order ID returned. Please contact support.");
       }
@@ -454,7 +495,7 @@ function Cart() {
                   color: "#2d5a2d",
                   border: "1px solid #c8e6c9"
                 }}>
-                  <strong> Free delivery</strong> on orders over R1000
+                  Delivery accounted for separately at checkout.
                 </div>
 
                 <button

@@ -15,10 +15,12 @@ const AdminProducts = () => {
         name: '',
         description: '',
         sku: '',
-        priceAmount: '',
-        priceCurrency: 'USD',
+        price: {
+            amount: '',
+            currency: 'USD'
+        },
         categoryId: '',
-        image: null
+        imageBase64: ''
     });
 
     const categories = [
@@ -52,24 +54,48 @@ const AdminProducts = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+
+        if (name === 'priceAmount') {
+            setFormData(prev => ({
+                ...prev,
+                price: {
+                    ...prev.price,
+                    amount: value
+                }
+            }));
+        } else if (name === 'priceCurrency') {
+            setFormData(prev => ({
+                ...prev,
+                price: {
+                    ...prev.price,
+                    currency: value
+                }
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFormData(prev => ({
-                ...prev,
-                image: file
-            }));
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                setError('Image size must be less than 2MB');
+                return;
+            }
 
-            // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
-                setImagePreview(e.target.result);
+                const base64 = e.target.result;
+                setFormData(prev => ({
+                    ...prev,
+                    imageBase64: base64
+                }));
+                setImagePreview(base64);
             };
             reader.readAsDataURL(file);
         }
@@ -80,10 +106,12 @@ const AdminProducts = () => {
             name: '',
             description: '',
             sku: '',
-            priceAmount: '',
-            priceCurrency: 'USD',
+            price: {
+                amount: '',
+                currency: 'USD'
+            },
             categoryId: '',
-            image: null
+            imageBase64: ''
         });
         setEditingProduct(null);
         setShowForm(false);
@@ -100,30 +128,32 @@ const AdminProducts = () => {
 
         try {
             const token = localStorage.getItem('token');
-            
-            // Create form data for file upload
-            const submitData = new FormData();
-            submitData.append('name', formData.name);
-            submitData.append('description', formData.description);
-            submitData.append('sku', formData.sku);
-            submitData.append('priceAmount', parseFloat(formData.priceAmount));
-            submitData.append('priceCurrency', formData.priceCurrency);
-            submitData.append('categoryId', formData.categoryId);
-            
-            if (formData.image) {
-                submitData.append('image', formData.image);
-            }
+
+            // Prepare JSON payload - use the same structure as ProductDetails
+            const payload = {
+                name: formData.name,
+                description: formData.description,
+                sku: formData.sku,
+                price: {
+                    amount: parseFloat(formData.price.amount),
+                    currency: formData.price.currency
+                },
+                categoryId: formData.categoryId,
+                imageBase64: formData.imageBase64 || null
+            };
+
+            console.log('Sending payload:', payload);
 
             let response;
             if (editingProduct) {
                 // Update existing product
                 response = await axios.put(
                     `http://localhost:8080/adamtech/products/update/${editingProduct.productId}`,
-                    submitData,
+                    payload,
                     {
                         headers: {
                             'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data'
+                            'Content-Type': 'application/json'
                         }
                     }
                 );
@@ -132,11 +162,11 @@ const AdminProducts = () => {
                 // Create new product
                 response = await axios.post(
                     'http://localhost:8080/adamtech/products/create',
-                    submitData,
+                    payload,
                     {
                         headers: {
                             'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data'
+                            'Content-Type': 'application/json'
                         }
                     }
                 );
@@ -159,19 +189,21 @@ const AdminProducts = () => {
             name: product.name,
             description: product.description,
             sku: product.sku,
-            priceAmount: product.price?.amount?.toString() || '',
-            priceCurrency: product.price?.currency || 'USD',
+            price: {
+                amount: product.price?.amount?.toString() || '',
+                currency: product.price?.currency || 'USD'
+            },
             categoryId: product.categoryId,
-            image: null
+            imageBase64: product.imageBase64 || ''
         });
-        
-        // Set image preview if product has an image
-        if (product.productId) {
-            setImagePreview(`http://localhost:8080/adamtech/products/${product.productId}/image?t=${Date.now()}`);
+
+        // Set image preview from Base64 data
+        if (product.imageBase64) {
+            setImagePreview(product.imageBase64);
         } else {
             setImagePreview(null);
         }
-        
+
         setShowForm(true);
     };
 
@@ -198,12 +230,18 @@ const AdminProducts = () => {
     const removeImage = () => {
         setFormData(prev => ({
             ...prev,
-            image: null
+            imageBase64: ''
         }));
         setImagePreview(null);
         // Clear file input
         const fileInput = document.getElementById('imageUpload');
         if (fileInput) fileInput.value = '';
+    };
+
+    // Function to get image URL for display - ONLY uses Base64, no endpoint calls
+    const getProductImage = (product) => {
+        // Only use Base64 data, never try to load from image endpoint
+        return product.imageBase64 || null;
     };
 
     return (
@@ -368,7 +406,7 @@ const AdminProducts = () => {
                                     <input
                                         type="number"
                                         name="priceAmount"
-                                        value={formData.priceAmount}
+                                        value={formData.price.amount}
                                         onChange={handleInputChange}
                                         step="0.01"
                                         min="0"
@@ -385,7 +423,7 @@ const AdminProducts = () => {
                                     />
                                     <select
                                         name="priceCurrency"
-                                        value={formData.priceCurrency}
+                                        value={formData.price.currency}
                                         onChange={handleInputChange}
                                         disabled={loading}
                                         style={{
@@ -426,15 +464,15 @@ const AdminProducts = () => {
                                             }}
                                         />
                                         <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-                                            Supported formats: JPG, PNG, GIF. Max size: 5MB
+                                            Supported formats: JPG, PNG, GIF. Max size: 2MB
                                         </p>
                                     </div>
-                                    
+
                                     {imagePreview && (
                                         <div style={{ position: 'relative', display: 'inline-block' }}>
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Preview" 
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
                                                 style={{
                                                     width: '100px',
                                                     height: '100px',
@@ -570,46 +608,46 @@ const AdminProducts = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {products.map(product => (
-                                <tr key={product.productId} style={{ borderBottom: '1px solid #dee2e6' }}>
-                                    <td style={{ padding: '12px' }}>
-                                        {product.productId ? (
-                                            <img 
-                                                src={`http://localhost:8080/adamtech/products/${product.productId}/image?t=${Date.now()}`}
-                                                alt={product.name}
-                                                style={{
+                            {products.map(product => {
+                                const productImage = getProductImage(product);
+                                return (
+                                    <tr key={product.productId} style={{ borderBottom: '1px solid #dee2e6' }}>
+                                        <td style={{ padding: '12px' }}>
+                                            {productImage ? (
+                                                <img
+                                                    src={productImage}
+                                                    alt={product.name}
+                                                    style={{
+                                                        width: '50px',
+                                                        height: '50px',
+                                                        objectFit: 'cover',
+                                                        borderRadius: '4px',
+                                                        border: '1px solid #ddd'
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{
                                                     width: '50px',
                                                     height: '50px',
-                                                    objectFit: 'cover',
+                                                    backgroundColor: '#f0f0f0',
                                                     borderRadius: '4px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: '#999',
+                                                    fontSize: '10px',
+                                                    textAlign: 'center',
                                                     border: '1px solid #ddd'
-                                                }}
-                                                onError={(e) => {
-                                                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjRjBGMEYwIi8+CjxwYXRoIGQ9Ik0yNSAzMEMyOC44NjYgMzAgMzIgMjYuODY2IDMyIDIzQzMyIDE5LjEzNCAyOC44NjYgMTYgMjUgMTZDMjEuMTM0IDE2IDE4IDE5LjEzNCAxOCAyM0MxOCAyNi44NjYgMjEuMTM0IDMwIDI1IDMwWiIgZmlsbD0iI0Q4RDhEOCIvPgo8cGF0aCBkPSJNMTguNSA0MEMxNi41NjcgNDAgMTUgMzguNDMzIDE1IDM2LjVMMTUgMTkuNUMxNSAxNy41NjcgMTYuNTY3IDE2IDE4LjUgMTZMMzEuNSAxNkMzMy40MzMgMTYgMzUgMTcuNTY3IDM1IDE5LjVMMzUgMzYuNUMzNSAzOC40MzMgMzMuNDMzIDQwIDMxLjUgNDBMMTguNSA0MFoiIGZpbGw9IiNEOEQ4RDgiLz4KPC9zdmc+';
-                                                }}
-                                            />
-                                        ) : (
-                                            <div style={{
-                                                width: '50px',
-                                                height: '50px',
-                                                backgroundColor: '#f0f0f0',
-                                                borderRadius: '4px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#999',
-                                                fontSize: '10px',
-                                                textAlign: 'center'
-                                            }}>
-                                                No Image
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td style={{ padding: '12px', fontWeight: '500' }}>
-                                        {product.name}
-                                    </td>
-                                    <td style={{ padding: '12px' }}>{product.sku}</td>
-                                    <td style={{ padding: '12px' }}>
+                                                }}>
+                                                    No Image
+                                                </div>
+                                            )}
+                                        </td>
+                                        <td style={{ padding: '12px', fontWeight: '500' }}>
+                                            {product.name}
+                                        </td>
+                                        <td style={{ padding: '12px' }}>{product.sku}</td>
+                                        <td style={{ padding: '12px' }}>
                                             <span style={{
                                                 padding: '4px 8px',
                                                 backgroundColor: '#e9ecef',
@@ -619,57 +657,57 @@ const AdminProducts = () => {
                                             }}>
                                                 {product.categoryId}
                                             </span>
-                                    </td>
-                                    <td style={{ padding: '12px' }}>
-                                        {product.price?.currency} {product.price?.amount?.toFixed(2)}
-                                    </td>
-                                    <td style={{ padding: '12px', maxWidth: '300px' }}>
-                                        <div style={{
-                                            fontSize: '14px',
-                                            color: '#666',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical'
-                                        }}>
-                                            {product.description}
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '12px' }}>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button
-                                                onClick={() => handleEdit(product)}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    backgroundColor: '#17a2b8',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '12px'
-                                                }}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(product.productId)}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    backgroundColor: '#dc3545',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '12px'
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                                        </td>
+                                        <td style={{ padding: '12px' }}>
+                                            {product.price?.currency} {product.price?.amount?.toFixed(2)}
+                                        </td>
+                                        <td style={{ padding: '12px', maxWidth: '300px' }}>
+                                            <div style={{
+                                                fontSize: '14px',
+                                                color: '#666',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical'
+                                            }}>
+                                                {product.description}
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '12px' }}>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={() => handleEdit(product)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#17a2b8',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '12px'
+                                                    }}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(product.productId)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#dc3545',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '12px'
+                                                    }}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )})}
                             </tbody>
                         </table>
                     </div>
